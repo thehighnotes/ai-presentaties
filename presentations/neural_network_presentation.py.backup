@@ -1,0 +1,1273 @@
+"""
+Neural Network Learning Presentation
+Step-by-step educational journey through how neural networks learn
+Integrated with BasePresentation for standardized controls
+"""
+
+import sys
+import os
+import numpy as np
+import matplotlib.pyplot as plt
+from matplotlib.patches import Circle, FancyArrowPatch, FancyBboxPatch
+import textwrap
+
+# Add parent directory to path
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
+from core import BasePresentation, PresentationStyle
+
+
+class SimpleNeuralNetwork:
+    """Simple neural network for XOR problem - educational version"""
+
+    def __init__(self):
+        np.random.seed(42)
+        # 2 inputs -> 3 hidden -> 1 output
+        self.weights_input_hidden = np.random.randn(2, 3) * 0.5
+        self.bias_hidden = np.random.randn(3) * 0.5
+        self.weights_hidden_output = np.random.randn(3, 1) * 0.5
+        self.bias_output = np.random.randn(1) * 0.5
+
+        # Training data - XOR problem
+        self.X = np.array([[0, 0], [0, 1], [1, 0], [1, 1]])
+        self.y = np.array([[0], [1], [1], [0]])
+
+        self.learning_rate = 0.5
+        self.epoch = 0
+        self.loss_history = []
+
+    def sigmoid(self, x):
+        return 1 / (1 + np.exp(-np.clip(x, -500, 500)))
+
+    def sigmoid_derivative(self, x):
+        return x * (1 - x)
+
+    def forward(self, X):
+        hidden_input = np.dot(X, self.weights_input_hidden) + self.bias_hidden
+        hidden_output = self.sigmoid(hidden_input)
+
+        output_input = np.dot(hidden_output, self.weights_hidden_output) + self.bias_output
+        output = self.sigmoid(output_input)
+
+        return hidden_output, output
+
+    def train_epoch(self):
+        hidden_output, output = self.forward(self.X)
+
+        # Backpropagation
+        output_error = self.y - output
+        output_delta = output_error * self.sigmoid_derivative(output)
+
+        hidden_error = output_delta.dot(self.weights_hidden_output.T)
+        hidden_delta = hidden_error * self.sigmoid_derivative(hidden_output)
+
+        # Update weights
+        self.weights_hidden_output += hidden_output.T.dot(output_delta) * self.learning_rate
+        self.bias_output += np.sum(output_delta, axis=0) * self.learning_rate
+        self.weights_input_hidden += self.X.T.dot(hidden_delta) * self.learning_rate
+        self.bias_hidden += np.sum(hidden_delta, axis=0) * self.learning_rate
+
+        # Calculate loss
+        loss = np.mean((self.y - output) ** 2)
+        self.loss_history.append(loss)
+        self.epoch += 1
+
+        return loss
+
+
+class NeuralNetworkPresentation(BasePresentation):
+    """Neural Network Learning - Educational Presentation"""
+
+    def __init__(self):
+        step_names = [
+            'Landing',
+            'Het XOR Probleem',
+            'De Oplossing: Een Netwerk',
+            'Hoe Werkt het?',
+            'Het Netwerk Maakt Fouten',
+            'Leren van Fouten',
+            'Training in Actie',
+            'Resultaat - Geleerd!'
+        ]
+
+        super().__init__("Neural Network Learning", step_names)
+
+        # Initialize neural network
+        self.nn = SimpleNeuralNetwork()
+        self.training_iterations = 0
+
+        self.show_landing_page()
+
+    def show_landing_page(self):
+        """Display landing page"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        # Title box
+        title_box = FancyBboxPatch(
+            (10, 55), 80, 25,
+            boxstyle="round,pad=2",
+            facecolor=self.colors['bg_light'],
+            edgecolor=self.colors['neuron'],
+            linewidth=4,
+            alpha=0.95
+        )
+        ax.add_patch(title_box)
+
+        ax.text(50, 72, 'Neural Network Learning',
+                fontsize=72, fontweight='bold', ha='center', va='center',
+                color=self.colors['neuron'])
+
+        ax.text(50, 64, 'Van Simpele Verbindingen naar Intelligentie',
+                fontsize=33, ha='center', va='center',
+                color=self.colors['text'], alpha=0.8, style='italic')
+
+        # Neural network icon
+        ax.text(50, 45, '[NN]', fontsize=120, ha='center', va='center',
+                color=self.colors['primary'], fontweight='bold')
+
+        # Instructions
+        instr_box = FancyBboxPatch(
+            (25, 15), 50, 15,
+            boxstyle="round,pad=1",
+            facecolor=self.colors['bg_light'],
+            edgecolor=self.colors['secondary'],
+            linewidth=3,
+            alpha=0.9
+        )
+        ax.add_patch(instr_box)
+
+        ax.text(50, 25, '>> Druk op SPATIE om te beginnen <<',
+                fontsize=36, ha='center', va='center',
+                color=self.colors['secondary'], fontweight='bold')
+
+        ax.text(50, 20, 'SPACE=Volgende | B=Vorige | R=Reset | Q=Quit',
+                fontsize=24, ha='center', va='center',
+                color=self.colors['dim'], style='italic')
+
+        ax.text(50, 5, 'Stap voor stap leren hoe een neural network leert',
+                fontsize=24, ha='center', va='center',
+                color=self.colors['text'], alpha=0.5)
+
+        plt.tight_layout()
+
+    def get_frames_for_step(self, step: int) -> int:
+        """Frame counts per step"""
+        return {
+            -1: 30, 0: 70, 1: 100, 2: 90, 3: 100,
+            4: 110, 5: 120, 6: 100
+        }.get(step, 60)
+
+    def animate_step(self, frame: int):
+        """Animate current step"""
+        total_frames = self.get_frames_for_step(self.current_step)
+        progress = frame / (total_frames - 1) if total_frames > 1 else 1
+
+        if self.current_step == 0:
+            self.draw_xor_problem(progress)
+        elif self.current_step == 1:
+            self.draw_network_solution(progress)
+        elif self.current_step == 2:
+            self.draw_how_it_works(progress)
+        elif self.current_step == 3:
+            self.draw_prediction_vs_reality(progress)
+        elif self.current_step == 4:
+            self.draw_learning(progress)
+        elif self.current_step == 5:
+            self.draw_training_action(progress)
+        elif self.current_step == 6:
+            self.draw_result(progress)
+
+        if frame >= total_frames - 1:
+            self.is_animating = False
+
+    def draw_current_step_static(self):
+        """Draw static version of current step"""
+        if self.current_step == -1:
+            self.show_landing_page()
+        elif self.current_step == 0:
+            self.draw_xor_problem(1.0)
+        elif self.current_step == 1:
+            self.draw_network_solution(1.0)
+        elif self.current_step == 2:
+            self.draw_how_it_works(1.0)
+        elif self.current_step == 3:
+            self.draw_prediction_vs_reality(1.0)
+        elif self.current_step == 4:
+            self.draw_learning(1.0)
+        elif self.current_step == 5:
+            self.draw_training_action(1.0)
+        elif self.current_step == 6:
+            self.draw_result(1.0)
+        plt.draw()
+
+    def draw_network_solution(self, progress):
+        """Step 1: The solution - a network!"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 2: De Oplossing - Een Neural Network!',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'])
+
+        ax.text(50, 90, 'Een slim systeem dat patronen leert herkennen',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Simple visual: Input -> [Box] -> Output
+        if progress > 0.15:
+            visual_alpha = min(1.0, (progress - 0.15) / 0.2)
+
+            # Inputs
+            input_y_positions = [70, 60, 50]
+            for i, y in enumerate(input_y_positions):
+                circle = Circle((15, y), 4, facecolor=self.colors['accent'],
+                              edgecolor='white', linewidth=2, alpha=visual_alpha)
+                ax.add_patch(circle)
+                if i == 0:
+                    ax.text(8, 70, 'Inputs', fontsize=21, ha='right', va='center',
+                            color=self.colors['accent'], alpha=visual_alpha)
+
+        # The "magic" box
+        if progress > 0.35:
+            box_alpha = min(1.0, (progress - 0.35) / 0.25)
+
+            magic_box = FancyBboxPatch(
+                (30, 45), 40, 30,
+                boxstyle="round,pad=2",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['primary'],
+                linewidth=4,
+                alpha=0.95 * box_alpha
+            )
+            ax.add_patch(magic_box)
+
+            ax.text(50, 67, '[NN]', fontsize=72, ha='center', va='center',
+                    color=self.colors['primary'], alpha=box_alpha)
+
+            ax.text(50, 53, 'Neural\nNetwork', fontsize=24, ha='center', va='center',
+                    color=self.colors['text'], alpha=box_alpha)
+
+        # Output
+        if progress > 0.55:
+            output_alpha = min(1.0, (progress - 0.55) / 0.2)
+
+            circle = Circle((85, 60), 5, facecolor=self.colors['secondary'],
+                          edgecolor='white', linewidth=3, alpha=output_alpha)
+            ax.add_patch(circle)
+
+            ax.text(93, 60, 'Output', fontsize=21, ha='left', va='center',
+                    color=self.colors['secondary'], alpha=output_alpha)
+
+        # Connection lines
+        if progress > 0.7:
+            conn_alpha = min(1.0, (progress - 0.7) / 0.2)
+
+            # Input to box
+            for y in input_y_positions:
+                ax.plot([19, 30], [y, 60], color=self.colors['accent'],
+                       linewidth=2, alpha=conn_alpha * 0.6)
+
+            # Box to output
+            ax.plot([70, 80], [60, 60], color=self.colors['secondary'],
+                   linewidth=3, alpha=conn_alpha * 0.7)
+
+        # Explanation
+        if progress > 0.85:
+            exp_alpha = min(1.0, (progress - 0.85) / 0.15)
+
+            exp_box = FancyBboxPatch(
+                (10, 15), 80, 22,
+                boxstyle="round,pad=1.2",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['secondary'],
+                linewidth=3,
+                alpha=0.95 * exp_alpha
+            )
+            ax.add_patch(exp_box)
+
+            ax.text(50, 30, '[i] Wat zit er in de "black box"?',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=exp_alpha)
+
+            exp_text = ("Een netwerk van verbindingen met GEWICHTEN\n"
+                       "Die gewichten bepalen het gedrag\n"
+                       "LEREN = Die gewichten aanpassen!")
+            ax.text(50, 21, exp_text, fontsize=21, ha='center', va='center',
+                    color=self.colors['text'], alpha=exp_alpha * 0.9)
+
+        plt.tight_layout()
+
+    def draw_how_it_works(self, progress):
+        """Step 2: How does it work - simplified"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 3: Hoe Werkt het?',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['purple'])
+
+        ax.text(50, 90, 'Data vloeit door het netwerk van input naar output',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Network layout - simplified
+        input_x, hidden_x, output_x = 20, 50, 80
+
+        # Example: [1, 0] -> ?
+        example_input = [1, 0]
+        example_target = 1
+
+        # Draw network structure
+        if progress > 0.1:
+            struct_alpha = min(1.0, (progress - 0.1) / 0.2)
+
+            # Input layer (2 neurons)
+            for i, val in enumerate(example_input):
+                y = 60 + (i - 0.5) * 15
+                circle = Circle((input_x, y), 5, facecolor=self.colors['accent'],
+                              edgecolor='white', linewidth=2, alpha=struct_alpha)
+                ax.add_patch(circle)
+                ax.text(input_x, y, str(val), fontsize=27, ha='center', va='center',
+                        color='white', fontweight='bold', alpha=struct_alpha)
+
+            # Hidden layer (simplified - shown as box)
+            if progress > 0.25:
+                hidden_alpha = min(1.0, (progress - 0.25) / 0.2)
+                hidden_box = FancyBboxPatch(
+                    (40, 48), 20, 24,
+                    boxstyle="round,pad=1",
+                    facecolor=self.colors['neuron'],
+                    edgecolor='white',
+                    linewidth=3,
+                    alpha=hidden_alpha * 0.8
+                )
+                ax.add_patch(hidden_box)
+                ax.text(50, 60, 'Verwerk',fontsize=19, ha='center', va='center',
+                        color='white', fontweight='bold', alpha=hidden_alpha)
+
+            # Output layer (1 neuron)
+            circle = Circle((output_x, 60), 5, facecolor=self.colors['secondary'],
+                          edgecolor='white', linewidth=3, alpha=struct_alpha * 0.5)
+            ax.add_patch(circle)
+            ax.text(output_x, 60, '?', fontsize=27, ha='center', va='center',
+                    color='white', fontweight='bold', alpha=struct_alpha * 0.5)
+
+        # Animate signal flow
+        if progress > 0.45:
+            flow_progress = min(1.0, (progress - 0.45) / 0.5)
+
+            # Phase 1: Input to hidden
+            if flow_progress < 0.5:
+                phase1_progress = flow_progress / 0.5
+                for i in range(2):
+                    y_in = 60 + (i - 0.5) * 15
+                    ax.plot([input_x + 5, hidden_x - 10], [y_in, 60],
+                           color=self.colors['accent'], linewidth=3,
+                           alpha=phase1_progress * 0.7)
+
+            # Phase 2: Hidden to output
+            else:
+                # Keep phase 1
+                for i in range(2):
+                    y_in = 60 + (i - 0.5) * 15
+                    ax.plot([input_x + 5, hidden_x - 10], [y_in, 60],
+                           color=self.colors['accent'], linewidth=3, alpha=0.3)
+
+                phase2_progress = (flow_progress - 0.5) / 0.5
+
+                ax.plot([hidden_x + 10, output_x - 5], [60, 60],
+                       color=self.colors['secondary'], linewidth=4,
+                       alpha=phase2_progress * 0.8)
+
+                # Show prediction
+                _, output = self.nn.forward(np.array([example_input]))
+                pred = output[0, 0]
+
+                # Activate output
+                circle = Circle((output_x, 60), 5, facecolor=self.colors['secondary'],
+                              edgecolor='yellow', linewidth=3, alpha=phase2_progress * 0.9)
+                ax.add_patch(circle)
+
+                pred_alpha = min(1.0, phase2_progress)
+                ax.text(output_x, 60, f'{pred:.2f}', fontsize=21, ha='center', va='center',
+                        color='white', fontweight='bold', alpha=pred_alpha)
+                ax.text(output_x, 48, f'(Target: {example_target})',
+                        fontsize=18, ha='center', va='center',
+                        color=self.colors['correct'], fontweight='bold',
+                        alpha=pred_alpha)
+
+        # Simple explanation
+        if progress > 0.85:
+            exp_alpha = min(1.0, (progress - 0.85) / 0.15)
+
+            exp_text = ("[>>] Data flow: Input → Verwerking → Output\n"
+                       "Elk pad heeft een 'gewicht' dat het signaal versterkt of verzwakt")
+            ax.text(50, 22, exp_text, fontsize=21, ha='center', va='center',
+                    color=self.colors['text'], alpha=exp_alpha * 0.9,
+                    bbox=dict(boxstyle='round,pad=0.8',
+                            facecolor=self.colors['bg_light'],
+                            edgecolor=self.colors['primary'],
+                            linewidth=2))
+
+        # Layer labels
+        ax.text(input_x, 80, 'Input', fontsize=24, ha='center', va='center',
+                color=self.colors['accent'], fontweight='bold')
+        ax.text(hidden_x, 80, 'Verwerking', fontsize=24, ha='center', va='center',
+                color=self.colors['neuron'], fontweight='bold')
+        ax.text(output_x, 80, 'Output', fontsize=24, ha='center', va='center',
+                color=self.colors['secondary'], fontweight='bold')
+
+        plt.tight_layout()
+
+    def draw_xor_problem(self, progress):
+        """Step 3: The XOR problem"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 4: Het XOR Probleem',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['accent'])
+
+        ax.text(50, 90, 'Een klassiek probleem om te leren',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # XOR explanation
+        if progress > 0.15:
+            xor_alpha = min(1.0, (progress - 0.15) / 0.2)
+
+            xor_box = FancyBboxPatch(
+                (15, 65), 70, 18,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['accent'],
+                linewidth=3,
+                alpha=0.9 * xor_alpha
+            )
+            ax.add_patch(xor_box)
+
+            ax.text(50, 77, 'XOR = "Exclusive OR" (exclusieve OF)', fontsize=27,
+                    ha='center', va='center',
+                    color=self.colors['accent'], fontweight='bold', alpha=xor_alpha)
+
+            ax.text(50, 71, 'Output is 1 als inputs VERSCHILLEND zijn',
+                    fontsize=21, ha='center', va='center',
+                    color=self.colors['text'], alpha=xor_alpha * 0.9)
+
+        # Truth table
+        if progress > 0.4:
+            table_alpha = min(1.0, (progress - 0.4) / 0.3)
+
+            table_data = [
+                ('Input A', 'Input B', 'Output', 'primary'),
+                ('0', '0', '0', 'text'),
+                ('0', '1', '1', 'secondary'),
+                ('1', '0', '1', 'secondary'),
+                ('1', '1', '0', 'text')
+            ]
+
+            y_start = 55
+            for i, (a, b, output, color) in enumerate(table_data):
+                y = y_start - i * 7
+
+                # Row background
+                if i == 0:  # Header
+                    row_box = FancyBboxPatch(
+                        (25, y - 3), 50, 6,
+                        boxstyle="round,pad=0.3",
+                        facecolor=self.colors['primary'],
+                        edgecolor='white',
+                        linewidth=2,
+                        alpha=0.9 * table_alpha
+                    )
+                else:
+                    row_box = FancyBboxPatch(
+                        (25, y - 3), 50, 6,
+                        boxstyle="round,pad=0.3",
+                        facecolor=self.colors['bg_light'],
+                        edgecolor=self.colors[color],
+                        linewidth=2,
+                        alpha=0.7 * table_alpha
+                    )
+                ax.add_patch(row_box)
+
+                # Text
+                font_color = 'white' if i == 0 else self.colors[color]
+                ax.text(35, y, a, fontsize=24, ha='center', va='center',
+                        color=font_color, fontweight='bold' if i == 0 else 'normal',
+                        alpha=table_alpha)
+                ax.text(50, y, b, fontsize=24, ha='center', va='center',
+                        color=font_color, fontweight='bold' if i == 0 else 'normal',
+                        alpha=table_alpha)
+                ax.text(65, y, output, fontsize=24, ha='center', va='center',
+                        color=font_color, fontweight='bold',
+                        alpha=table_alpha)
+
+        # Why it's challenging
+        if progress > 0.7:
+            challenge_alpha = min(1.0, (progress - 0.7) / 0.25)
+
+            challenge_box = FancyBboxPatch(
+                (10, 8), 80, 13,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['highlight'],
+                linewidth=3,
+                alpha=0.95 * challenge_alpha
+            )
+            ax.add_patch(challenge_box)
+
+            ax.text(50, 17, '[!] Waarom is dit moeilijk voor een netwerk?',
+                    fontsize=24, ha='center', va='center',
+                    color=self.colors['highlight'], fontweight='bold',
+                    alpha=challenge_alpha)
+
+            ax.text(50, 11, 'Niet lineair scheidbaar - vereist een "hidden layer" om op te lossen!',
+                    fontsize=19, ha='center', va='center',
+                    color=self.colors['text'], alpha=challenge_alpha * 0.9,
+                    style='italic')
+
+        plt.tight_layout()
+
+    def draw_forward_pass(self, progress):
+        """Step 4: Forward pass visualization"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 5: Forward Pass - Signalen Vloeien',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'])
+
+        ax.text(50, 90, 'Data vloeit van input naar output',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Network layout
+        input_x, hidden_x, output_x = 20, 50, 80
+
+        # Example: [1, 0] -> ?
+        example_input = [1, 0]
+        example_target = 1
+
+        # Draw network structure
+        if progress > 0.1:
+            struct_alpha = min(1.0, (progress - 0.1) / 0.2)
+
+            # Input layer (2 neurons)
+            for i, val in enumerate(example_input):
+                y = 60 + (i - 0.5) * 15
+                circle = Circle((input_x, y), 5, facecolor=self.colors['accent'],
+                              edgecolor='white', linewidth=2, alpha=struct_alpha)
+                ax.add_patch(circle)
+                ax.text(input_x, y, str(val), fontsize=27, ha='center', va='center',
+                        color='white', fontweight='bold', alpha=struct_alpha)
+                ax.text(input_x - 10, y, f'I{i}', fontsize=18, ha='right', va='center',
+                        color=self.colors['accent'], alpha=struct_alpha)
+
+            # Hidden layer (3 neurons)
+            for i in range(3):
+                y = 55 + (i - 1) * 12
+                circle = Circle((hidden_x, y), 5, facecolor=self.colors['neuron'],
+                              edgecolor='white', linewidth=2, alpha=struct_alpha * 0.5)
+                ax.add_patch(circle)
+                ax.text(hidden_x, y, 'H', fontsize=18, ha='center', va='center',
+                        color='white', fontweight='bold', alpha=struct_alpha * 0.5)
+
+            # Output layer (1 neuron)
+            circle = Circle((output_x, 55), 5, facecolor=self.colors['secondary'],
+                          edgecolor='white', linewidth=3, alpha=struct_alpha * 0.3)
+            ax.add_patch(circle)
+            ax.text(output_x, 55, '?', fontsize=27, ha='center', va='center',
+                    color='white', fontweight='bold', alpha=struct_alpha * 0.3)
+
+        # Animate signal flow
+        if progress > 0.35:
+            flow_progress = (progress - 0.35) / 0.6
+
+            # Phase 1: Input to hidden (0.0 - 0.4)
+            if flow_progress < 0.4:
+                phase1_progress = flow_progress / 0.4
+                # Light up connections
+                for i in range(2):
+                    for j in range(3):
+                        y_in = 60 + (i - 0.5) * 15
+                        y_hid = 55 + (j - 1) * 12
+                        ax.plot([input_x + 5, hidden_x - 5], [y_in, y_hid],
+                               color=self.colors['accent'], linewidth=3,
+                               alpha=phase1_progress * 0.6)
+
+                # Highlight hidden neurons
+                for i in range(3):
+                    y = 55 + (i - 1) * 12
+                    circle = Circle((hidden_x, y), 5, facecolor=self.colors['neuron'],
+                                  edgecolor='yellow', linewidth=3, alpha=phase1_progress * 0.8)
+                    ax.add_patch(circle)
+
+            # Phase 2: Hidden to output (0.4 - 1.0)
+            elif flow_progress >= 0.4:
+                # Keep phase 1 visible
+                for i in range(2):
+                    for j in range(3):
+                        y_in = 60 + (i - 0.5) * 15
+                        y_hid = 55 + (j - 1) * 12
+                        ax.plot([input_x + 5, hidden_x - 5], [y_in, y_hid],
+                               color=self.colors['accent'], linewidth=3, alpha=0.3)
+
+                phase2_progress = (flow_progress - 0.4) / 0.6
+
+                # Connections from hidden to output
+                for i in range(3):
+                    y_hid = 55 + (i - 1) * 12
+                    ax.plot([hidden_x + 5, output_x - 5], [y_hid, 55],
+                           color=self.colors['secondary'], linewidth=3,
+                           alpha=phase2_progress * 0.7)
+
+                # Activate output
+                circle = Circle((output_x, 55), 5, facecolor=self.colors['secondary'],
+                              edgecolor='yellow', linewidth=3, alpha=phase2_progress * 0.9)
+                ax.add_patch(circle)
+
+                # Show prediction
+                _, output = self.nn.forward(np.array([example_input]))
+                pred = output[0, 0]
+                ax.text(output_x, 55, f'{pred:.2f}', fontsize=21, ha='center', va='center',
+                        color='white', fontweight='bold', alpha=phase2_progress)
+                ax.text(output_x + 12, 55, f'Target: {example_target}',
+                        fontsize=19, ha='left', va='center',
+                        color=self.colors['correct'], fontweight='bold',
+                        alpha=phase2_progress)
+
+        # Explanation
+        if progress > 0.8:
+            exp_alpha = min(1.0, (progress - 0.8) / 0.2)
+
+            exp_text = ("[>>] Signaal flow: Input → Hidden (berekening) → Output\n"
+                       "Elk neuron vermenigvuldigt inputs met gewichten en past activatie toe")
+            ax.text(50, 20, exp_text, fontsize=19, ha='center', va='center',
+                    color=self.colors['text'], alpha=exp_alpha * 0.9,
+                    bbox=dict(boxstyle='round,pad=0.8',
+                            facecolor=self.colors['bg_light'],
+                            edgecolor=self.colors['primary'],
+                            linewidth=2))
+
+        # Layer labels
+        ax.text(input_x, 80, 'Input\nLayer', fontsize=21, ha='center', va='center',
+                color=self.colors['accent'], fontweight='bold')
+        ax.text(hidden_x, 80, 'Hidden\nLayer', fontsize=21, ha='center', va='center',
+                color=self.colors['neuron'], fontweight='bold')
+        ax.text(output_x, 80, 'Output\nLayer', fontsize=21, ha='center', va='center',
+                color=self.colors['secondary'], fontweight='bold')
+
+        plt.tight_layout()
+
+    def draw_prediction_vs_reality(self, progress):
+        """Step 5: Prediction vs reality - the error!"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 6: Voorspelling vs Realiteit',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['error'])
+
+        ax.text(50, 90, 'Het netwerk maakt fouten - dat is normaal aan het begin!',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Get current predictions
+        examples = [
+            ([0, 0], 0),
+            ([0, 1], 1),
+            ([1, 0], 1),
+            ([1, 1], 0)
+        ]
+
+        y_positions = [75, 60, 45, 30]
+
+        for i, ((inputs, target), y) in enumerate(zip(examples, y_positions)):
+            if progress > 0.15 + i * 0.15:
+                alpha = min(1.0, (progress - (0.15 + i * 0.15)) / 0.15)
+
+                # Get prediction
+                _, output = self.nn.forward(np.array([inputs]))
+                prediction = output[0, 0]
+                error = abs(prediction - target)
+                is_correct = error < 0.3
+
+                # Box
+                box_color = self.colors['correct'] if is_correct else self.colors['error']
+                example_box = FancyBboxPatch(
+                    (10, y - 5), 80, 10,
+                    boxstyle="round,pad=0.5",
+                    facecolor=self.colors['bg_light'],
+                    edgecolor=box_color,
+                    linewidth=3,
+                    alpha=0.9 * alpha
+                )
+                ax.add_patch(example_box)
+
+                # Input
+                ax.text(20, y, f'Input: [{inputs[0]}, {inputs[1]}]',
+                        fontsize=21, ha='left', va='center',
+                        color=self.colors['accent'], fontweight='bold',
+                        alpha=alpha)
+
+                # Prediction
+                status = '[OK]' if is_correct else '[X]'
+                pred_color = self.colors['correct'] if is_correct else self.colors['error']
+                ax.text(50, y, f'Pred: {prediction:.3f}',
+                        fontsize=21, ha='center', va='center',
+                        color=pred_color, fontweight='bold',
+                        alpha=alpha)
+
+                # Target
+                ax.text(70, y, f'Target: {target}',
+                        fontsize=21, ha='left', va='center',
+                        color=self.colors['secondary'], fontweight='bold',
+                        alpha=alpha)
+
+                # Status
+                ax.text(88, y, status,
+                        fontsize=24, ha='center', va='center',
+                        color=pred_color, fontweight='bold',
+                        alpha=alpha)
+
+        # Error explanation
+        if progress > 0.75:
+            error_alpha = min(1.0, (progress - 0.75) / 0.25)
+
+            # Calculate average error
+            total_error = 0
+            for inputs, target in examples:
+                _, output = self.nn.forward(np.array([inputs]))
+                total_error += abs(output[0, 0] - target)
+            avg_error = total_error / len(examples)
+
+            error_box = FancyBboxPatch(
+                (15, 8), 70, 15,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['highlight'],
+                linewidth=3,
+                alpha=0.95 * error_alpha
+            )
+            ax.add_patch(error_box)
+
+            ax.text(50, 18, f'[!] Gemiddelde Fout: {avg_error:.3f}',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['highlight'], fontweight='bold',
+                    alpha=error_alpha)
+
+            ax.text(50, 12, 'Het netwerk moet LEREN - gewichten aanpassen!',
+                    fontsize=21, ha='center', va='center',
+                    color=self.colors['text'], alpha=error_alpha * 0.9,
+                    style='italic')
+
+        plt.tight_layout()
+
+    def draw_backpropagation(self, progress):
+        """Step 6: Backpropagation concept"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 7: Backpropagation - Leren!',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['highlight'])
+
+        ax.text(50, 90, 'Fout terugsturen door het netwerk om te leren',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Network positions
+        positions = {
+            'input': [(20, 65), (20, 55)],
+            'hidden': [(50, 70), (50, 60), (50, 50)],
+            'output': [(80, 60)]
+        }
+
+        # Draw network
+        if progress > 0.1:
+            net_alpha = min(1.0, (progress - 0.1) / 0.15)
+
+            # Input neurons
+            for x, y in positions['input']:
+                circle = Circle((x, y), 4, facecolor=self.colors['accent'],
+                              edgecolor='white', linewidth=2, alpha=net_alpha * 0.5)
+                ax.add_patch(circle)
+
+            # Hidden neurons
+            for x, y in positions['hidden']:
+                circle = Circle((x, y), 4, facecolor=self.colors['neuron'],
+                              edgecolor='white', linewidth=2, alpha=net_alpha * 0.5)
+                ax.add_patch(circle)
+
+            # Output neuron
+            circle = Circle(positions['output'][0], 5, facecolor=self.colors['secondary'],
+                          edgecolor='white', linewidth=3, alpha=net_alpha * 0.5)
+            ax.add_patch(circle)
+
+            # Connections (light)
+            for inp in positions['input']:
+                for hid in positions['hidden']:
+                    ax.plot([inp[0], hid[0]], [inp[1], hid[1]],
+                           color=self.colors['dim'], linewidth=1, alpha=net_alpha * 0.3)
+            for hid in positions['hidden']:
+                ax.plot([hid[0], positions['output'][0][0]],
+                       [hid[1], positions['output'][0][1]],
+                       color=self.colors['dim'], linewidth=1, alpha=net_alpha * 0.3)
+
+        # Error at output
+        if progress > 0.3:
+            error_alpha = min(1.0, (progress - 0.3) / 0.2)
+
+            error_circle = Circle(positions['output'][0], 8, facecolor='none',
+                                edgecolor=self.colors['error'], linewidth=4,
+                                alpha=error_alpha, linestyle='--')
+            ax.add_patch(error_circle)
+
+            ax.text(positions['output'][0][0], positions['output'][0][1] - 12,
+                    'FOUT!', fontsize=24, ha='center', va='center',
+                    color=self.colors['error'], fontweight='bold',
+                    alpha=error_alpha)
+
+        # Backprop arrows
+        if progress > 0.5:
+            backprop_progress = (progress - 0.5) / 0.45
+
+            # Phase 1: Output to hidden
+            if backprop_progress < 0.5:
+                phase1 = backprop_progress / 0.5
+                for hid in positions['hidden']:
+                    arrow = FancyArrowPatch(
+                        positions['output'][0], hid,
+                        arrowstyle='<|-',
+                        mutation_scale=25,
+                        linewidth=4,
+                        color=self.colors['warning'],
+                        alpha=phase1 * 0.8
+                    )
+                    ax.add_artist(arrow)
+
+                if backprop_progress > 0.25:
+                    ax.text(65, 68, 'Fout\nterug!', fontsize=21, ha='center', va='center',
+                            color=self.colors['warning'], fontweight='bold',
+                            alpha=(backprop_progress - 0.25) / 0.25 * 0.9)
+
+            # Phase 2: Hidden to input
+            else:
+                # Keep phase 1
+                for hid in positions['hidden']:
+                    arrow = FancyArrowPatch(
+                        positions['output'][0], hid,
+                        arrowstyle='<|-',
+                        mutation_scale=25,
+                        linewidth=4,
+                        color=self.colors['warning'],
+                        alpha=0.4
+                    )
+                    ax.add_artist(arrow)
+
+                phase2 = (backprop_progress - 0.5) / 0.5
+                for inp in positions['input']:
+                    for hid in positions['hidden']:
+                        arrow = FancyArrowPatch(
+                            hid, inp,
+                            arrowstyle='<|-',
+                            mutation_scale=20,
+                            linewidth=3,
+                            color=self.colors['accent'],
+                            alpha=phase2 * 0.7
+                        )
+                        ax.add_artist(arrow)
+
+                if phase2 > 0.3:
+                    ax.text(35, 68, 'Verder\nterug!', fontsize=19, ha='center', va='center',
+                            color=self.colors['accent'], fontweight='bold',
+                            alpha=(phase2 - 0.3) / 0.7 * 0.9)
+
+        # Explanation
+        if progress > 0.85:
+            exp_alpha = min(1.0, (progress - 0.85) / 0.15)
+
+            exp_box = FancyBboxPatch(
+                (10, 15), 80, 20,
+                boxstyle="round,pad=1.2",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['highlight'],
+                linewidth=3,
+                alpha=0.95 * exp_alpha
+            )
+            ax.add_patch(exp_box)
+
+            ax.text(50, 28, '[BACKPROP] Het Geheim van Leren!',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['highlight'], fontweight='bold',
+                    alpha=exp_alpha)
+
+            exp_text = ("1. Bereken fout bij output\n"
+                       "2. Stuur fout TERUG door netwerk\n"
+                       "3. Elke verbinding krijgt 'schuld' voor de fout\n"
+                       "4. Pas gewichten aan op basis van 'schuld'")
+            ax.text(50, 19, exp_text, fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=exp_alpha * 0.9)
+
+        # Labels
+        ax.text(20, 80, 'Input', fontsize=21, ha='center', va='center',
+                color=self.colors['accent'], fontweight='bold')
+        ax.text(50, 80, 'Hidden', fontsize=21, ha='center', va='center',
+                color=self.colors['neuron'], fontweight='bold')
+        ax.text(80, 80, 'Output', fontsize=21, ha='center', va='center',
+                color=self.colors['secondary'], fontweight='bold')
+
+        plt.tight_layout()
+
+    def draw_weight_adjustment(self, progress):
+        """Step 7: Weight adjustment visualization"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 8: Gewichten Aanpassen',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['purple'])
+
+        ax.text(50, 90, 'Kleine aanpassingen, grote impact!',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Sample weights before/after
+        sample_weights_before = [0.5, -0.3, 0.8, -0.6, 0.2]
+        sample_weights_after = [0.6, -0.2, 0.7, -0.5, 0.3]
+
+        y_start = 70
+        for i, (w_before, w_after) in enumerate(zip(sample_weights_before, sample_weights_after)):
+            if progress > 0.15 + i * 0.12:
+                alpha = min(1.0, (progress - (0.15 + i * 0.12)) / 0.12)
+                y = y_start - i * 11
+
+                # Before weight
+                before_box = FancyBboxPatch(
+                    (15, y - 4), 20, 8,
+                    boxstyle="round,pad=0.4",
+                    facecolor=self.colors['dim'],
+                    edgecolor='white',
+                    linewidth=2,
+                    alpha=0.8 * alpha
+                )
+                ax.add_patch(before_box)
+
+                ax.text(25, y, f'w{i} = {w_before:.2f}',
+                        fontsize=21, ha='center', va='center',
+                        color='white', fontweight='bold',
+                        alpha=alpha)
+
+                # Arrow
+                delta = w_after - w_before
+                arrow_color = self.colors['secondary'] if delta > 0 else self.colors['warning']
+                arrow_symbol = '→' if delta > 0 else '←'
+
+                ax.text(43, y, arrow_symbol, fontsize=36, ha='center', va='center',
+                        color=arrow_color, alpha=alpha, fontweight='bold')
+
+                ax.text(43, y - 5, f'Δ={delta:+.2f}', fontsize=16, ha='center', va='center',
+                        color=arrow_color, alpha=alpha * 0.8)
+
+                # After weight
+                after_box = FancyBboxPatch(
+                    (55, y - 4), 20, 8,
+                    boxstyle="round,pad=0.4",
+                    facecolor=arrow_color,
+                    edgecolor='white',
+                    linewidth=2,
+                    alpha=0.9 * alpha
+                )
+                ax.add_patch(after_box)
+
+                ax.text(65, y, f'w{i} = {w_after:.2f}',
+                        fontsize=21, ha='center', va='center',
+                        color='white', fontweight='bold',
+                        alpha=alpha)
+
+        # Labels
+        if progress > 0.1:
+            label_alpha = min(1.0, (progress - 0.1) / 0.1)
+            ax.text(25, y_start + 8, 'Voor Training', fontsize=24, ha='center',
+                    color=self.colors['dim'], fontweight='bold', alpha=label_alpha)
+            ax.text(65, y_start + 8, 'Na Training', fontsize=24, ha='center',
+                    color=self.colors['secondary'], fontweight='bold', alpha=label_alpha)
+
+        # Explanation
+        if progress > 0.8:
+            exp_alpha = min(1.0, (progress - 0.8) / 0.2)
+
+            exp_box = FancyBboxPatch(
+                (10, 8), 80, 16,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['purple'],
+                linewidth=3,
+                alpha=0.95 * exp_alpha
+            )
+            ax.add_patch(exp_box)
+
+            ax.text(50, 19, '[LEARNING] Dit is waar het gebeurt!',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['purple'], fontweight='bold',
+                    alpha=exp_alpha)
+
+            exp_text = ("• Groen (→) = Gewicht wordt groter\n"
+                       "• Rood (←) = Gewicht wordt kleiner\n"
+                       "• Learning Rate bepaalt hoe grote de stappen zijn")
+            ax.text(50, 11, exp_text, fontsize=19, ha='center', va='center',
+                    color=self.colors['text'], alpha=exp_alpha * 0.9)
+
+        plt.tight_layout()
+
+    def draw_training_action(self, progress):
+        """Step 8: Training in action"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 9: Training in Actie',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'])
+
+        ax.text(50, 90, 'We trainen het netwerk - kijk hoe de fout daalt!',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Train network if not already trained
+        target_epochs = int(progress * 100)
+        while self.nn.epoch < target_epochs:
+            self.nn.train_epoch()
+
+        # Loss curve
+        if len(self.nn.loss_history) > 1:
+            epochs = list(range(len(self.nn.loss_history)))
+            losses = self.nn.loss_history
+
+            # Create subplot for loss curve
+            ax_loss = self.fig.add_subplot(111)
+            ax_loss.set_xlim(-5, max(epochs) + 5)
+            ax_loss.set_ylim(0, max(max(losses) * 1.1, 0.1))
+            ax_loss.set_facecolor(self.colors['bg'])
+            ax_loss.grid(True, alpha=0.3, color=self.colors['grid'])
+
+            # Plot loss
+            ax_loss.plot(epochs, losses, color=self.colors['error'],
+                        linewidth=4, marker='o', markersize=4,
+                        label='Training Loss')
+
+            # Current point highlight
+            if len(epochs) > 0:
+                ax_loss.scatter([epochs[-1]], [losses[-1]], s=300,
+                              color=self.colors['highlight'],
+                              edgecolors='white', linewidths=3,
+                              zorder=10)
+
+            ax_loss.set_xlabel('Epoch (Training Iteratie)', fontsize=24,
+                              color=self.colors['text'], fontweight='bold')
+            ax_loss.set_ylabel('Loss (Fout)', fontsize=24,
+                              color=self.colors['text'], fontweight='bold')
+            ax_loss.tick_params(colors=self.colors['text'], labelsize=18)
+            ax_loss.legend(fontsize=21, loc='upper right',
+                          facecolor=self.colors['bg_light'],
+                          edgecolor=self.colors['error'])
+
+            # Title on plot
+            title = f'Epoch {self.nn.epoch} | Loss: {losses[-1]:.4f}'
+            self.fig.text(0.5, 0.95, title, ha='center', fontsize=36,
+                         fontweight='bold', color=self.colors['text'],
+                         bbox=dict(boxstyle='round,pad=0.8',
+                                 facecolor=self.colors['bg_light'],
+                                 edgecolor=self.colors['primary'],
+                                 linewidth=3))
+
+            # Status message
+            if losses[-1] < 0.1:
+                status = '[OK] Netwerk is goed getraind!'
+                status_color = self.colors['correct']
+            elif losses[-1] < 0.3:
+                status = '[~] Netwerk leert...'
+                status_color = self.colors['accent']
+            else:
+                status = '[...] Training bezig...'
+                status_color = self.colors['warning']
+
+            self.fig.text(0.5, 0.05, status, ha='center', fontsize=27,
+                         fontweight='bold', color=status_color)
+
+        plt.tight_layout()
+
+    def draw_result(self, progress):
+        """Step 9: Final result - learned!"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        ax.text(50, 95, 'Stap 10: Resultaat - Het Heeft Geleerd!',
+                fontsize=51, fontweight='bold', ha='center', va='top',
+                color=self.colors['secondary'])
+
+        ax.text(50, 90, 'Het netwerk kan nu XOR oplossen!',
+                fontsize=27, ha='center', va='top',
+                color=self.colors['text'], alpha=0.7, style='italic')
+
+        # Train to completion if needed
+        while self.nn.epoch < 100 or (len(self.nn.loss_history) > 0 and self.nn.loss_history[-1] > 0.05):
+            self.nn.train_epoch()
+            if self.nn.epoch > 500:  # Safety limit
+                break
+
+        # Show all predictions
+        examples = [
+            ([0, 0], 0),
+            ([0, 1], 1),
+            ([1, 0], 1),
+            ([1, 1], 0)
+        ]
+
+        y_positions = [75, 62, 49, 36]
+
+        all_correct = True
+        for i, ((inputs, target), y) in enumerate(zip(examples, y_positions)):
+            if progress > 0.1 + i * 0.15:
+                alpha = min(1.0, (progress - (0.1 + i * 0.15)) / 0.15)
+
+                # Get prediction
+                _, output = self.nn.forward(np.array([inputs]))
+                prediction = output[0, 0]
+                rounded_pred = round(prediction)
+                is_correct = abs(prediction - target) < 0.3
+
+                if not is_correct:
+                    all_correct = False
+
+                # Box with result
+                box_color = self.colors['correct'] if is_correct else self.colors['error']
+                result_box = FancyBboxPatch(
+                    (15, y - 5), 70, 10,
+                    boxstyle="round,pad=0.6",
+                    facecolor=box_color if is_correct else self.colors['bg_light'],
+                    edgecolor=box_color,
+                    linewidth=3,
+                    alpha=(0.3 if is_correct else 0.9) * alpha
+                )
+                ax.add_patch(result_box)
+
+                # Input -> Output
+                input_str = f"{inputs[0]} XOR {inputs[1]}"
+                ax.text(25, y, input_str, fontsize=27, ha='left', va='center',
+                        color='white' if is_correct else self.colors['accent'],
+                        fontweight='bold', alpha=alpha)
+
+                ax.text(47, y, '=', fontsize=30, ha='center', va='center',
+                        color='white' if is_correct else self.colors['text'],
+                        fontweight='bold', alpha=alpha)
+
+                ax.text(55, y, f'{rounded_pred}', fontsize=33, ha='center', va='center',
+                        color='white' if is_correct else box_color,
+                        fontweight='bold', alpha=alpha)
+
+                # Confidence
+                confidence = f'({prediction:.3f})'
+                ax.text(68, y, confidence, fontsize=19, ha='left', va='center',
+                        color='white' if is_correct else self.colors['dim'],
+                        alpha=alpha * 0.8)
+
+                # Check mark
+                status = '[OK]' if is_correct else '[X]'
+                ax.text(80, y, status, fontsize=27, ha='center', va='center',
+                        color='white' if is_correct else box_color,
+                        fontweight='bold', alpha=alpha)
+
+        # Success message
+        if progress > 0.7:
+            success_alpha = min(1.0, (progress - 0.7) / 0.25)
+
+            if all_correct:
+                success_box = FancyBboxPatch(
+                    (10, 12), 80, 18,
+                    boxstyle="round,pad=1.5",
+                    facecolor=self.colors['correct'],
+                    edgecolor='white',
+                    linewidth=4,
+                    alpha=0.95 * success_alpha
+                )
+                ax.add_patch(success_box)
+
+                ax.text(50, 24, '[***] SUCCESS! Netwerk heeft XOR geleerd!',
+                        fontsize=33, ha='center', va='center',
+                        color='white', fontweight='bold',
+                        alpha=success_alpha)
+
+                stats = f'Getraind in {self.nn.epoch} epochs | Finale Loss: {self.nn.loss_history[-1]:.4f}'
+                ax.text(50, 16, stats, fontsize=21, ha='center', va='center',
+                        color='white', alpha=success_alpha * 0.9)
+            else:
+                ax.text(50, 20, '[~] Netwerk heeft meer training nodig...',
+                        fontsize=27, ha='center', va='center',
+                        color=self.colors['warning'], fontweight='bold',
+                        alpha=success_alpha,
+                        bbox=dict(boxstyle='round,pad=0.8',
+                                facecolor=self.colors['bg_light'],
+                                edgecolor=self.colors['warning'],
+                                linewidth=3))
+
+        plt.tight_layout()
+
+
+def main():
+    """Main entry point"""
+    print("="*80)
+    print("NEURAL NETWORK LEARNING - EDUCATIONAL PRESENTATION")
+    print("="*80)
+    print("\n[NN] Deze presentatie legt stap-voor-stap uit hoe neural networks leren:")
+    print("  1. Wat is een Neural Network?")
+    print("  2. De Neuronen - Bouwstenen")
+    print("  3. Verbindingen & Gewichten - De kracht")
+    print("  4. Het XOR Probleem - Wat we willen oplossen")
+    print("  5. Forward Pass - Data vloeit door netwerk")
+    print("  6. Voorspelling vs Realiteit - De fout zien")
+    print("  7. Backpropagation - Leren van fouten")
+    print("  8. Gewichten Aanpassen - Het leerproces")
+    print("  9. Training in Actie - Kijk hoe het leert")
+    print(" 10. Resultaat - Het heeft geleerd!")
+    print("\n[Keys] Controls: SPACE=Next | B=Previous | R=Reset | Q=Quit")
+    print("="*80 + "\n")
+
+    presentation = NeuralNetworkPresentation()
+    presentation.show()
+
+
+if __name__ == "__main__":
+    main()
