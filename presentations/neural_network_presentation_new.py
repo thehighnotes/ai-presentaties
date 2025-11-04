@@ -344,7 +344,7 @@ class NeuralNetworkPresentation(BasePresentation):
 
         # Title
         alpha = min(1.0, progress / 0.15)
-        ax.text(50, 95, 'Wat is een Neural Network?',
+        ax.text(50, 97, 'Wat is een Neural Network?',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['secondary'], alpha=alpha)
 
@@ -445,7 +445,7 @@ class NeuralNetworkPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Input > Black Box > Output',
+        ax.text(50, 97, 'Input > Black Box > Output',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['accent'])
 
@@ -612,7 +612,7 @@ class NeuralNetworkPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'De Hidden Layer Onthuld!',
+        ax.text(50, 97, 'De Hidden Layer Onthuld!',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['highlight'])
 
@@ -761,7 +761,7 @@ class NeuralNetworkPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Het XOR Probleem',
+        ax.text(50, 97, 'Het XOR Probleem',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['accent'])
 

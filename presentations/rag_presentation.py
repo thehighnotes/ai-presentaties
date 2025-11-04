@@ -239,10 +239,12 @@ class RAGPresentation(BasePresentation):
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['primary'], alpha=alpha)
 
+        # Document box - ALTIJD VOLLEDIG (geen animatie)
         if progress > 0.2:
             doc_alpha = min(1.0, (progress - 0.2) / 0.3)
+            
             doc_box = FancyBboxPatch(
-                (10, 10), 80, 75,
+                (8, 5), 85, 80,  # VASTE grootte
                 boxstyle="round,pad=1.5",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['primary'],
@@ -251,12 +253,14 @@ class RAGPresentation(BasePresentation):
             )
             ax.add_patch(doc_box)
 
+         # Text content - typewriter effect BINNEN vaste box
         if progress > 0.4:
             text_progress = (progress - 0.4) / 0.6
             lines = self.artikel.strip().split('\n')
             num_lines = max(1, int(len(lines) * text_progress))
             displayed_text = '\n'.join(lines[:num_lines])
 
+            # Wrap text
             wrapped_lines = []
             for line in displayed_text.split('\n'):
                 if line.strip():
@@ -266,8 +270,10 @@ class RAGPresentation(BasePresentation):
                     wrapped_lines.append('')
 
             final_text = '\n'.join(wrapped_lines)
-            ax.text(50, 80, final_text,
-                    fontsize=21, ha='center', va='top',
+            
+            # Text verschijnt BINNEN de vaste boxq
+            ax.text(50, 84, final_text,
+                    fontsize=13, ha='center', va='top',
                     color=self.colors['text'],
                     family='monospace',
                     alpha=min(1.0, text_progress * 1.5))
@@ -276,14 +282,14 @@ class RAGPresentation(BasePresentation):
         plt.tight_layout()
 
     def draw_chunking(self, progress):
-        """Step 1: Show text chunking"""
+        """Step 1: Show text chunking - SMOOTH TRANSITION"""
         self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.axis('off')
         ax.set_xlim(0, 100)
         ax.set_ylim(0, 100)
 
-        ax.text(50, 95, 'Stap 2: Tekst Chunking',
+        ax.text(50, 97, 'Stap 2: Tekst Chunking',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['secondary'])
 
@@ -291,35 +297,116 @@ class RAGPresentation(BasePresentation):
                 fontsize=27, ha='center', va='top',
                 color=self.colors['text'], alpha=0.7, style='italic')
 
+        # FASE 1 (0-0.3): Toon VOLLEDIGE ARTIKEL TEKST (zoals stap 1)
         if progress < 0.3:
             phase = progress / 0.3
+            
             doc_box = FancyBboxPatch(
-                (20, 30), 60, 50,
-                boxstyle="round,pad=1",
+                (8, 5), 85, 80,  # VASTE grootte
+                boxstyle="round,pad=1.5",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['primary'],
                 linewidth=3,
-                alpha=0.9 * phase
+                alpha=0.9
             )
             ax.add_patch(doc_box)
-            ax.text(50, 55, 'Volledig Artikel',
-                    fontsize=24, ha='center', va='center',
-                    color=self.colors['primary'], fontweight='bold',
-                    alpha=phase)
+            
+            # VOLLEDIGE tekst zoals in stap 1
+            lines = self.artikel.strip().split('\n')
+            displayed_text = '\n'.join(lines)
+            
+            wrapped_lines = []
+            for line in displayed_text.split('\n'):
+                if line.strip():
+                    wrapped = textwrap.fill(line, width=70)
+                    wrapped_lines.append(wrapped)
+                else:
+                    wrapped_lines.append('')
+            
+            final_text = '\n'.join(wrapped_lines)
+            ax.text(50, 84, final_text,
+                    fontsize=13, ha='center', va='top',
+                    color=self.colors['text'],
+                    family='monospace',
+                    alpha=1.0)
 
+        # FASE 2 (0.3-0.6): Toon scheidingslijnen OVER de tekst
         elif progress < 0.6:
             phase = (progress - 0.3) / 0.3
+            
+            # Tekst blijft zichtbaar
+            doc_box = FancyBboxPatch(
+                (8, 5), 85, 80,  # VASTE grootte
+                boxstyle="round,pad=1.5",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['primary'],
+                linewidth=3,
+                alpha=0.9
+            )
+            ax.add_patch(doc_box)
+            
+            lines = self.artikel.strip().split('\n')
+            displayed_text = '\n'.join(lines)
+            wrapped_lines = []
+            for line in displayed_text.split('\n'):
+                if line.strip():
+                    wrapped = textwrap.fill(line, width=70)
+                    wrapped_lines.append(wrapped)
+                else:
+                    wrapped_lines.append('')
+            final_text = '\n'.join(wrapped_lines)
+            
+            ax.text(50, 84, final_text,
+                    fontsize=13, ha='center', va='top',
+                    color=self.colors['text'],
+                    family='monospace',
+                    alpha=0.5)  # Iets dimmen voor de lijnen
+            
+            # Scheidingslijnen verschijnen
             for i in range(4):
                 line_y = 75 - (i * 15)
                 line_alpha = min(1.0, max(0, (phase - i * 0.15) / 0.15))
                 if line_alpha > 0:
-                    ax.plot([20, 80], [line_y, line_y],
-                           color=self.colors['accent'],
-                           linewidth=2, linestyle='--',
-                           alpha=line_alpha)
+                    ax.plot([15, 85], [line_y, line_y],
+                        color=self.colors['accent'],
+                        linewidth=3, linestyle='--',
+                        alpha=line_alpha)
 
+        # FASE 3 (0.6-1.0): Fade naar chunks
         else:
             phase = (progress - 0.6) / 0.4
+            
+            # Oude tekst fade out
+            if phase < 0.3:
+                old_alpha = 1.0 - (phase / 0.3)
+                doc_box = FancyBboxPatch(
+                    (8, 5), 85, 80,  # VASTE grootte
+                    boxstyle="round,pad=1.5",
+                    facecolor=self.colors['bg_light'],
+                    edgecolor=self.colors['primary'],
+                    linewidth=3,
+                    alpha=0.9 * old_alpha
+                )
+                ax.add_patch(doc_box)
+                
+                lines = self.artikel.strip().split('\n')
+                displayed_text = '\n'.join(lines)
+                wrapped_lines = []
+                for line in displayed_text.split('\n'):
+                    if line.strip():
+                        wrapped = textwrap.fill(line, width=70)
+                        wrapped_lines.append(wrapped)
+                    else:
+                        wrapped_lines.append('')
+                final_text = '\n'.join(wrapped_lines)
+                
+                ax.text(50, 84, final_text,
+                        fontsize=13, ha='center', va='top',
+                        color=self.colors['text'],
+                        family='monospace',
+                        alpha=0.5 * old_alpha)
+            
+            # Chunks fade in
             chunk_height = 12
             chunk_spacing = 2
             start_y = 70
@@ -352,6 +439,7 @@ class RAGPresentation(BasePresentation):
 
         self.add_status_indicator(progress < 1.0)
         plt.tight_layout()
+
 
     def draw_semantic_search_intro(self, progress):
         """Step 2.5: Introduce semantic search - why embeddings?"""
@@ -399,7 +487,7 @@ class RAGPresentation(BasePresentation):
                     color=self.colors['text'], alpha=keyword_alpha * 0.8)
 
             # Cross symbol
-            ax.text(28, 64, '✗', fontsize=40, ha='center', va='center',
+            ax.text(40, 69, '✗', fontsize=40, ha='center', va='center',
                     color=self.colors['error'], alpha=keyword_alpha)
 
         # Oplossing: Semantic search
@@ -436,7 +524,7 @@ class RAGPresentation(BasePresentation):
                     color=self.colors['text'], alpha=semantic_alpha * 0.9)
 
             # Check symbol
-            ax.text(72, 64, '✓', fontsize=40, ha='center', va='center',
+            ax.text(85, 70, '✓', fontsize=40, ha='center', va='center',
                     color=self.colors['secondary'], alpha=semantic_alpha)
 
         # Voorbeelden
@@ -510,7 +598,7 @@ class RAGPresentation(BasePresentation):
         ax.set_xlim(0, 100)
         ax.set_ylim(0, 100)
 
-        ax.text(50, 95, 'Stap 4: Embeddings Creëren',
+        ax.text(50, 97, 'Stap 4: Embeddings Creëren',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['accent'])
 
@@ -646,7 +734,7 @@ class RAGPresentation(BasePresentation):
         ax.tick_params(colors=self.colors['text'], labelsize=12)
 
         # Titel (in 2D overlay)
-        self.fig.text(0.5, 0.95, 'Stap 5: Vector Database',
+        self.fig.text(0.5, 0.97, 'Stap 5: Vector Database',
                      fontsize=51, fontweight='bold', ha='center', va='top',
                      color=self.colors['highlight'])
 
@@ -815,7 +903,7 @@ class RAGPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Titel
-        ax.text(50, 95, 'Stap 7: Query Embedding',
+        ax.text(50, 97, 'Stap 7: Query Embedding',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['accent'])
 
@@ -945,7 +1033,7 @@ class RAGPresentation(BasePresentation):
         ax.tick_params(colors=self.colors['text'], labelsize=12)
 
         # Titel
-        self.fig.text(0.5, 0.95, 'Stap 8: Similarity Search',
+        self.fig.text(0.5, 0.97, 'Stap 8: Similarity Search',
                      fontsize=51, fontweight='bold', ha='center', va='top',
                      color=self.colors['secondary'])
 
@@ -1121,7 +1209,7 @@ class RAGPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Titel
-        ax.text(50, 95, 'Stap 9: Context Ophalen',
+        ax.text(50, 97, 'Stap 9: Context Ophalen',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['secondary'])
 
@@ -1149,7 +1237,7 @@ class RAGPresentation(BasePresentation):
                     color=self.colors['primary'],
                     alpha=db_alpha)
 
-            ax.text(20, 38, 'Vector DB',
+            ax.text(20, 41, 'Vector DB',
                     fontsize=21, ha='center', va='center',
                     color=self.colors['primary'],
                     fontweight='bold',
@@ -1214,7 +1302,7 @@ class RAGPresentation(BasePresentation):
 
             # Chunk inhoud
             wrapped_chunk = textwrap.fill(self.chunks[2], width=25)
-            ax.text(80, 45, wrapped_chunk,
+            ax.text(80, 50, wrapped_chunk,
                     fontsize=18, ha='center', va='center',
                     color=self.colors['text'],
                     alpha=context_alpha)
@@ -1231,7 +1319,7 @@ class RAGPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Titel
-        ax.text(50, 95, 'Stap 10: LLM Generatie',
+        ax.text(50, 97, 'Stap 10: LLM Generatie',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['primary'])
 

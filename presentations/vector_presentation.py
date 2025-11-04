@@ -534,7 +534,7 @@ class VectorPresentation(BasePresentation):
 
         # Generate realistic embedding (376 dimensions to match common models)
         np.random.seed(42)
-        full_embedding = np.random.randn(376) * 0.08  # Smaller variance for realism
+        full_embedding = np.random.randn(384) * 0.08  # Smaller variance for realism
 
         # Title with border
         if progress > 0.1:
@@ -551,18 +551,18 @@ class VectorPresentation(BasePresentation):
             )
             ax.add_patch(title_box)
 
-            ax.text(50, 90, 'De Realiteit: 376-Dimensionale Vector',
+            ax.text(50, 90, 'De Realiteit: 384-Dimensionale Vector',
                     fontsize=36, fontweight='bold', ha='center',
                     color=self.colors['text'], alpha=alpha)
 
         # Subtitle
         if progress > 0.2:
             text_alpha = min(1.0, (progress - 0.2) / 0.15)
-            ax.text(50, 80, 'Dit is een echte embedding van een modern AI model',
+            ax.text(50, 77, 'Dit is een echte embedding van een modern AI model',
                     fontsize=18, ha='center',
                     color=self.colors['purple'], alpha=text_alpha * 0.9)
 
-            ax.text(50, 76, '(OpenAI ada-002, Sentence Transformers, etc.)',
+            ax.text(50, 73, '(OpenAI ada-002, Sentence Transformers, etc.)',
                     fontsize=15, ha='center', style='italic',
                     color=self.colors['dim'], alpha=text_alpha * 0.7)
 

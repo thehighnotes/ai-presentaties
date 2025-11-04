@@ -212,7 +212,7 @@ class FinetuningPresentation(BasePresentation):
 
         # Title
         title_alpha = min(1.0, progress / 0.15)
-        ax.text(50, 95, 'Stap 1: Het Basis Model',
+        ax.text(50, 97, 'Stap 1: Het Basis Model',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['primary'], alpha=title_alpha)
 
@@ -296,7 +296,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 2: Training Data Verzamelen',
+        ax.text(50, 97, 'Stap 2: Training Data Verzamelen',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['secondary'])
 
@@ -578,7 +578,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 4: Loss Function - Fouten Meten',
+        ax.text(50, 97, 'Stap 4: Loss Function - Fouten Meten',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['accent'])
 
@@ -769,7 +769,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 5: Gradient Updates - Leren!',
+        ax.text(50, 97, 'Stap 5: Gradient Updates - Leren!',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['highlight'])
 
@@ -897,7 +897,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 6: Weight Adjustment',
+        ax.text(50, 97, 'Stap 6: Weight Adjustment',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['purple'])
 
@@ -999,7 +999,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 7: Gefinetuned Model! [***]',
+        ax.text(50, 97, 'Stap 7: Gefinetuned Model! [***]',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['secondary'])
 
@@ -1107,7 +1107,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 8: Voor vs Na Vergelijking',
+        ax.text(50, 97, 'Stap 8: Voor vs Na Vergelijking',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['highlight'])
 
@@ -1263,7 +1263,7 @@ class FinetuningPresentation(BasePresentation):
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Stap 9: Finetuning in de Praktijk',
+        ax.text(50, 97, 'Stap 9: Finetuning in de Praktijk',
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['primary'])
 

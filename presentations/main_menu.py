@@ -27,56 +27,74 @@ class MainMenu:
         self.ax.set_xlim(0, 100)
         self.ax.set_ylim(0, 100)
 
+        # FULLSCREEN - voeg deze regel toe
+        manager = plt.get_current_fig_manager()
+        manager.full_screen_toggle()  # Voor de meeste backends
+
         # Key bindings
         self.fig.canvas.mpl_connect('key_press_event', self.on_key_press)
 
         self.draw_menu()
 
     def draw_menu(self):
-        """Draw the visual menu"""
+        """Draw the visual menu - VERBETERDE LAYOUT"""
         self.ax.clear()
         self.ax.axis('off')
         self.ax.set_xlim(0, 100)
         self.ax.set_ylim(0, 100)
-
-        # Title
+        
+        # === TITLE SECTION - Compacter en eleganter ===
         title_box = FancyBboxPatch(
-            (10, 85), 80, 12,
-            boxstyle="round,pad=1.5",
+            (8, 86), 84, 11,
+            boxstyle="round,pad=1.2",
             facecolor=self.colors['bg_light'],
             edgecolor=self.colors['highlight'],
-            linewidth=4,
+            linewidth=3,
             alpha=0.95
         )
         self.ax.add_patch(title_box)
-
-        self.ax.text(50, 93, 'AI KENNISSESSIE',
-                     fontsize=54, fontweight='bold', ha='center',
-                     color=self.colors['highlight'])
-
-        self.ax.text(50, 87, 'Kies een presentatie om te starten',
-                     fontsize=24, ha='center',
-                     color=self.colors['text'], alpha=0.7, style='italic')
-
-        # Presentation cards
-        card_height = 11
-        card_spacing = 2.5
-        start_y = 70
-
+        
+        self.ax.text(50, 90.5, 'AI KENNISSESSIE',
+                    fontsize=48, fontweight='bold', ha='center',
+                    color=self.colors['highlight'], 
+                    family='sans-serif')
+        
+        self.ax.text(50, 86.5, 'Kies een presentatie om te starten',
+                    fontsize=20, ha='center',
+                    color=self.colors['text'], alpha=0.75, style='italic')
+        
+        # === PRESENTATION CARDS - Betere spacing en uitlijning ===
+        card_height = 10.5  # Iets compacter
+        card_spacing = 2.8  # Meer ruimte tussen cards
+        start_y = 72        # Start lager voor betere balans
+        
         for idx, pres in enumerate(self.presentations):
             y = start_y - idx * (card_height + card_spacing)
             is_selected = (idx == self.selected_index)
-
-            # Card box
+            
+            # Card box met subtielere styling
             if is_selected:
                 edge_color = self.colors['highlight']
-                edge_width = 5
+                edge_width = 4
                 alpha = 1.0
+                shadow = True
             else:
                 edge_color = self.colors['grid']
                 edge_width = 2
                 alpha = 0.85
-
+                shadow = False
+            
+            # Shadow effect voor geselecteerde card
+            if shadow:
+                shadow_card = FancyBboxPatch(
+                    (12.3, y - card_height + 1.7), 76, card_height - 2,
+                    boxstyle="round,pad=1",
+                    facecolor='black',
+                    edgecolor='none',
+                    alpha=0.3
+                )
+                self.ax.add_patch(shadow_card)
+            
             card = FancyBboxPatch(
                 (12, y - card_height + 2), 76, card_height - 2,
                 boxstyle="round,pad=1",
@@ -86,11 +104,11 @@ class MainMenu:
                 alpha=alpha
             )
             self.ax.add_patch(card)
-
-            # Number badge
-            badge_x = 16
+            
+            # Number badge - iets groter en duidelijker
+            badge_x = 17
             badge_y = y - card_height/2 + 1
-
+            
             badge_colors = [
                 self.colors['primary'],
                 self.colors['secondary'],
@@ -99,67 +117,72 @@ class MainMenu:
                 self.colors['cyan']
             ]
             badge_color = badge_colors[idx % len(badge_colors)]
-
+            
             badge = FancyBboxPatch(
-                (badge_x - 2, badge_y - 2.5), 4, 5,
-                boxstyle="round,pad=0.3",
+                (badge_x - 2.2, badge_y - 2.8), 4.4, 5.6,
+                boxstyle="round,pad=0.35",
                 facecolor=badge_color,
                 edgecolor='white',
-                linewidth=2,
+                linewidth=2.5,
                 alpha=1.0
             )
             self.ax.add_patch(badge)
-
+            
             self.ax.text(badge_x, badge_y, str(idx + 1),
-                         fontsize=27, ha='center', va='center',
-                         color='white', fontweight='bold')
-
-            # Icon and title
-            icon_x = 24
-            title_x = 28
-            desc_x = 28
-            duration_x = 80
-
-            self.ax.text(icon_x, y - 3, pres['icon'],
-                         fontsize=30, ha='center', va='center',
-                         color=badge_color)
-
+                        fontsize=30, ha='center', va='center',
+                        color='white', fontweight='bold')
+            
+            # Content - betere uitlijning en spacing
+            icon_x = 26
+            title_x = 30
+            desc_x = 30
+            duration_x = 82
+            
+            # Icon
+            self.ax.text(icon_x, y - 3.2, pres['icon'],
+                        fontsize=28, ha='center', va='center',
+                        color=badge_color, fontweight='bold')
+            
+            # Title - groter en prominenter
             title_color = self.colors['highlight'] if is_selected else self.colors['text']
             self.ax.text(title_x, y - 2.5, pres['name'],
-                         fontsize=24, ha='left', va='center',
-                         color=title_color, fontweight='bold')
-
-            self.ax.text(desc_x, y - 6, pres['description'],
-                         fontsize=15, ha='left', va='center',
-                         color=self.colors['text'], alpha=0.8)
-
-            self.ax.text(duration_x, y - 6, pres['duration'],
-                         fontsize=14, ha='right', va='center',
-                         color=self.colors['dim'], style='italic')
-
-        # Controls box at bottom
+                        fontsize=26, ha='left', va='center',
+                        color=title_color, fontweight='bold')
+            
+            # Description - betere leesbaarheid
+            self.ax.text(desc_x, y - 6.2, pres['description'],
+                        fontsize=16, ha='left', va='center',
+                        color=self.colors['text'], alpha=0.85)
+            
+            # Duration - rechts uitgelijnd
+            self.ax.text(duration_x, y - 6.2, pres['duration'],
+                        fontsize=15, ha='right', va='center',
+                        color=self.colors['dim'], style='italic', alpha=0.9)
+        
+        # === CONTROLS BOX - Compacter en moderner ===
         controls_box = FancyBboxPatch(
-            (10, 2), 80, 8,
-            boxstyle="round,pad=0.8",
+            (8, 2), 84, 7,
+            boxstyle="round,pad=0.7",
             facecolor=self.colors['bg_light'],
             edgecolor=self.colors['secondary'],
-            linewidth=3,
-            alpha=0.9
+            linewidth=2.5,
+            alpha=0.92
         )
         self.ax.add_patch(controls_box)
-
-        self.ax.text(50, 7.5, '[Keys]  Controls',
-                     fontsize=18, ha='center', va='center',
-                     color=self.colors['secondary'], fontweight='bold')
-
+        
+        # Controls header
+        self.ax.text(50, 7, '[Keys]  Controls',
+                    fontsize=17, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold')
+        
+        # Controls text - overzichtelijker
         controls_text = '↑↓ = Selecteer  •  ENTER/SPACE = Start  •  A = Alles afspelen  •  Q = Afsluiten'
-        self.ax.text(50, 4.5, controls_text,
-                     fontsize=16, ha='center', va='center',
-                     color=self.colors['text'], alpha=0.9)
-
+        self.ax.text(50, 4.2, controls_text,
+                    fontsize=15, ha='center', va='center',
+                    color=self.colors['text'], alpha=0.9)
+        
         plt.tight_layout()
         plt.draw()
-
     def on_key_press(self, event):
         """Handle key presses"""
         if event.key == 'up':
