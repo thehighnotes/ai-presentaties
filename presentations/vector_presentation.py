@@ -60,7 +60,7 @@ class VectorPresentation(BasePresentation):
             'Vliegtuig': np.array([-3.0, 1.5, 4.0]),
         }
 
-        # Vector arithmetic
+        # Vector arithmetic - Universal example
         self.koning = np.array([2.0, 4.0, 2.5])
         self.man = np.array([1.5, 2.0, 1.0])
         self.vrouw = np.array([1.0, 2.5, 1.2])

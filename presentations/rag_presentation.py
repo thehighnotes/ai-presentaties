@@ -41,56 +41,57 @@ class RAGPresentation(BasePresentation):
 
         super().__init__("RAG Journey", step_names)
 
-        # BiSL Knowledge article
+        # Customer Service Knowledge article
         self.artikel = """
-        KENNISARTIKEL: Wijzigingsbeheer in BiSL
+        KENNISARTIKEL: Retourbeleid Webwinkel
 
-        Wijzigingsbeheer is een essentieel proces binnen de informatievoorziening.
-        Het doel is om wijzigingen gecontroleerd en efficiënt door te voeren.
+        Ons retourbeleid is ontworpen om online winkelen zorgeloos te maken.
+        Klanten kunnen producten binnen 30 dagen retourneren.
 
-        Binnen BiSL onderscheiden we verschillende soorten wijzigingen:
-        - Standaard wijzigingen: vooraf goedgekeurde, laagrisico aanpassingen
-        - Normale wijzigingen: vereisen beoordeling door het Change Advisory Board
-        - Spoed wijzigingen: voor urgente situaties met versnelde procedure
+        Verschillende soorten retouren:
+        - Standaard retour: product voldoet niet aan verwachting
+        - Defect product: technisch defect of beschadigd ontvangen
+        - Verkeerde bestelling: verkeerd artikel ontvangen
 
-        Het wijzigingsproces bestaat uit de volgende stappen:
-        1. Registratie van de wijzigingsaanvraag (RFC)
-        2. Beoordeling van impact en risico's
-        3. Autorisatie door bevoegd gezag
-        4. Implementatie van de wijziging
-        5. Evaluatie en afsluiting
+        Het retourproces bestaat uit de volgende stappen:
+        1. Retour aanmelden via website of klantenservice
+        2. Retourlabel ontvangen per email
+        3. Product veilig inpakken met originele verpakking
+        4. Pakket afgeven bij verzendpunt
+        5. Terugbetaling binnen 5 werkdagen na ontvangst
 
-        Rollen in wijzigingsbeheer:
-        - Change Manager: coördineert het wijzigingsproces
-        - Change Advisory Board (CAB): beoordeelt normale wijzigingen
-        - Informatiemanager: autoriseert wijzigingen binnen mandaat
+        Belangrijke voorwaarden:
+        - Product moet ongebruikt en compleet zijn
+        - Originele verpakking en labels moeten aanwezig zijn
+        - Hygiënische producten kunnen niet geretourneerd
+        - Gepersonaliseerde artikelen zijn uitgesloten
 
-        Kritische succesfactoren:
-        - Heldere procedures en werkafspraken
-        - Adequate communicatie naar stakeholders
-        - Goede samenwerking tussen functioneel en technisch beheer
-        - Registratie in een CMDB voor traceerbaarheid
+        Kosten en vergoeding:
+        - Retourzendingen binnen Nederland zijn gratis
+        - Bij defect artikel vergoeden wij ook verzendkosten
+        - Terugbetaling gebeurt via oorspronkelijke betaalmethode
+        - Cadeaubonnen worden omgezet in winkelkrediet
         """
 
-        self.vraag = "Wat zijn de stappen in het wijzigingsproces volgens BiSL?"
+        self.vraag = "Wat zijn de stappen om een product te retourneren?"
 
         self.antwoord = """
-        Volgens BiSL bestaat het wijzigingsproces uit vijf stappen:
+        Om een product te retourneren volg je deze stappen:
 
-        1. **Registratie** - De wijzigingsaanvraag (RFC) wordt geregistreerd
-        2. **Beoordeling** - Impact en risico's worden beoordeeld
-        3. **Autorisatie** - Bevoegd gezag geeft toestemming
-        4. **Implementatie** - De wijziging wordt doorgevoerd
-        5. **Evaluatie** - Proces wordt geëvalueerd en afgesloten
+        1. **Retour aanmelden** - Meld de retour aan via de website of bel klantenservice
+        2. **Retourlabel ontvangen** - Je ontvangt per email een gratis retourlabel
+        3. **Product inpakken** - Pak het product veilig in met de originele verpakking
+        4. **Verzenden** - Geef het pakket af bij een verzendpunt
+        5. **Terugbetaling** - Je ontvangt je geld terug binnen 5 werkdagen
         """
 
         # Chunks after splitting
         self.chunks = [
-            "Wijzigingsbeheer is een essentieel proces binnen de informatievoorziening. Het doel is om wijzigingen gecontroleerd en efficiënt door te voeren.",
-            "Binnen BiSL onderscheiden we verschillende soorten wijzigingen: Standaard wijzigingen (vooraf goedgekeurde, laagrisico), Normale wijzigingen (vereisen CAB beoordeling), en Spoed wijzigingen (urgente situaties).",
-            "Het wijzigingsproces bestaat uit vijf stappen: 1) Registratie RFC, 2) Beoordeling impact en risico's, 3) Autorisatie, 4) Implementatie, 5) Evaluatie en afsluiting.",
-            "Rollen in wijzigingsbeheer: Change Manager coördineert het proces, Change Advisory Board beoordeelt wijzigingen, Informatiemanager autoriseert binnen mandaat.",
-            "Kritische succesfactoren: Heldere procedures, adequate communicatie, goede samenwerking tussen functioneel en technisch beheer, CMDB registratie voor traceerbaarheid."
+            "Ons retourbeleid is ontworpen om online winkelen zorgeloos te maken. Klanten kunnen producten binnen 30 dagen retourneren.",
+            "Verschillende soorten retouren: Standaard retour (product voldoet niet aan verwachting), Defect product (technisch defect), Verkeerde bestelling (verkeerd artikel ontvangen).",
+            "Het retourproces bestaat uit vijf stappen: 1) Retour aanmelden via website of klantenservice, 2) Retourlabel ontvangen per email, 3) Product inpakken, 4) Pakket afgeven, 5) Terugbetaling binnen 5 werkdagen.",
+            "Belangrijke voorwaarden: Product ongebruikt en compleet, originele verpakking aanwezig, hygiënische producten uitgesloten, geen gepersonaliseerde artikelen.",
+            "Kosten en vergoeding: Gratis retour binnen Nederland, bij defect ook verzendkosten vergoed, terugbetaling via originele betaalmethode, cadeaubonnen worden winkelkrediet."
         ]
 
         self.relevante_chunk_index = 2
@@ -138,7 +139,7 @@ class RAGPresentation(BasePresentation):
                 fontsize=33, ha='center', va='center',
                 color=self.colors['text'], alpha=0.8, style='italic')
 
-        ax.text(50, 45, 'Ontdek hoe AI jouw BiSL-kennis doorzoekt',
+        ax.text(50, 45, 'Ontdek hoe AI jouw kennisbank doorzoekt',
                 fontsize=27, ha='center', va='center',
                 color=self.colors['secondary'], alpha=0.9)
 
@@ -1553,7 +1554,7 @@ def main():
     print("RAG JOURNEY VISUALIZATION")
     print("="*80)
     print("\n🔍 Deze presentatie toont Retrieval Augmented Generation:")
-    print("  1. Kennisartikel - BiSL wijzigingsbeheer")
+    print("  1. Kennisartikel - Retourbeleid webwinkel")
     print("  2. Tekst Chunking - Opdelen in stukken")
     print("  3. Embeddings - Chunks → Vectors")
     print("  4. Vector Database - Opslag")

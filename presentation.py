@@ -27,6 +27,15 @@ class PresentationController:
         # Define presentation order and metadata
         self.presentations = [
             {
+                'id': 'intro',
+                'name': 'Introductie',
+                'module': 'presentations.intro_presentation',
+                'class': 'IntroPresentation',
+                'description': 'Welkom! Overzicht van wat je gaat leren',
+                'icon': '[★]',
+                'duration': '~5 minuten'
+            },
+            {
                 'id': 'vector',
                 'name': 'Vector & Embeddings',
                 'module': 'presentations.vector_presentation',
@@ -63,13 +72,13 @@ class PresentationController:
                 'duration': '~12 minuten'
             },
             {
-                'id': 'quality',
-                'name': 'AI Quality',
-                'module': 'presentations.quality_presentation_new',
-                'class': 'QualityPresentation',
-                'description': 'Praktische inzichten: keuzes, modellen & actie',
-                'icon': '[!]',
-                'duration': '~6 minuten'
+                'id': 'prompting',
+                'name': 'Prompt Engineering',
+                'module': 'presentations.prompt_engineering_presentation',
+                'class': 'PromptEngineeringPresentation',
+                'description': 'Leer effectief communiceren met AI systemen',
+                'icon': '[✎]',
+                'duration': '~10 minuten'
             }
         ]
 
@@ -174,7 +183,7 @@ class PresentationController:
 
     def run_all_presentations(self):
         """Run all presentations in sequence"""
-        print(f"\n🎬 Start volledige presentatie suite ({len(self.presentations)} presentaties)")
+        print(f"\n🎬 Start volledige AI Kennissessie ({len(self.presentations)} presentaties)")
         print("   Druk Q in elke presentatie om terug te gaan naar menu\n")
 
         for idx, pres in enumerate(self.presentations, 1):

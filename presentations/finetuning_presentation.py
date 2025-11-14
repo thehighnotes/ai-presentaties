@@ -42,22 +42,22 @@ class FinetuningPresentation(BasePresentation):
 
         super().__init__("Finetuning Journey", step_names)
 
-        # Training examples (BiSL domain)
+        # Training examples (Cooking/Recipe domain)
         self.training_examples = [
             {
-                'input': 'Wat is een RFC?',
-                'output': 'RFC staat voor Request for Change - een formele aanvraag voor wijziging binnen BiSL.',
-                'category': 'BiSL Terminologie'
+                'input': 'Hoe lang moet ik pasta koken?',
+                'output': 'Kook pasta al dente in 8-10 minuten in ruim kokend water met zout. Proef regelmatig voor de perfecte beet.',
+                'category': 'Kooktechnieken'
             },
             {
-                'input': 'Leg CAB uit',
-                'output': 'CAB (Change Advisory Board) beoordeelt normale wijzigingen en adviseert over risico\'s en impact.',
-                'category': 'BiSL Processen'
+                'input': 'Wat is het verschil tussen bakken en braden?',
+                'output': 'Bakken gebeurt in een pan met weinig vet op matig vuur. Braden is in de oven bij hoge temperatuur met vocht voor malse garing.',
+                'category': 'Bereidingsmethoden'
             },
             {
-                'input': 'Verschil standaard en normale wijziging?',
-                'output': 'Standaard wijzigingen zijn vooraf goedgekeurd en laag risico. Normale wijzigingen vereisen CAB beoordeling.',
-                'category': 'BiSL Definities'
+                'input': 'Hoe maak ik een perfecte jus?',
+                'output': 'Gebruik braadvet en aanbaksels, blus met wijn of bouillon, reduceer tot de gewenste dikte. Zeef voor een gladde jus.',
+                'category': 'Sauzen & Jus'
             }
         ]
 
@@ -401,7 +401,7 @@ class FinetuningPresentation(BasePresentation):
             )
             ax.add_patch(input_box)
 
-            ax.text(50, 80.5, '[?] Input: "Wat is een RFC in BiSL?"',
+            ax.text(50, 80.5, '[?] Input: "Hoe maak ik risotto?"',
                    fontsize=27, ha='center', va='center',
                    color=self.colors['accent'],
                    fontweight='bold',
@@ -469,7 +469,7 @@ class FinetuningPresentation(BasePresentation):
                    alpha=output_alpha)
 
             wrong_answer = textwrap.fill(
-                "Een RFC is een algemeen document in IT projecten voor het delen van informatie.",
+                "Risotto is een Italiaanse rijstschotel. Je maakt het door rijst te koken met bouillon.",
                 width=32
             )
             ax.text(24, 35, wrong_answer,
@@ -509,7 +509,7 @@ class FinetuningPresentation(BasePresentation):
                    alpha=target_alpha)
 
             correct_answer = textwrap.fill(
-                "RFC staat voor Request for Change - een formele aanvraag voor wijziging binnen BiSL.",
+                "Voor risotto: fruit ui, bak arborio rijst glazig, voeg lepel voor lepel warme bouillon toe onder constant roeren. Na 18 min is de rijst romig en al dente. Finish met boter en parmezaan.",
                 width=32
             )
             ax.text(76, 35, correct_answer,
@@ -620,7 +620,7 @@ class FinetuningPresentation(BasePresentation):
             )
             ax.add_patch(input_box)
 
-            ax.text(17.5, 55, 'Wat is RFC?',
+            ax.text(17.5, 55, 'Hoe kook ik pasta?',
                     fontsize=21, ha='center', va='center',
                     color=self.colors['text'],
                     alpha=input_alpha)
@@ -656,7 +656,7 @@ class FinetuningPresentation(BasePresentation):
                     fontweight='bold',
                     alpha=output_alpha)
 
-            wrapped_output = textwrap.fill("RFC is een document...", width=20)
+            wrapped_output = textwrap.fill("Kook rijst met water...", width=20)
             ax.text(82.5, 63, wrapped_output,
                     fontsize=12, ha='center', va='center',
                     color=self.colors['text'],
@@ -693,7 +693,7 @@ class FinetuningPresentation(BasePresentation):
                     fontweight='bold',
                     alpha=expected_alpha)
 
-            wrapped_expected = textwrap.fill("RFC = Request for Change...", width=20)
+            wrapped_expected = textwrap.fill("Kook al dente in 8-10 min...", width=20)
             ax.text(82.5, 45, wrapped_expected,
                     fontsize=12, ha='center', va='center',
                     color=self.colors['text'],
@@ -1003,7 +1003,7 @@ class FinetuningPresentation(BasePresentation):
                 fontsize=51, fontweight='bold', ha='center', va='top',
                 color=self.colors['secondary'])
 
-        ax.text(50, 90, 'Het model is nu een BiSL specialist',
+        ax.text(50, 90, 'Het model is nu een kook specialist',
                 fontsize=27, ha='center', va='top',
                 color=self.colors['text'], alpha=0.7, style='italic')
 
@@ -1037,7 +1037,7 @@ class FinetuningPresentation(BasePresentation):
             ax.text(50, 55, 'AI+', fontsize=90, ha='center', va='center',
                     alpha=model_alpha)
 
-            ax.text(50, 42, 'BiSL Expert Model',
+            ax.text(50, 42, 'Kook Expert Model',
                     fontsize=27, ha='center', va='center',
                     color=self.colors['secondary'],
                     fontweight='bold',
@@ -1045,10 +1045,10 @@ class FinetuningPresentation(BasePresentation):
 
         # Capabilities
         capabilities = [
-            ('[OK] BiSL terminologie', 20, 70, 0.3),
-            ('[OK] Procesbeschrijvingen', 80, 70, 0.35),
-            ('[OK] Best practices', 20, 30, 0.4),
-            ('[OK] Nederlandse context', 80, 30, 0.45)
+            ('[OK] Kooktechnieken', 20, 70, 0.3),
+            ('[OK] Recepten & timing', 80, 70, 0.35),
+            ('[OK] Ingrediënten kennis', 20, 30, 0.4),
+            ('[OK] Culinaire tips', 80, 30, 0.45)
         ]
 
         for text, x, y, delay in capabilities:
@@ -1129,7 +1129,7 @@ class FinetuningPresentation(BasePresentation):
             )
             ax.add_patch(q_box)
 
-            ax.text(50, 82, '[?] "Wat is het verschil tussen standaard en normale wijziging?"',
+            ax.text(50, 82, '[?] "Wat is het verschil tussen bakken en braden?"',
                    fontsize=16, ha='center', va='center',
                    color=self.colors['accent'],
                    fontweight='bold',
@@ -1154,9 +1154,9 @@ class FinetuningPresentation(BasePresentation):
             ax.add_patch(base_box)
 
             base_response = textwrap.fill(
-                "Een standaard wijziging is een reguliere aanpassing, "
-                "terwijl een normale wijziging meer gebruikelijk is. "
-                "Dit zijn algemene termen in projectmanagement.",
+                "Bakken en braden zijn beide warmte bereidingsmethoden. "
+                "Bakken doe je meestal voor gebak en brood. "
+                "Braden wordt gebruikt voor vlees en groenten.",
                 width=35
             )
 
@@ -1193,10 +1193,11 @@ class FinetuningPresentation(BasePresentation):
             ax.add_patch(ft_box)
 
             ft_response = textwrap.fill(
-                "Binnen BiSL: Standaard wijzigingen zijn vooraf "
-                "goedgekeurd en laag risico. Normale wijzigingen "
-                "vereisen CAB beoordeling en autorisatie. "
-                "Standaard = sneller, Normaal = meer controle.",
+                "Bakken gebeurt in een pan op het fornuis met weinig vet "
+                "op matig vuur voor een krokant resultaat. "
+                "Braden is in de oven bij hoge temperatuur (160-220°C) "
+                "met vocht erbij voor malse, sappige garing. "
+                "Bakken = snel & krokant, Braden = langzaam & mals.",
                 width=35
             )
 
@@ -1421,9 +1422,9 @@ def main():
     print("  Q     : Quit")
     print("  F     : Fullscreen")
     print("\n[i] Voorbeeld Use Case:")
-    print("  • Doel: BiSL-specialist maken van algemeen model")
-    print("  • Data: BiSL terminologie, processen, best practices")
-    print("  • Resultaat: Model dat BiSL begrippen nauwkeurig uitlegt")
+    print("  • Doel: Kook-specialist maken van algemeen model")
+    print("  • Data: Kooktechnieken, recepten, bereidingsmethoden")
+    print("  • Resultaat: Model dat culinaire vragen gedetailleerd beantwoordt")
     print("\n" + "="*80 + "\n")
 
     presentation = FinetuningPresentation()
