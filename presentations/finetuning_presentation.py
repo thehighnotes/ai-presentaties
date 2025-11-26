@@ -1400,7 +1400,7 @@ def main():
     print("="*80)
     print("FINETUNING JOURNEY VISUALISATIE")
     print("="*80)
-    print("\n🎓 Deze presentatie legt uit hoe Finetuning werkt:")
+    print("\n[grad] Deze presentatie legt uit hoe Finetuning werkt:")
     print("  1. Base Model - Pre-trained algemeen model")
     print("  2. Training Data - Voorbeelden van gewenst gedrag")
     print("  3. Model Predictions - Het probleem: foute antwoorden!")

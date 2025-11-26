@@ -96,8 +96,13 @@ class PresentationStyle:
 
     @classmethod
     def create_figure(cls):
-        """Create a new figure with standard dark mode settings"""
-        return plt.figure(figsize=cls.FIGURE_SIZE, facecolor=cls.COLORS['bg'])
+        """Create a new figure with standard dark mode settings and proper layout"""
+        fig = plt.figure(figsize=cls.FIGURE_SIZE, facecolor=cls.COLORS['bg'])
+
+        # Use tight layout to prevent clipping and maintain proper spacing
+        fig.set_tight_layout(True)
+
+        return fig
 
     @classmethod
     def setup_3d_axis(cls, ax):

@@ -127,16 +127,16 @@ class PresentationController:
                 if 0 <= idx < len(self.presentations):
                     return self.presentations[idx]['id']
                 else:
-                    print(f"❌ Ongeldige keuze. Kies 1-{len(self.presentations)}, 'all', of 'q'")
+                    print(f"[X] Ongeldige keuze. Kies 1-{len(self.presentations)}, 'all', of 'q'")
             except ValueError:
                 # Try to match by ID
                 matching = [p for p in self.presentations if p['id'].startswith(choice)]
                 if len(matching) == 1:
                     return matching[0]['id']
                 elif len(matching) > 1:
-                    print(f"❌ Meerdere matches. Wees specifieker: {[p['id'] for p in matching]}")
+                    print(f"[X] Meerdere matches. Wees specifieker: {[p['id'] for p in matching]}")
                 else:
-                    print(f"❌ Onbekende presentatie: '{choice}'")
+                    print(f"[X] Onbekende presentatie: '{choice}'")
 
     def run_presentation(self, presentation_id: str) -> bool:
         """
@@ -151,7 +151,7 @@ class PresentationController:
         # Find presentation
         pres_info = next((p for p in self.presentations if p['id'] == presentation_id), None)
         if not pres_info:
-            print(f"❌ Presentatie niet gevonden: {presentation_id}")
+            print(f"[X] Presentatie niet gevonden: {presentation_id}")
             return False
 
         print(f"\n▶️  Starting: {pres_info['icon']} {pres_info['name']}")
@@ -167,16 +167,16 @@ class PresentationController:
             presentation = presentation_class()
             presentation.show()
 
-            print(f"\n✅ Presentatie '{pres_info['name']}' afgesloten")
+            print(f"\n[OK] Presentatie '{pres_info['name']}' afgesloten")
             return True
 
         except ModuleNotFoundError as e:
-            print(f"\n❌ Presentatie module niet gevonden: {e}")
+            print(f"\n[X] Presentatie module niet gevonden: {e}")
             print(f"   Zorg dat {pres_info['module']}.py bestaat in de juiste map")
             return False
 
         except Exception as e:
-            print(f"\n❌ Fout bij laden presentatie: {e}")
+            print(f"\n[X] Fout bij laden presentatie: {e}")
             import traceback
             traceback.print_exc()
             return False
@@ -242,7 +242,7 @@ def main():
         print("\n\n👋 Presentatie afgebroken. Tot ziens!")
         sys.exit(0)
     except Exception as e:
-        print(f"\n❌ Onverwachte fout: {e}")
+        print(f"\n[X] Onverwachte fout: {e}")
         import traceback
         traceback.print_exc()
         sys.exit(1)

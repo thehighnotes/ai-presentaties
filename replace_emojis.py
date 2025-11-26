@@ -7,6 +7,7 @@ from pathlib import Path
 
 # Mapping of emojis to safe Unicode alternatives
 EMOJI_REPLACEMENTS = {
+    # Existing
     '✨': '*',           # Sparkles -> asterisk
     '🎯': '>>',          # Target -> arrows
     '💡': '[i]',         # Lightbulb -> info
@@ -20,6 +21,26 @@ EMOJI_REPLACEMENTS = {
     '🟢': '[O]',         # Green circle -> O
     '🔴': '[O]',         # Red circle -> O
     '🔢': '[#]',         # Numbers -> hash
+
+    # New for Hogeschool intro
+    '💬': '[chat]',      # Speech bubble -> chat
+    '🤖': '[AI]',        # Robot -> AI
+    '📄': '[doc]',       # Document -> doc
+    '✍️': '[edit]',     # Writing hand -> edit
+    '🔍': '[search]',    # Magnifying glass -> search
+    '📚': '[books]',     # Books -> books
+    '📋': '[list]',      # Clipboard -> list
+    '🏥': '[med]',       # Hospital -> med
+    '💼': '[work]',      # Briefcase -> work
+    '❌': '[X]',         # Cross mark -> X
+    '⏰': '[time]',      # Clock -> time
+    '🤷': '[?]',         # Shrug -> question mark
+    '🚀': '[>>]',        # Rocket -> fast forward
+    '🎓': '[grad]',      # Graduation cap -> grad
+    '✅': '[OK]',        # Check mark -> OK
+    '🛡️': '[shield]',   # Shield -> shield
+    '⚡': '[!]',         # Lightning -> exclamation
+    '👤': '[user]',      # Bust in silhouette -> user
 }
 
 def replace_emojis_in_file(filepath):
@@ -55,11 +76,13 @@ def main():
     """Process all Python files"""
     # Focus on active presentation files
     files_to_process = [
+        Path('presentations/intro_presentation_hogeschool.py'),
         Path('presentations/vector_presentation.py'),
         Path('presentations/finetuning_presentation.py'),
-        Path('presentations/quality_presentation.py'),
+        Path('presentations/quality_presentation_new.py'),
         Path('presentations/rag_presentation.py'),
         Path('presentations/neural_network_presentation.py'),
+        Path('presentations/prompt_engineering_presentation.py'),
         Path('core/controls.py'),
         Path('presentation.py'),
     ]

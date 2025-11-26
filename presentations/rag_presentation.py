@@ -1553,7 +1553,7 @@ def main():
     print("="*80)
     print("RAG JOURNEY VISUALIZATION")
     print("="*80)
-    print("\n🔍 Deze presentatie toont Retrieval Augmented Generation:")
+    print("\n[search] Deze presentatie toont Retrieval Augmented Generation:")
     print("  1. Kennisartikel - Retourbeleid webwinkel")
     print("  2. Tekst Chunking - Opdelen in stukken")
     print("  3. Embeddings - Chunks → Vectors")

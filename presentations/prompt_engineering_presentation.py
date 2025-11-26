@@ -77,8 +77,8 @@ Gebruik een professionele maar toegankelijke toon."""
                 color=self.colors['text'], alpha=0.8, style='italic')
 
         # Icons
-        ax.text(30, 67, '💬', fontsize=75, ha='center', va='center')
-        ax.text(70, 67, '🤖', fontsize=75, ha='center', va='center')
+        ax.text(30, 67, '[chat]', fontsize=75, ha='center', va='center')
+        ax.text(70, 67, '[AI]', fontsize=75, ha='center', va='center')
 
         # Subtitle
         ax.text(50, 45, 'Leer hoe je betere resultaten krijgt uit AI',
@@ -206,7 +206,7 @@ optimale resultaten te krijgen."""
         items = [
             ('Jouw\nPrompt', 20, 50, 0.45, self.colors['accent'], '📝'),
             ('AI\nVerwerking', 50, 50, 0.55, self.colors['primary'], '⚙️'),
-            ('Resultaat', 80, 50, 0.65, self.colors['secondary'], '✨')
+            ('Resultaat', 80, 50, 0.65, self.colors['secondary'], '*')
         ]
 
         for text, x, y, delay, color, icon in items:
@@ -352,9 +352,9 @@ optimale resultaten te krijgen."""
         # Benefits
         benefits = [
             ('⏱️ Bespaart tijd', 45, 0.65),
-            ('🎯 Betere resultaten', 38, 0.7),
+            ('>> Betere resultaten', 38, 0.7),
             ('💰 Lagere kosten', 31, 0.75),
-            ('🚀 Meer productiviteit', 24, 0.8)
+            ('[>>] Meer productiviteit', 24, 0.8)
         ]
 
         for text, y, delay in benefits:
@@ -472,7 +472,7 @@ optimale resultaten te krijgen."""
             )
             ax.add_patch(before_box)
 
-            ax.text(25, 76, '❌ Vaag', fontsize=18, ha='center',
+            ax.text(25, 76, '[X] Vaag', fontsize=18, ha='center',
                     color=self.colors['warning'], fontweight='bold',
                     alpha=before_alpha)
 
@@ -497,7 +497,7 @@ optimale resultaten te krijgen."""
             )
             ax.add_patch(after_box)
 
-            ax.text(75, 81, '✅ Specifiek', fontsize=18, ha='center',
+            ax.text(75, 81, '[OK] Specifiek', fontsize=18, ha='center',
                     color=self.colors['secondary'], fontweight='bold',
                     alpha=after_alpha)
 
@@ -530,7 +530,7 @@ optimale resultaten te krijgen."""
         # Bottom
         if progress > 0.9:
             bottom_alpha = min(1.0, (progress - 0.9) / 0.1)
-            ax.text(50, 8, '[💡] Hoe specifieker, hoe beter het resultaat',
+            ax.text(50, 8, '[[i]] Hoe specifieker, hoe beter het resultaat',
                     fontsize=18, ha='center', va='center',
                     color=self.colors['accent'],
                     fontweight='bold',
@@ -666,7 +666,7 @@ Output: ?"""
             )
             ax.add_patch(direct_box)
 
-            ax.text(25, 76, '⚡ Direct', fontsize=18, ha='center',
+            ax.text(25, 76, '[!] Direct', fontsize=18, ha='center',
                     color=self.colors['warning'], fontweight='bold',
                     alpha=direct_alpha)
 
@@ -726,8 +726,8 @@ Output: ?"""
             when_items = [
                 ('🧮 Wiskunde & berekeningen', 42),
                 ('🤔 Logische redeneringen', 36),
-                ('📋 Meerstaps problemen', 30),
-                ('🔍 Analyse taken', 24)
+                ('[list] Meerstaps problemen', 30),
+                ('[search] Analyse taken', 24)
             ]
 
             ax.text(50, 48, 'Wanneer gebruiken:', fontsize=18, ha='center',
@@ -754,7 +754,7 @@ Output: ?"""
             )
             ax.add_patch(magic_box)
 
-            ax.text(50, 13, '✨ Magic phrase: "Let\'s think step by step"',
+            ax.text(50, 13, '* Magic phrase: "Let\'s think step by step"',
                     fontsize=19, ha='center', va='center',
                     color=self.colors['highlight'],
                     fontweight='bold',
@@ -783,9 +783,9 @@ Output: ?"""
         # Role examples in grid
         roles = [
             ('👨‍🏫 Expert Leraar', 'Leg uit alsof ik 10 jaar oud ben', 20, 70, 0.2, self.colors['primary']),
-            ('💼 Business Consultant', 'Analyseer deze data strategisch', 50, 70, 0.3, self.colors['secondary']),
-            ('👨‍💻 Senior Developer', 'Review deze code kritisch', 80, 70, 0.4, self.colors['purple']),
-            ('✍️ Professioneel Schrijver', 'Schrijf in journalistieke stijl', 35, 45, 0.5, self.colors['accent']),
+            ('[work] Business Consultant', 'Analyseer deze data strategisch', 50, 70, 0.3, self.colors['secondary']),
+            ('👨‍[PC] Senior Developer', 'Review deze code kritisch', 80, 70, 0.4, self.colors['purple']),
+            ('[edit] Professioneel Schrijver', 'Schrijf in journalistieke stijl', 35, 45, 0.5, self.colors['accent']),
             ('🤝 Empathische Coach', 'Geef constructieve feedback', 65, 45, 0.6, self.colors['highlight'])
         ]
 
@@ -850,7 +850,7 @@ Output: ?"""
         # Bottom tip
         if progress > 0.9:
             tip_alpha = min(1.0, (progress - 0.9) / 0.1)
-            ax.text(50, 8, '[💡] Rollen activeren specifieke kennis en stijlen in het model',
+            ax.text(50, 8, '[[i]] Rollen activeren specifieke kennis en stijlen in het model',
                     fontsize=16, ha='center', va='center',
                     color=self.colors['highlight'],
                     fontweight='bold',
@@ -879,7 +879,7 @@ Output: ?"""
         # Pitfalls in grid
         pitfalls = [
             {
-                'icon': '❌',
+                'icon': '[X]',
                 'title': 'Te Vaag',
                 'desc': 'Te algemene instructies zonder context',
                 'x': 25,
@@ -887,7 +887,7 @@ Output: ?"""
                 'delay': 0.15
             },
             {
-                'icon': '📚',
+                'icon': '[books]',
                 'title': 'Te Lang',
                 'desc': 'Oneindige paragrafen die niemand leest',
                 'x': 75,
@@ -911,7 +911,7 @@ Output: ?"""
                 'delay': 0.45
             },
             {
-                'icon': '🔢',
+                'icon': '[#]',
                 'title': 'Geen Format',
                 'desc': 'Niet specificeren hoe output eruit moet zien',
                 'x': 25,
@@ -972,7 +972,7 @@ Output: ?"""
             )
             ax.add_patch(advice_box)
 
-            ax.text(50, 16, '✅ De Oplossing: Itereer!',
+            ax.text(50, 16, '[OK] De Oplossing: Itereer!',
                     fontsize=21, ha='center', va='center',
                     color=self.colors['secondary'], fontweight='bold',
                     alpha=advice_alpha)
@@ -1049,7 +1049,7 @@ Output: ?"""
             )
             ax.add_patch(final_box)
 
-            ax.text(50, 19, '🎯 Onthoud: Prompt Engineering is een Vaardigheid',
+            ax.text(50, 19, '>> Onthoud: Prompt Engineering is een Vaardigheid',
                     fontsize=21, ha='center', va='center',
                     color=self.colors['highlight'], fontweight='bold',
                     alpha=final_alpha)

@@ -45,9 +45,32 @@ class BasePresentation:
         self.colors = PresentationStyle.COLORS
         self.anim_helper = AnimationHelper
 
+        # Setup resize handler to maintain aspect ratio
+        self.fig.canvas.mpl_connect('resize_event', self._on_resize)
+
         # Setup controls
         self.control_handler = ControlHandler(self)
         self.control_handler.setup()
+
+    def _on_resize(self, event):
+        """Handle window resize to maintain proper aspect ratio and alignment"""
+        if event is None or event.width is None or event.height is None:
+            return
+
+        # Target aspect ratio (16:9)
+        target_aspect = 16 / 9
+
+        # Calculate current aspect ratio
+        current_aspect = event.width / event.height if event.height > 0 else target_aspect
+
+        # If aspect ratio changed significantly, redraw to maintain layout
+        if abs(current_aspect - target_aspect) > 0.01:
+            # Force matplotlib to maintain the aspect ratio
+            for ax in self.fig.get_axes():
+                ax.set_aspect('equal', adjustable='box')
+
+            # Redraw current content
+            self.fig.canvas.draw_idle()
 
     def show_landing_page(self):
         """
@@ -161,33 +184,34 @@ class BasePresentation:
 
     def add_status_indicator(self, is_animating: bool = True):
         """
-        Add standard status indicator at bottom of screen
+        Add standard status indicator at top-left of screen
 
         Args:
             is_animating: Whether animation is currently running
         """
         if is_animating:
-            status_text = "🎬 ANIMEREN..."
+            status_text = "ANIMEREN..."
             status_color = self.colors['accent']
         else:
-            status_text = "⏸ GEPAUZEERD - Druk SPATIE voor volgende stap"
+            status_text = "GEPAUZEERD - SPATIE = volgende"
             status_color = self.colors['secondary']
 
-        self.fig.text(0.5, 0.98, status_text,
-                     fontsize=self.style.STATUS_FONT_SIZE,
-                     ha='center', va='top',
-                     bbox=dict(boxstyle='round,pad=0.4',
+        # Top-left status indicator (smaller)
+        self.fig.text(0.02, 0.98, status_text,
+                     fontsize=12,  # Smaller font
+                     ha='left', va='top',
+                     bbox=dict(boxstyle='round,pad=0.3',
                               facecolor=self.colors['bg_light'],
                               edgecolor=status_color,
-                              linewidth=2,
-                              alpha=0.9),
+                              linewidth=1.5,
+                              alpha=0.85),
                      color=status_color,
                      fontweight='bold')
 
-        # Progress bar
+        # Progress bar at bottom
         self._add_progress_bar()
 
-        # Step counter
+        # Step counter at bottom center
         step_num = max(0, self.current_step)
         total_steps = len(self.step_names) - 1
         self.fig.text(0.5, 0.015, f'Stap {step_num + 1} / {total_steps + 1}',
@@ -197,8 +221,10 @@ class BasePresentation:
 
     def _add_progress_bar(self):
         """Add progress bar visualization"""
-        step_num = max(0, self.current_step)
-        total_steps = len(self.step_names) - 1
+        # Current step: -1 = landing (not started), 0 = first step, etc.
+        # For progress: landing = 0%, first step = 1/total, last step = 100%
+        step_num = max(0, self.current_step + 1)  # +1 to account for landing at -1
+        total_steps = len(self.step_names)  # Total including landing
         progress_pct = step_num / total_steps if total_steps > 0 else 0
 
         bar_width = self.style.PROGRESS_BAR_WIDTH

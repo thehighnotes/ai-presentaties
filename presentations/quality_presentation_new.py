@@ -851,7 +851,7 @@ class QualityPresentation (BasePresentation):
 def main():
     """Main presentation runner"""
     print("\n" + "="*70)
-    print("🎯 AI Quality Presentation - Professional Perspective")
+    print(">> AI Quality Presentation - Professional Perspective")
     print("="*70)
     print("\nVan technische kennis naar strategische vraagstelling")
     print("\nStappen:")
