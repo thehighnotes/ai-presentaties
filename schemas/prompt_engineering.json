@@ -1,0 +1,377 @@
+{
+  "name": "prompt_engineering",
+  "title": "Prompt Engineering",
+  "description": "Leer hoe je effectief communiceert met AI systemen",
+  "author": "Designer",
+  "language": "nl",
+  "version": "1.0",
+  "landing": {
+    "title": "Prompt Engineering",
+    "subtitle": "De Kunst van AI Communicatie",
+    "tagline": "Leer hoe je betere resultaten krijgt uit AI",
+    "welcome_message": null,
+    "footer": "Van vage vragen naar concrete resultaten",
+    "primary_color": "secondary",
+    "icon_left": "[chat]",
+    "icon_right": "[AI]"
+  },
+  "steps": [
+    {
+      "name": "Wat is Prompt Engineering?",
+      "title": "Wat is Prompt Engineering?",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 77.5},
+          "width": 70,
+          "height": 15,
+          "title": null,
+          "content": "Prompt Engineering is de kunst en wetenschap van het formuleren van effectieve instructies voor AI-modellen om optimale resultaten te krijgen.",
+          "style": {"border_color": "primary"},
+          "animation_phase": "early"
+        },
+        {
+          "type": "flow",
+          "position": {"x": 50, "y": 50},
+          "width": 70,
+          "steps": [
+            {"icon": "📝", "title": "Jouw Prompt", "subtitle": "", "color": "accent"},
+            {"icon": "⚙️", "title": "AI Verwerking", "subtitle": "", "color": "primary"},
+            {"icon": "*", "title": "Resultaat", "subtitle": "", "color": "secondary"}
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        },
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 27},
+          "width": 70,
+          "height": 15,
+          "title": "[!] De kwaliteit van je prompt bepaalt de kwaliteit van het resultaat",
+          "content": "Betere prompts = Betere antwoorden",
+          "style": {"border_color": "highlight"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Introduceer het concept met een visuele flow"
+    },
+    {
+      "name": "Waarom is het Belangrijk?",
+      "title": "Waarom is het Belangrijk?",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 70},
+          "width": 80,
+          "height": 25,
+          "left_title": "✗ Vage Prompt",
+          "left_content": "\"Schrijf iets over AI\"\n→ Algemeen\n→ Niet bruikbaar\n→ Frustrerend",
+          "left_color": "warning",
+          "right_title": "✓ Specifieke Prompt",
+          "right_content": "\"Leg uit hoe RAG werkt...\"\n→ Specifiek\n→ Direct bruikbaar\n→ Efficiënt",
+          "right_color": "secondary",
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 40},
+          "items": [
+            "⏱️ Bespaart tijd",
+            ">> Betere resultaten",
+            "💰 Lagere kosten",
+            "[>>] Meer productiviteit"
+          ],
+          "spacing": 7,
+          "animation_phase": "middle",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "position": {"x": 50, "y": 8},
+          "content": "[i] Goede prompts kunnen het verschil maken tussen nutteloos en onmisbaar",
+          "style": {"fontsize": 18, "color": "accent", "fontweight": "bold"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Contrast tussen slechte en goede prompts"
+    },
+    {
+      "name": "Anatomie van een Goede Prompt",
+      "title": "Anatomie van een Goede Prompt",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "stacked_boxes",
+          "position": {"x": 50, "y": 55},
+          "items": [
+            {"title": "Context", "description": "Achtergrond informatie", "color": "accent"},
+            {"title": "Instructie", "description": "Wat moet er gebeuren", "color": "primary"},
+            {"title": "Format", "description": "Gewenste output vorm", "color": "secondary"},
+            {"title": "Voorbeelden", "description": "Concrete samples (optioneel)", "color": "purple"},
+            {"title": "Beperkingen", "description": "Wat NIET te doen (optioneel)", "color": "warning"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "position": {"x": 50, "y": 8},
+          "content": "[→] Volgende slides: Deze componenten in actie!",
+          "style": {"fontsize": 18, "color": "highlight", "fontweight": "bold"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Visuele hiërarchie van prompt componenten"
+    },
+    {
+      "name": "Techniek 1: Clear Instructions",
+      "title": "Techniek 1: Clear Instructions",
+      "subtitle": "Wees specifiek, duidelijk, en direct",
+      "elements": [
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 67},
+          "width": 85,
+          "height": 28,
+          "left_title": "[X] Vaag",
+          "left_content": "\"Maak een email\"",
+          "left_color": "warning",
+          "right_title": "[OK] Specifiek",
+          "right_content": "\"Schrijf een professionele email naar een klant om een meeting te verzetten naar volgende week. Wees beleefd, bied excuses aan, en stel 3 alternatieve tijden voor.\"",
+          "right_color": "secondary",
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 32},
+          "items": [
+            "1. Specificeer de taak precies",
+            "2. Geef context en doel aan",
+            "3. Definieer gewenste lengte/format",
+            "4. Vermeld toon en stijl"
+          ],
+          "spacing": 6,
+          "animation_phase": "late",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "position": {"x": 50, "y": 8},
+          "content": "[[i]] Hoe specifieker, hoe beter het resultaat",
+          "style": {"fontsize": 18, "color": "accent", "fontweight": "bold"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Eerste techniek met before/after voorbeeld"
+    },
+    {
+      "name": "Techniek 2: Few-Shot Learning",
+      "title": "Techniek 2: Few-Shot Learning",
+      "subtitle": "Geef voorbeelden van wat je wilt",
+      "elements": [
+        {
+          "type": "code_block",
+          "position": {"x": 50, "y": 71},
+          "width": 80,
+          "height": 22,
+          "code": "Vertaal naar beleefd Nederlands:\n\nVoorbeeld 1:\nInput: \"give me the report\"\nOutput: \"Zou je mij het rapport kunnen toesturen?\"\n\nVoorbeeld 2:\nInput: \"send it now\"\nOutput: \"Kun je het zo spoedig mogelijk versturen?\"\n\nNu jouw beurt:\nInput: \"call me back\"\nOutput: ?",
+          "language": "text",
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 45},
+          "items": [
+            "✓ Model leert het patroon",
+            "✓ Consistente output",
+            "✓ Minder uitleg nodig"
+          ],
+          "item_style": {"color": "secondary", "fontweight": "bold"},
+          "spacing": 5,
+          "animation_phase": "middle",
+          "stagger": false
+        },
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 22.5},
+          "width": 70,
+          "height": 15,
+          "title": "Perfect voor:",
+          "content": "Vertalingen • Classificaties • Format conversies • Data extractie",
+          "style": {"border_color": "accent"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Demonstreer few-shot met praktisch voorbeeld"
+    },
+    {
+      "name": "Techniek 3: Chain-of-Thought",
+      "title": "Techniek 3: Chain-of-Thought",
+      "subtitle": "Laat AI stap-voor-stap denken",
+      "elements": [
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 70},
+          "width": 85,
+          "height": 22,
+          "left_title": "[!] Direct",
+          "left_content": "\"Wat is 37 x 24?\"\n→ Vaak fout bij complexe vragen",
+          "left_color": "warning",
+          "right_title": "🧠 Chain-of-Thought",
+          "right_content": "\"Wat is 37 x 24? Laat je redenering zien stap voor stap voordat je het antwoord geeft.\"\n→ Veel accurater voor complexe taken",
+          "right_color": "purple",
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 38},
+          "items": [
+            "🧮 Wiskunde & berekeningen",
+            "🤔 Logische redeneringen",
+            "[list] Meerstaps problemen",
+            "[search] Analyse taken"
+          ],
+          "title": "Wanneer gebruiken:",
+          "spacing": 6,
+          "animation_phase": "middle",
+          "stagger": true
+        },
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 13},
+          "width": 70,
+          "height": 10,
+          "title": "* Magic phrase: \"Let's think step by step\"",
+          "content": null,
+          "style": {"border_color": "highlight", "border_width": 3},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Chain-of-thought voor complexe taken"
+    },
+    {
+      "name": "Techniek 4: Role Playing",
+      "title": "Techniek 4: Role Playing",
+      "subtitle": "Geef AI een specifieke rol of persona",
+      "elements": [
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 60},
+          "columns": 3,
+          "rows": 2,
+          "items": [
+            {"icon": "👨‍🏫", "title": "Expert Leraar", "description": "Leg uit alsof ik 10 jaar oud ben", "color": "primary"},
+            {"icon": "[work]", "title": "Business Consultant", "description": "Analyseer deze data strategisch", "color": "secondary"},
+            {"icon": "👨‍[PC]", "title": "Senior Developer", "description": "Review deze code kritisch", "color": "purple"},
+            {"icon": "[edit]", "title": "Professioneel Schrijver", "description": "Schrijf in journalistieke stijl", "color": "accent"},
+            {"icon": "🤝", "title": "Empathische Coach", "description": "Geef constructieve feedback", "color": "highlight"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 27},
+          "width": 80,
+          "height": 18,
+          "title": "📝 Voorbeeld Template:",
+          "content": "Je bent een [ROL] met [X] jaar ervaring. Je specialiteit is [EXPERTISE]. Help me met: [TAAK]",
+          "style": {"border_color": "accent"},
+          "animation_phase": "late"
+        },
+        {
+          "type": "text",
+          "position": {"x": 50, "y": 8},
+          "content": "[[i]] Rollen activeren specifieke kennis en stijlen in het model",
+          "style": {"fontsize": 16, "color": "highlight", "fontweight": "bold"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Rollenspel voor specifieke expertise"
+    },
+    {
+      "name": "Veelvoorkomende Valkuilen",
+      "title": "Veelvoorkomende Valkuilen",
+      "subtitle": "Wat je NIET moet doen",
+      "elements": [
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 52},
+          "columns": 2,
+          "rows": 3,
+          "cell_width": 36,
+          "cell_height": 14,
+          "items": [
+            {"icon": "[X]", "title": "Te Vaag", "description": "Te algemene instructies zonder context", "color": "warning"},
+            {"icon": "[books]", "title": "Te Lang", "description": "Oneindige paragrafen die niemand leest", "color": "warning"},
+            {"icon": "🤔", "title": "Aannames", "description": "Veronderstellingen zonder uitleg", "color": "warning"},
+            {"icon": "🎭", "title": "Tegenstrijdig", "description": "Conflicterende instructies in één prompt", "color": "warning"},
+            {"icon": "[#]", "title": "Geen Format", "description": "Niet specificeren hoe output eruit moet zien", "color": "warning"},
+            {"icon": "🧪", "title": "Niet Testen", "description": "Geen iteratie op basis van resultaten", "color": "warning"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 14},
+          "width": 80,
+          "height": 12,
+          "title": "[OK] De Oplossing: Itereer!",
+          "content": "Test je prompts, analyseer resultaten, en verfijn stap voor stap",
+          "style": {"border_color": "secondary"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Waarschuwingen met oplossing"
+    },
+    {
+      "name": "Best Practices Checklist",
+      "title": "Je Prompt Checklist ✓",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "checklist",
+          "position": {"x": 50, "y": 60},
+          "items": [
+            "Duidelijke taak gedefinieerd?",
+            "Context en achtergrond gegeven?",
+            "Gewenst format gespecificeerd?",
+            "Toon en stijl aangegeven?",
+            "Voorbeelden toegevoegd (indien nodig)?",
+            "Beperkingen vermeld?",
+            "Rol/persona toegewezen (indien nuttig)?",
+            "Lengte/omvang aangegeven?"
+          ],
+          "check_color": "secondary",
+          "spacing": 6.5,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "box",
+          "position": {"x": 50, "y": 15.5},
+          "width": 80,
+          "height": 15,
+          "title": ">> Onthoud: Prompt Engineering is een Vaardigheid",
+          "content": "Hoe meer je oefent, hoe beter je wordt!\nStart simpel → Test → Verfijn → Herhaal",
+          "style": {"border_color": "highlight", "border_width": 4},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 60,
+      "notes": "Afsluitende checklist met motiverende boodschap"
+    }
+  ],
+  "color_overrides": {}
+}

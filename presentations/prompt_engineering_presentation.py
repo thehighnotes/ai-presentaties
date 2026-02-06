@@ -1,12 +1,11 @@
 """
-Prompt Engineering Presentatie
+Prompt Engineering
 Leer hoe je effectief communiceert met AI systemen
 """
 
 import sys
 import os
 import numpy as np
-import textwrap
 from matplotlib.patches import FancyBboxPatch, FancyArrowPatch, Circle
 import matplotlib.pyplot as plt
 
@@ -17,10 +16,10 @@ from core import BasePresentation, PresentationStyle
 
 
 class PromptEngineeringPresentation(BasePresentation):
-    """Prompt Engineering - De kunst van AI communicatie"""
+    """Prompt Engineering"""
 
     def __init__(self):
-        """Initialize the prompt engineering presentation"""
+        """Initialize the presentation"""
         step_names = [
             'Landing',
             'Wat is Prompt Engineering?',
@@ -36,13 +35,6 @@ class PromptEngineeringPresentation(BasePresentation):
 
         super().__init__("Prompt Engineering", step_names)
 
-        # Example prompts
-        self.bad_prompt = "Schrijf iets over AI"
-        self.good_prompt = """Schrijf een informatieve paragraaf van 100 woorden
-over de voordelen van AI in de gezondheidszorg.
-Richt je op: diagnose nauwkeurigheid, efficiëntie, en patiëntenzorg.
-Gebruik een professionele maar toegankelijke toon."""
-
         self.show_landing_page()
 
     def get_frames_for_step(self, step: int) -> int:
@@ -57,7 +49,7 @@ Gebruik een professionele maar toegankelijke toon."""
         ax.set_xlim(0, 100)
         ax.set_ylim(0, 100)
 
-        # Main title
+        # Main title box
         title_box = FancyBboxPatch(
             (10, 55), 80, 25,
             boxstyle="round,pad=2",
@@ -76,16 +68,15 @@ Gebruik een professionele maar toegankelijke toon."""
                 fontsize=30, ha='center', va='center',
                 color=self.colors['text'], alpha=0.8, style='italic')
 
-        # Icons
         ax.text(30, 67, '[chat]', fontsize=75, ha='center', va='center')
+
         ax.text(70, 67, '[AI]', fontsize=75, ha='center', va='center')
 
-        # Subtitle
         ax.text(50, 45, 'Leer hoe je betere resultaten krijgt uit AI',
                 fontsize=27, ha='center', va='center',
                 color=self.colors['accent'], alpha=0.9)
 
-        # Instructions
+        # Instructions box
         instr_box = FancyBboxPatch(
             (25, 15), 50, 15,
             boxstyle="round,pad=1",
@@ -104,7 +95,6 @@ Gebruik een professionele maar toegankelijke toon."""
                 fontsize=18, ha='center', va='center',
                 color=self.colors['dim'], style='italic')
 
-        # Footer
         ax.text(50, 5, 'Van vage vragen naar concrete resultaten',
                 fontsize=21, ha='center', va='center',
                 color=self.colors['text'], alpha=0.5)
@@ -119,23 +109,23 @@ Gebruik een professionele maar toegankelijke toon."""
         if self.current_step == 0:
             pass  # Landing is static
         elif self.current_step == 1:
-            self.draw_what_is_prompting(progress)
+            self.draw_wat_is_prompt_engineering(progress)
         elif self.current_step == 2:
-            self.draw_why_important(progress)
+            self.draw_waarom_is_het_belangrijk(progress)
         elif self.current_step == 3:
-            self.draw_anatomy(progress)
+            self.draw_anatomie_van_een_goede_prompt(progress)
         elif self.current_step == 4:
-            self.draw_clear_instructions(progress)
+            self.draw_techniek_1_clear_instructions(progress)
         elif self.current_step == 5:
-            self.draw_few_shot(progress)
+            self.draw_techniek_2_few_shot_learning(progress)
         elif self.current_step == 6:
-            self.draw_chain_of_thought(progress)
+            self.draw_techniek_3_chain_of_thought(progress)
         elif self.current_step == 7:
-            self.draw_role_playing(progress)
+            self.draw_techniek_4_role_playing(progress)
         elif self.current_step == 8:
-            self.draw_pitfalls(progress)
+            self.draw_veelvoorkomende_valkuilen(progress)
         elif self.current_step == 9:
-            self.draw_checklist(progress)
+            self.draw_best_practices_checklist(progress)
 
         if frame >= total_frames - 1:
             self.is_animating = False
@@ -145,27 +135,27 @@ Gebruik een professionele maar toegankelijke toon."""
         if self.current_step == -1:
             self.show_landing_page()
         elif self.current_step == 1:
-            self.draw_what_is_prompting(1.0)
+            self.draw_wat_is_prompt_engineering(1.0)
         elif self.current_step == 2:
-            self.draw_why_important(1.0)
+            self.draw_waarom_is_het_belangrijk(1.0)
         elif self.current_step == 3:
-            self.draw_anatomy(1.0)
+            self.draw_anatomie_van_een_goede_prompt(1.0)
         elif self.current_step == 4:
-            self.draw_clear_instructions(1.0)
+            self.draw_techniek_1_clear_instructions(1.0)
         elif self.current_step == 5:
-            self.draw_few_shot(1.0)
+            self.draw_techniek_2_few_shot_learning(1.0)
         elif self.current_step == 6:
-            self.draw_chain_of_thought(1.0)
+            self.draw_techniek_3_chain_of_thought(1.0)
         elif self.current_step == 7:
-            self.draw_role_playing(1.0)
+            self.draw_techniek_4_role_playing(1.0)
         elif self.current_step == 8:
-            self.draw_pitfalls(1.0)
+            self.draw_veelvoorkomende_valkuilen(1.0)
         elif self.current_step == 9:
-            self.draw_checklist(1.0)
+            self.draw_best_practices_checklist(1.0)
         plt.draw()
 
-    def draw_what_is_prompting(self, progress: float):
-        """Step 1: What is Prompt Engineering?"""
+    def draw_wat_is_prompt_engineering(self, progress: float):
+        """Step 1: Wat is Prompt Engineering?"""
         self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.axis('off')
@@ -178,464 +168,127 @@ Gebruik een professionele maar toegankelijke toon."""
                 fontsize=45, fontweight='bold', ha='center', va='top',
                 color=self.colors['primary'], alpha=title_alpha)
 
-        # Definition
         if progress > 0.2:
-            def_alpha = min(1.0, (progress - 0.2) / 0.3)
+            box_alpha = min(1.0, (progress - 0.2) / 0.2)
 
-            def_box = FancyBboxPatch(
-                (15, 70), 70, 15,
-                boxstyle="round,pad=1.5",
+            box = FancyBboxPatch(
+                (15.0, 70.0), 70, 15,
+                boxstyle="round,pad=1",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['primary'],
                 linewidth=3,
-                alpha=0.95 * def_alpha
+                alpha=0.95 * box_alpha
             )
-            ax.add_patch(def_box)
+            ax.add_patch(box)
 
-            definition = """Prompt Engineering is de kunst en wetenschap van het
-formuleren van effectieve instructies voor AI-modellen om
-optimale resultaten te krijgen."""
-
-            ax.text(50, 77.5, definition,
-                    fontsize=21, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=def_alpha,
-                    linespacing=1.5)
-
-        # Visual: Input -> Processing -> Output
-        items = [
-            ('Jouw\nPrompt', 20, 50, 0.45, self.colors['accent'], '📝'),
-            ('AI\nVerwerking', 50, 50, 0.55, self.colors['primary'], '⚙️'),
-            ('Resultaat', 80, 50, 0.65, self.colors['secondary'], '*')
-        ]
-
-        for text, x, y, delay, color, icon in items:
-            if progress > delay:
-                alpha = min(1.0, (progress - delay) / 0.1)
-
-                box = FancyBboxPatch(
-                    (x - 10, y - 8), 20, 16,
-                    boxstyle="round,pad=1",
-                    facecolor=self.colors['bg_light'],
-                    edgecolor=color,
-                    linewidth=3,
-                    alpha=0.95 * alpha
-                )
-                ax.add_patch(box)
-
-                ax.text(x, y + 4, icon,
-                        fontsize=36, ha='center', va='center',
-                        alpha=alpha)
-
-                ax.text(x, y - 3, text,
-                        fontsize=18, ha='center', va='center',
-                        color=color, fontweight='bold',
-                        alpha=alpha,
-                        linespacing=1.2)
-
-                # Arrow to next
-                if x < 80 and progress > delay + 0.05:
-                    arrow_alpha = min(1.0, (progress - delay - 0.05) / 0.05)
-                    arrow = FancyArrowPatch(
-                        (x + 10, y), (x + 20, y),
-                        arrowstyle='-|>',
-                        mutation_scale=25,
-                        linewidth=3,
-                        color=self.colors['dim'],
-                        alpha=arrow_alpha
-                    )
-                    ax.add_artist(arrow)
-
-        # Key insight
-        if progress > 0.8:
-            insight_alpha = min(1.0, (progress - 0.8) / 0.2)
-
-            insight_box = FancyBboxPatch(
-                (15, 20), 70, 15,
-                boxstyle="round,pad=1",
-                facecolor=self.colors['bg_light'],
-                edgecolor=self.colors['highlight'],
-                linewidth=2,
-                alpha=0.9 * insight_alpha
-            )
-            ax.add_patch(insight_box)
-
-            ax.text(50, 30, '[!] De kwaliteit van je prompt bepaalt de kwaliteit van het resultaat',
-                    fontsize=21, ha='center', va='center',
-                    color=self.colors['highlight'], fontweight='bold',
-                    alpha=insight_alpha)
-
-            ax.text(50, 24, 'Betere prompts = Betere antwoorden',
+            ax.text(50, 73.75, 'Prompt Engineering is de kunst en wetenschap van het formuleren van effectieve instructies voor AI-modellen om optimale resultaten te krijgen.',
                     fontsize=18, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=insight_alpha * 0.8)
+                    color=self.colors['text'], alpha=box_alpha * 0.9)
 
-        self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
+        # Flow step 1
+        if progress > 0.40:
+            step_alpha = min(1.0, (progress - 0.40) / 0.07)
 
-    def draw_why_important(self, progress: float):
-        """Step 2: Why is it important?"""
-        self.fig.clear()
-        ax = self.fig.add_subplot(111)
-        ax.axis('off')
-        ax.set_xlim(0, 100)
-        ax.set_ylim(0, 100)
-
-        # Title
-        ax.text(50, 95, 'Waarom is het Belangrijk?',
-                fontsize=45, fontweight='bold', ha='center', va='top',
-                color=self.colors['highlight'])
-
-        # Comparison: Bad vs Good
-        if progress > 0.15:
-            bad_alpha = min(1.0, (progress - 0.15) / 0.2)
-
-            # Bad prompt
-            bad_box = FancyBboxPatch(
-                (10, 60), 35, 25,
-                boxstyle="round,pad=1",
-                facecolor='#2a1a1a',
-                edgecolor=self.colors['warning'],
-                linewidth=3,
-                alpha=0.9 * bad_alpha
-            )
-            ax.add_patch(bad_box)
-
-            ax.text(27.5, 80, '✗ Vage Prompt', fontsize=21, ha='center',
-                    color=self.colors['warning'], fontweight='bold',
-                    alpha=bad_alpha)
-
-            ax.text(27.5, 74, '"Schrijf iets\nover AI"',
-                    fontsize=18, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=bad_alpha,
-                    style='italic',
-                    linespacing=1.3)
-
-            ax.text(27.5, 65, '→ Algemeen\n→ Niet bruikbaar\n→ Frustrerend',
-                    fontsize=14, ha='center', va='center',
-                    color=self.colors['dim'],
-                    alpha=bad_alpha,
-                    linespacing=1.4)
-
-        # Good prompt
-        if progress > 0.4:
-            good_alpha = min(1.0, (progress - 0.4) / 0.2)
-
-            good_box = FancyBboxPatch(
-                (55, 60), 35, 25,
-                boxstyle="round,pad=1",
-                facecolor='#1a3a1a',
-                edgecolor=self.colors['secondary'],
-                linewidth=3,
-                alpha=0.95 * good_alpha
-            )
-            ax.add_patch(good_box)
-
-            ax.text(72.5, 80, '✓ Specifieke Prompt', fontsize=21, ha='center',
-                    color=self.colors['secondary'], fontweight='bold',
-                    alpha=good_alpha)
-
-            ax.text(72.5, 74, '"Leg uit hoe\nRAG werkt..."',
-                    fontsize=18, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=good_alpha,
-                    style='italic',
-                    linespacing=1.3)
-
-            ax.text(72.5, 65, '→ Specifiek\n→ Direct bruikbaar\n→ Efficiënt',
-                    fontsize=14, ha='center', va='center',
-                    color=self.colors['secondary'],
-                    alpha=good_alpha,
-                    linespacing=1.4)
-
-        # Benefits
-        benefits = [
-            ('⏱️ Bespaart tijd', 45, 0.65),
-            ('>> Betere resultaten', 38, 0.7),
-            ('💰 Lagere kosten', 31, 0.75),
-            ('[>>] Meer productiviteit', 24, 0.8)
-        ]
-
-        for text, y, delay in benefits:
-            if progress > delay:
-                alpha = min(1.0, (progress - delay) / 0.1)
-                ax.text(50, y, text,
-                        fontsize=21, ha='center', va='center',
-                        color=self.colors['text'],
-                        alpha=alpha,
-                        fontweight='bold')
-
-        # Bottom insight
-        if progress > 0.9:
-            insight_alpha = min(1.0, (progress - 0.9) / 0.1)
-            ax.text(50, 8, '[i] Goede prompts kunnen het verschil maken tussen nutteloos en onmisbaar',
-                    fontsize=18, ha='center', va='center',
-                    color=self.colors['accent'],
-                    fontweight='bold',
-                    alpha=insight_alpha)
-
-        self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
-
-    def draw_anatomy(self, progress: float):
-        """Step 3: Anatomy of a good prompt"""
-        self.fig.clear()
-        ax = self.fig.add_subplot(111)
-        ax.axis('off')
-        ax.set_xlim(0, 100)
-        ax.set_ylim(0, 100)
-
-        # Title
-        ax.text(50, 95, 'Anatomie van een Goede Prompt',
-                fontsize=42, fontweight='bold', ha='center', va='top',
-                color=self.colors['primary'])
-
-        # Components in layered boxes
-        components = [
-            ('Context', 'Achtergrond informatie', 80, self.colors['accent'], 0.15),
-            ('Instructie', 'Wat moet er gebeuren', 65, self.colors['primary'], 0.3),
-            ('Format', 'Gewenste output vorm', 50, self.colors['secondary'], 0.45),
-            ('Voorbeelden', 'Concrete samples (optioneel)', 35, self.colors['purple'], 0.6),
-            ('Beperkingen', 'Wat NIET te doen (optioneel)', 20, self.colors['warning'], 0.75)
-        ]
-
-        for idx, (name, desc, y, color, delay) in enumerate(components):
-            if progress > delay:
-                alpha = min(1.0, (progress - delay) / 0.15)
-
-                # Width varies for visual hierarchy
-                width = 70 - idx * 4
-                x_start = 15 + idx * 2
-
-                box = FancyBboxPatch(
-                    (x_start, y - 6), width, 12,
-                    boxstyle="round,pad=0.8",
-                    facecolor=self.colors['bg_light'],
-                    edgecolor=color,
-                    linewidth=3,
-                    alpha=0.95 * alpha
-                )
-                ax.add_patch(box)
-
-                ax.text(x_start + width/2, y + 2, name,
-                        fontsize=21, ha='center', va='center',
-                        color=color, fontweight='bold',
-                        alpha=alpha)
-
-                ax.text(x_start + width/2, y - 2, desc,
-                        fontsize=14, ha='center', va='center',
-                        color=self.colors['text'],
-                        alpha=alpha * 0.8)
-
-        # Example
-        if progress > 0.9:
-            ex_alpha = min(1.0, (progress - 0.9) / 0.1)
-            ax.text(50, 8, '[→] Volgende slides: Deze componenten in actie!',
-                    fontsize=18, ha='center', va='center',
-                    color=self.colors['highlight'],
-                    fontweight='bold',
-                    alpha=ex_alpha)
-
-        self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
-
-    def draw_clear_instructions(self, progress: float):
-        """Step 4: Clear Instructions technique"""
-        self.fig.clear()
-        ax = self.fig.add_subplot(111)
-        ax.axis('off')
-        ax.set_xlim(0, 100)
-        ax.set_ylim(0, 100)
-
-        # Title
-        ax.text(50, 95, 'Techniek 1: Clear Instructions',
-                fontsize=42, fontweight='bold', ha='center', va='top',
-                color=self.colors['primary'])
-
-        ax.text(50, 89, 'Wees specifiek, duidelijk, en direct',
-                fontsize=21, ha='center', va='top',
-                color=self.colors['text'], alpha=0.7, style='italic')
-
-        # Before/After
-        if progress > 0.15:
-            before_alpha = min(1.0, (progress - 0.15) / 0.2)
-
-            # Before
-            before_box = FancyBboxPatch(
-                (5, 55), 40, 25,
-                boxstyle="round,pad=1",
-                facecolor='#2a1a1a',
-                edgecolor=self.colors['warning'],
-                linewidth=2,
-                alpha=0.9 * before_alpha
-            )
-            ax.add_patch(before_box)
-
-            ax.text(25, 76, '[X] Vaag', fontsize=18, ha='center',
-                    color=self.colors['warning'], fontweight='bold',
-                    alpha=before_alpha)
-
-            vague = textwrap.fill('"Maak een email"', width=25)
-            ax.text(25, 67, vague,
-                    fontsize=16, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=before_alpha,
-                    style='italic')
-
-        if progress > 0.4:
-            after_alpha = min(1.0, (progress - 0.4) / 0.2)
-
-            # After
-            after_box = FancyBboxPatch(
-                (55, 50), 40, 35,
-                boxstyle="round,pad=1",
-                facecolor='#1a3a1a',
-                edgecolor=self.colors['secondary'],
-                linewidth=3,
-                alpha=0.95 * after_alpha
-            )
-            ax.add_patch(after_box)
-
-            ax.text(75, 81, '[OK] Specifiek', fontsize=18, ha='center',
-                    color=self.colors['secondary'], fontweight='bold',
-                    alpha=after_alpha)
-
-            specific = textwrap.fill('"Schrijf een professionele email naar een klant '
-                                   'om een meeting te verzetten naar volgende week. '
-                                   'Wees beleefd, bied excuses aan, '
-                                   'en stel 3 alternatieve tijden voor."', width=32)
-            ax.text(75, 66, specific,
-                    fontsize=14, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=after_alpha,
-                    linespacing=1.5)
-
-        # Tips
-        tips = [
-            ('1. Specificeer de taak precies', 38, 0.65),
-            ('2. Geef context en doel aan', 32, 0.75),
-            ('3. Definieer gewenste lengte/format', 26, 0.8),
-            ('4. Vermeld toon en stijl', 20, 0.85)
-        ]
-
-        for text, y, delay in tips:
-            if progress > delay:
-                alpha = min(1.0, (progress - delay) / 0.1)
-                ax.text(50, y, text,
-                        fontsize=16, ha='center', va='center',
-                        color=self.colors['text'],
-                        alpha=alpha)
-
-        # Bottom
-        if progress > 0.9:
-            bottom_alpha = min(1.0, (progress - 0.9) / 0.1)
-            ax.text(50, 8, '[[i]] Hoe specifieker, hoe beter het resultaat',
-                    fontsize=18, ha='center', va='center',
-                    color=self.colors['accent'],
-                    fontweight='bold',
-                    alpha=bottom_alpha)
-
-        self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
-
-    def draw_few_shot(self, progress: float):
-        """Step 5: Few-Shot Learning technique"""
-        self.fig.clear()
-        ax = self.fig.add_subplot(111)
-        ax.axis('off')
-        ax.set_xlim(0, 100)
-        ax.set_ylim(0, 100)
-
-        # Title
-        ax.text(50, 95, 'Techniek 2: Few-Shot Learning',
-                fontsize=42, fontweight='bold', ha='center', va='top',
-                color=self.colors['secondary'])
-
-        ax.text(50, 89, 'Geef voorbeelden van wat je wilt',
-                fontsize=21, ha='center', va='top',
-                color=self.colors['text'], alpha=0.7, style='italic')
-
-        # Example structure
-        if progress > 0.15:
-            struct_alpha = min(1.0, (progress - 0.15) / 0.2)
-
-            struct_box = FancyBboxPatch(
-                (10, 60), 80, 22,
-                boxstyle="round,pad=1.5",
-                facecolor=self.colors['bg_light'],
-                edgecolor=self.colors['secondary'],
-                linewidth=3,
-                alpha=0.95 * struct_alpha
-            )
-            ax.add_patch(struct_box)
-
-            example_text = """Vertaal naar beleefd Nederlands:
-
-Voorbeeld 1:
-Input: "give me the report"
-Output: "Zou je mij het rapport kunnen toesturen?"
-
-Voorbeeld 2:
-Input: "send it now"
-Output: "Kun je het zo spoedig mogelijk versturen?"
-
-Nu jouw beurt:
-Input: "call me back"
-Output: ?"""
-
-            ax.text(50, 71, example_text,
-                    fontsize=15, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=struct_alpha,
-                    family='monospace',
-                    linespacing=1.6)
-
-        # Benefits
-        if progress > 0.5:
-            benefits_alpha = min(1.0, (progress - 0.5) / 0.3)
-
-            benefits = [
-                '✓ Model leert het patroon',
-                '✓ Consistente output',
-                '✓ Minder uitleg nodig'
-            ]
-
-            for idx, benefit in enumerate(benefits):
-                ax.text(50, 48 - idx * 5, benefit,
-                        fontsize=18, ha='center', va='center',
-                        color=self.colors['secondary'],
-                        alpha=benefits_alpha,
-                        fontweight='bold')
-
-        # Use cases
-        if progress > 0.75:
-            use_alpha = min(1.0, (progress - 0.75) / 0.25)
-
-            use_box = FancyBboxPatch(
-                (15, 15), 70, 15,
-                boxstyle="round,pad=1",
+            step_box = FancyBboxPatch(
+                (17.0, 38), 19.333333333333332, 24,
+                boxstyle="round,pad=0.5",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['accent'],
                 linewidth=2,
-                alpha=0.9 * use_alpha
+                alpha=0.95 * step_alpha
             )
-            ax.add_patch(use_box)
+            ax.add_patch(step_box)
 
-            ax.text(50, 25, 'Perfect voor:', fontsize=18, ha='center',
-                    color=self.colors['accent'], fontweight='bold',
-                    alpha=use_alpha)
+            ax.text(26.666666666666664, 56, '📝',
+                    fontsize=30, ha='center', va='center', alpha=step_alpha)
+            ax.text(26.666666666666664, 48, 'Jouw Prompt',
+                    fontsize=18, fontweight='bold', ha='center', va='center',
+                    color=self.colors['accent'], alpha=step_alpha)
+            ax.text(26.666666666666664, 42, '',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=step_alpha * 0.7)
 
-            ax.text(50, 20, 'Vertalingen • Classificaties • Format conversies • Data extractie',
-                    fontsize=15, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=use_alpha)
+            if progress > 0.43:
+                ax.annotate('', xy=(41.33333333333333, 50), xytext=(37.33333333333333, 50),
+                           arrowprops=dict(arrowstyle='->', color=self.colors['dim'],
+                                          lw=2), alpha=step_alpha)
+
+        # Flow step 2
+        if progress > 0.47:
+            step_alpha = min(1.0, (progress - 0.47) / 0.07)
+
+            step_box = FancyBboxPatch(
+                (40.333333333333336, 38), 19.333333333333332, 24,
+                boxstyle="round,pad=0.5",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['primary'],
+                linewidth=2,
+                alpha=0.95 * step_alpha
+            )
+            ax.add_patch(step_box)
+
+            ax.text(50.0, 56, '⚙️',
+                    fontsize=30, ha='center', va='center', alpha=step_alpha)
+            ax.text(50.0, 48, 'AI Verwerking',
+                    fontsize=18, fontweight='bold', ha='center', va='center',
+                    color=self.colors['primary'], alpha=step_alpha)
+            ax.text(50.0, 42, '',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=step_alpha * 0.7)
+
+            if progress > 0.50:
+                ax.annotate('', xy=(64.66666666666666, 50), xytext=(60.666666666666664, 50),
+                           arrowprops=dict(arrowstyle='->', color=self.colors['dim'],
+                                          lw=2), alpha=step_alpha)
+
+        # Flow step 3
+        if progress > 0.53:
+            step_alpha = min(1.0, (progress - 0.53) / 0.07)
+
+            step_box = FancyBboxPatch(
+                (63.666666666666664, 38), 19.333333333333332, 24,
+                boxstyle="round,pad=0.5",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['secondary'],
+                linewidth=2,
+                alpha=0.95 * step_alpha
+            )
+            ax.add_patch(step_box)
+
+            ax.text(73.33333333333333, 56, '*',
+                    fontsize=30, ha='center', va='center', alpha=step_alpha)
+            ax.text(73.33333333333333, 48, 'Resultaat',
+                    fontsize=18, fontweight='bold', ha='center', va='center',
+                    color=self.colors['secondary'], alpha=step_alpha)
+            ax.text(73.33333333333333, 42, '',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=step_alpha * 0.7)
+
+        if progress > 0.8:
+            box_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+
+            box = FancyBboxPatch(
+                (15.0, 19.5), 70, 15,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['highlight'],
+                linewidth=3,
+                alpha=0.95 * box_alpha
+            )
+            ax.add_patch(box)
+
+            ax.text(50, 30.75, '[!] De kwaliteit van je prompt bepaalt de kwaliteit van het resultaat',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['highlight'], alpha=box_alpha)
+
+            ax.text(50, 23.25, 'Betere prompts = Betere antwoorden',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=box_alpha * 0.9)
 
         self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
 
-    def draw_chain_of_thought(self, progress: float):
-        """Step 6: Chain-of-Thought technique"""
+    def draw_waarom_is_het_belangrijk(self, progress: float):
+        """Step 2: Waarom is het Belangrijk?"""
         self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.axis('off')
@@ -643,224 +296,671 @@ Output: ?"""
         ax.set_ylim(0, 100)
 
         # Title
-        ax.text(50, 95, 'Techniek 3: Chain-of-Thought',
-                fontsize=42, fontweight='bold', ha='center', va='top',
-                color=self.colors['purple'])
+        title_alpha = min(1.0, progress / 0.2)
+        ax.text(50, 95, 'Waarom is het Belangrijk?',
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
 
-        ax.text(50, 89, 'Laat AI stap-voor-stap denken',
-                fontsize=21, ha='center', va='top',
-                color=self.colors['text'], alpha=0.7, style='italic')
+        # Comparison: Left (before/bad)
+        if progress > 0.2:
+            left_alpha = min(1.0, (progress - 0.2) / 0.1)
 
-        # Comparison
-        if progress > 0.15:
-            direct_alpha = min(1.0, (progress - 0.15) / 0.2)
-
-            # Direct
-            direct_box = FancyBboxPatch(
-                (5, 60), 40, 20,
+            left_box = FancyBboxPatch(
+                (10.0, 57.5), 35.0, 25,
                 boxstyle="round,pad=1",
-                facecolor='#2a2a1a',
+                facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['warning'],
-                linewidth=2,
-                alpha=0.9 * direct_alpha
+                linewidth=3,
+                alpha=0.95 * left_alpha
             )
-            ax.add_patch(direct_box)
+            ax.add_patch(left_box)
 
-            ax.text(25, 76, '[!] Direct', fontsize=18, ha='center',
-                    color=self.colors['warning'], fontweight='bold',
-                    alpha=direct_alpha)
+            ax.text(27.5, 76.25, '✗ Vage Prompt',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=left_alpha)
 
-            direct_text = textwrap.fill('"Wat is 37 x 24?"', width=25)
-            ax.text(25, 68, direct_text,
-                    fontsize=16, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=direct_alpha,
-                    style='italic')
+            ax.text(27.5, 63.75, '"Schrijf iets over AI"\n→ Algemeen\n→ Niet bruikbaar\n→ Frustrerend',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=left_alpha * 0.9)
 
-            ax.text(25, 63, '→ Vaak fout bij\ncomplexe vragen',
-                    fontsize=12, ha='center', va='center',
-                    color=self.colors['dim'],
-                    alpha=direct_alpha,
-                    linespacing=1.4)
+        # Comparison: Right (after/good)
+        if progress > 0.30000000000000004:
+            right_alpha = min(1.0, (progress - 0.30000000000000004) / 0.1)
 
-        if progress > 0.4:
-            cot_alpha = min(1.0, (progress - 0.4) / 0.2)
-
-            # Chain-of-Thought
-            cot_box = FancyBboxPatch(
-                (55, 55), 40, 30,
+            right_box = FancyBboxPatch(
+                (55.0, 57.5), 35.0, 25,
                 boxstyle="round,pad=1",
-                facecolor='#2a1a3a',
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['secondary'],
+                linewidth=3,
+                alpha=0.95 * right_alpha
+            )
+            ax.add_patch(right_box)
+
+            ax.text(72.5, 76.25, '✓ Specifieke Prompt',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['secondary'], alpha=right_alpha)
+
+            ax.text(72.5, 63.75, '"Leg uit hoe RAG werkt..."\n→ Specifiek\n→ Direct bruikbaar\n→ Efficiënt',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=right_alpha * 0.9)
+
+        if progress > 0.40:
+            item_alpha = min(1.0, (progress - 0.40) / 0.05)
+            ax.text(20, 40, '• ⏱️ Bespaart tijd',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.45:
+            item_alpha = min(1.0, (progress - 0.45) / 0.05)
+            ax.text(20, 33, '• >> Betere resultaten',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.50:
+            item_alpha = min(1.0, (progress - 0.50) / 0.05)
+            ax.text(20, 26, '• 💰 Lagere kosten',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.55:
+            item_alpha = min(1.0, (progress - 0.55) / 0.05)
+            ax.text(20, 19, '• [>>] Meer productiviteit',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.8:
+            text_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+            ax.text(50, 8, '[i] Goede prompts kunnen het verschil maken tussen nutteloos en onmisbaar',
+                    fontsize=18, fontweight='bold',
+                    ha='center', va='center',
+                    color=self.colors['accent'], alpha=text_alpha)
+
+        self.add_status_indicator(progress < 1.0)
+
+    def draw_anatomie_van_een_goede_prompt(self, progress: float):
+        """Step 3: Anatomie van een Goede Prompt"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        # Title
+        title_alpha = min(1.0, progress / 0.2)
+        ax.text(50, 95, 'Anatomie van een Goede Prompt',
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
+
+        # Stacked box 1
+        if progress > 0.20:
+            stack_alpha = min(1.0, (progress - 0.20) / 0.04)
+
+            stack_box = FancyBboxPatch(
+                (15.0, 86.5), 70, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['accent'],
+                linewidth=3,
+                alpha=0.95 * stack_alpha
+            )
+            ax.add_patch(stack_box)
+
+            ax.text(50, 94.5, 'Context',
+                    fontsize=21, fontweight='bold', ha='center', va='center',
+                    color=self.colors['accent'], alpha=stack_alpha)
+            ax.text(50, 90.5, 'Achtergrond informatie',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=stack_alpha * 0.8)
+
+        # Stacked box 2
+        if progress > 0.24:
+            stack_alpha = min(1.0, (progress - 0.24) / 0.04)
+
+            stack_box = FancyBboxPatch(
+                (17.0, 71.5), 66, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['primary'],
+                linewidth=3,
+                alpha=0.95 * stack_alpha
+            )
+            ax.add_patch(stack_box)
+
+            ax.text(50, 79.5, 'Instructie',
+                    fontsize=21, fontweight='bold', ha='center', va='center',
+                    color=self.colors['primary'], alpha=stack_alpha)
+            ax.text(50, 75.5, 'Wat moet er gebeuren',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=stack_alpha * 0.8)
+
+        # Stacked box 3
+        if progress > 0.28:
+            stack_alpha = min(1.0, (progress - 0.28) / 0.04)
+
+            stack_box = FancyBboxPatch(
+                (19.0, 56.5), 62, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['secondary'],
+                linewidth=3,
+                alpha=0.95 * stack_alpha
+            )
+            ax.add_patch(stack_box)
+
+            ax.text(50, 64.5, 'Format',
+                    fontsize=21, fontweight='bold', ha='center', va='center',
+                    color=self.colors['secondary'], alpha=stack_alpha)
+            ax.text(50, 60.5, 'Gewenste output vorm',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=stack_alpha * 0.8)
+
+        # Stacked box 4
+        if progress > 0.32:
+            stack_alpha = min(1.0, (progress - 0.32) / 0.04)
+
+            stack_box = FancyBboxPatch(
+                (21.0, 41.5), 58, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['purple'],
                 linewidth=3,
-                alpha=0.95 * cot_alpha
+                alpha=0.95 * stack_alpha
             )
-            ax.add_patch(cot_box)
+            ax.add_patch(stack_box)
 
-            ax.text(75, 81, '🧠 Chain-of-Thought', fontsize=18, ha='center',
-                    color=self.colors['purple'], fontweight='bold',
-                    alpha=cot_alpha)
-
-            cot_text = textwrap.fill('"Wat is 37 x 24? '
-                                    'Laat je redenering zien '
-                                    'stap voor stap voordat '
-                                    'je het antwoord geeft."', width=32)
-            ax.text(75, 68, cot_text,
+            ax.text(50, 49.5, 'Voorbeelden',
+                    fontsize=21, fontweight='bold', ha='center', va='center',
+                    color=self.colors['purple'], alpha=stack_alpha)
+            ax.text(50, 45.5, 'Concrete samples (optioneel)',
                     fontsize=14, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=cot_alpha,
-                    linespacing=1.5,
-                    style='italic')
+                    color=self.colors['text'], alpha=stack_alpha * 0.8)
 
-            ax.text(75, 58, '→ Veel accurater\nvoor complexe taken',
-                    fontsize=12, ha='center', va='center',
-                    color=self.colors['purple'],
-                    alpha=cot_alpha,
-                    linespacing=1.4,
-                    fontweight='bold')
+        # Stacked box 5
+        if progress > 0.36:
+            stack_alpha = min(1.0, (progress - 0.36) / 0.04)
 
-        # When to use
+            stack_box = FancyBboxPatch(
+                (23.0, 26.5), 54, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=3,
+                alpha=0.95 * stack_alpha
+            )
+            ax.add_patch(stack_box)
+
+            ax.text(50, 34.5, 'Beperkingen',
+                    fontsize=21, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=stack_alpha)
+            ax.text(50, 30.5, 'Wat NIET te doen (optioneel)',
+                    fontsize=14, ha='center', va='center',
+                    color=self.colors['text'], alpha=stack_alpha * 0.8)
+
+        if progress > 0.8:
+            text_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+            ax.text(50, 8, '[→] Volgende slides: Deze componenten in actie!',
+                    fontsize=18, fontweight='bold',
+                    ha='center', va='center',
+                    color=self.colors['highlight'], alpha=text_alpha)
+
+        self.add_status_indicator(progress < 1.0)
+
+    def draw_techniek_1_clear_instructions(self, progress: float):
+        """Step 4: Techniek 1: Clear Instructions"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        # Title
+        title_alpha = min(1.0, progress / 0.2)
+        ax.text(50, 95, 'Techniek 1: Clear Instructions',
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
+
+        if progress > 0.1:
+            sub_alpha = min(1.0, (progress - 0.1) / 0.2)
+            ax.text(50, 88, 'Wees specifiek, duidelijk, en direct',
+                    fontsize=24, ha='center', va='top',
+                    color=self.colors['text'], alpha=sub_alpha * 0.8, style='italic')
+
+        # Comparison: Left (before/bad)
+        if progress > 0.2:
+            left_alpha = min(1.0, (progress - 0.2) / 0.1)
+
+            left_box = FancyBboxPatch(
+                (7.5, 53.0), 37.5, 28,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=3,
+                alpha=0.95 * left_alpha
+            )
+            ax.add_patch(left_box)
+
+            ax.text(26.25, 74.0, '[X] Vaag',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=left_alpha)
+
+            ax.text(26.25, 60.0, '"Maak een email"',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=left_alpha * 0.9)
+
+        # Comparison: Right (after/good)
+        if progress > 0.30000000000000004:
+            right_alpha = min(1.0, (progress - 0.30000000000000004) / 0.1)
+
+            right_box = FancyBboxPatch(
+                (55.0, 53.0), 37.5, 28,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['secondary'],
+                linewidth=3,
+                alpha=0.95 * right_alpha
+            )
+            ax.add_patch(right_box)
+
+            ax.text(73.75, 74.0, '[OK] Specifiek',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['secondary'], alpha=right_alpha)
+
+            ax.text(73.75, 60.0, '"Schrijf een professionele email naar een klant om een meeting te verzetten naar volgende week. Wees beleefd, bied excuses aan, en stel 3 alternatieve tijden voor."',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=right_alpha * 0.9)
+
+        if progress > 0.60:
+            item_alpha = min(1.0, (progress - 0.60) / 0.05)
+            ax.text(20, 32, '• 1. Specificeer de taak precies',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
         if progress > 0.65:
-            when_alpha = min(1.0, (progress - 0.65) / 0.25)
+            item_alpha = min(1.0, (progress - 0.65) / 0.05)
+            ax.text(20, 26, '• 2. Geef context en doel aan',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
 
-            when_items = [
-                ('🧮 Wiskunde & berekeningen', 42),
-                ('🤔 Logische redeneringen', 36),
-                ('[list] Meerstaps problemen', 30),
-                ('[search] Analyse taken', 24)
-            ]
+        if progress > 0.70:
+            item_alpha = min(1.0, (progress - 0.70) / 0.05)
+            ax.text(20, 20, '• 3. Definieer gewenste lengte/format',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
 
-            ax.text(50, 48, 'Wanneer gebruiken:', fontsize=18, ha='center',
-                    color=self.colors['accent'], fontweight='bold',
-                    alpha=when_alpha)
+        if progress > 0.75:
+            item_alpha = min(1.0, (progress - 0.75) / 0.05)
+            ax.text(20, 14, '• 4. Vermeld toon en stijl',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
 
-            for text, y in when_items:
-                ax.text(50, y, text,
-                        fontsize=16, ha='center', va='center',
-                        color=self.colors['text'],
-                        alpha=when_alpha)
+        if progress > 0.8:
+            text_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+            ax.text(50, 8, '[[i]] Hoe specifieker, hoe beter het resultaat',
+                    fontsize=18, fontweight='bold',
+                    ha='center', va='center',
+                    color=self.colors['accent'], alpha=text_alpha)
 
-        # Magic phrase
-        if progress > 0.85:
-            magic_alpha = min(1.0, (progress - 0.85) / 0.15)
+        self.add_status_indicator(progress < 1.0)
 
-            magic_box = FancyBboxPatch(
-                (15, 8), 70, 10,
+    def draw_techniek_2_few_shot_learning(self, progress: float):
+        """Step 5: Techniek 2: Few-Shot Learning"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        # Title
+        title_alpha = min(1.0, progress / 0.2)
+        ax.text(50, 95, 'Techniek 2: Few-Shot Learning',
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
+
+        if progress > 0.1:
+            sub_alpha = min(1.0, (progress - 0.1) / 0.2)
+            ax.text(50, 88, 'Geef voorbeelden van wat je wilt',
+                    fontsize=24, ha='center', va='top',
+                    color=self.colors['text'], alpha=sub_alpha * 0.8, style='italic')
+
+        if progress > 0.2:
+            code_alpha = min(1.0, (progress - 0.2) / 0.2)
+
+            code_box = FancyBboxPatch(
+                (10.0, 60.0), 80, 22,
+                boxstyle="round,pad=0.5",
+                facecolor='#1a1a2e',
+                edgecolor=self.colors['dim'],
+                linewidth=2,
+                alpha=0.95 * code_alpha
+            )
+            ax.add_patch(code_box)
+
+            code_text = 'Vertaal naar beleefd Nederlands:\n\nVoorbeeld 1:\nInput: "give me the report"\nOutput: "Zou je mij het rapport kunnen toesturen?"\n\nVoorbeeld 2:\nInput: "send it now"\nOutput: "Kun je het zo spoedig mogelijk versturen?"\n\nNu jouw beurt:\nInput: "call me back"\nOutput: ?'
+            ax.text(50, 71, code_text,
+                    fontsize=14, family='monospace', ha='center', va='center',
+                    color='#a8ff60', alpha=code_alpha)
+
+        if progress > 0.40:
+            item_alpha = min(1.0, (progress - 0.40) / 0.20)
+            ax.text(20, 45, '• ✓ Model leert het patroon',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.40:
+            item_alpha = min(1.0, (progress - 0.40) / 0.20)
+            ax.text(20, 40, '• ✓ Consistente output',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.40:
+            item_alpha = min(1.0, (progress - 0.40) / 0.20)
+            ax.text(20, 35, '• ✓ Minder uitleg nodig',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.6:
+            box_alpha = min(1.0, (progress - 0.6) / 0.20000000000000007)
+
+            box = FancyBboxPatch(
+                (15.0, 15.0), 70, 15,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['accent'],
+                linewidth=3,
+                alpha=0.95 * box_alpha
+            )
+            ax.add_patch(box)
+
+            ax.text(50, 26.25, 'Perfect voor:',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['accent'], alpha=box_alpha)
+
+            ax.text(50, 18.75, 'Vertalingen • Classificaties • Format conversies • Data extractie',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=box_alpha * 0.9)
+
+        self.add_status_indicator(progress < 1.0)
+
+    def draw_techniek_3_chain_of_thought(self, progress: float):
+        """Step 6: Techniek 3: Chain-of-Thought"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        # Title
+        title_alpha = min(1.0, progress / 0.2)
+        ax.text(50, 95, 'Techniek 3: Chain-of-Thought',
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
+
+        if progress > 0.1:
+            sub_alpha = min(1.0, (progress - 0.1) / 0.2)
+            ax.text(50, 88, 'Laat AI stap-voor-stap denken',
+                    fontsize=24, ha='center', va='top',
+                    color=self.colors['text'], alpha=sub_alpha * 0.8, style='italic')
+
+        # Comparison: Left (before/bad)
+        if progress > 0.2:
+            left_alpha = min(1.0, (progress - 0.2) / 0.1)
+
+            left_box = FancyBboxPatch(
+                (7.5, 59.0), 37.5, 22,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=3,
+                alpha=0.95 * left_alpha
+            )
+            ax.add_patch(left_box)
+
+            ax.text(26.25, 75.5, '[!] Direct',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=left_alpha)
+
+            ax.text(26.25, 64.5, '"Wat is 37 x 24?"\n→ Vaak fout bij complexe vragen',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=left_alpha * 0.9)
+
+        # Comparison: Right (after/good)
+        if progress > 0.30000000000000004:
+            right_alpha = min(1.0, (progress - 0.30000000000000004) / 0.1)
+
+            right_box = FancyBboxPatch(
+                (55.0, 59.0), 37.5, 22,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['purple'],
+                linewidth=3,
+                alpha=0.95 * right_alpha
+            )
+            ax.add_patch(right_box)
+
+            ax.text(73.75, 75.5, '🧠 Chain-of-Thought',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['purple'], alpha=right_alpha)
+
+            ax.text(73.75, 64.5, '"Wat is 37 x 24? Laat je redenering zien stap voor stap voordat je het antwoord geeft."\n→ Veel accurater voor complexe taken',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=right_alpha * 0.9)
+
+        if progress > 0.40:
+            item_alpha = min(1.0, (progress - 0.40) / 0.05)
+            ax.text(20, 38, '• 🧮 Wiskunde & berekeningen',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.45:
+            item_alpha = min(1.0, (progress - 0.45) / 0.05)
+            ax.text(20, 32, '• 🤔 Logische redeneringen',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.50:
+            item_alpha = min(1.0, (progress - 0.50) / 0.05)
+            ax.text(20, 26, '• [list] Meerstaps problemen',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.55:
+            item_alpha = min(1.0, (progress - 0.55) / 0.05)
+            ax.text(20, 20, '• [search] Analyse taken',
+                    fontsize=21, ha='left', va='center',
+                    color=self.colors['text'], alpha=item_alpha)
+
+        if progress > 0.8:
+            box_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+
+            box = FancyBboxPatch(
+                (15.0, 8.0), 70, 10,
+                boxstyle="round,pad=1",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['highlight'],
+                linewidth=3,
+                alpha=0.95 * box_alpha
+            )
+            ax.add_patch(box)
+
+            ax.text(50, 15.5, '* Magic phrase: "Let\'s think step by step"',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['highlight'], alpha=box_alpha)
+
+        self.add_status_indicator(progress < 1.0)
+
+    def draw_techniek_4_role_playing(self, progress: float):
+        """Step 7: Techniek 4: Role Playing"""
+        self.fig.clear()
+        ax = self.fig.add_subplot(111)
+        ax.axis('off')
+        ax.set_xlim(0, 100)
+        ax.set_ylim(0, 100)
+
+        # Title
+        title_alpha = min(1.0, progress / 0.2)
+        ax.text(50, 95, 'Techniek 4: Role Playing',
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
+
+        if progress > 0.1:
+            sub_alpha = min(1.0, (progress - 0.1) / 0.2)
+            ax.text(50, 88, 'Geef AI een specifieke rol of persona',
+                    fontsize=24, ha='center', va='top',
+                    color=self.colors['text'], alpha=sub_alpha * 0.8, style='italic')
+
+        # Grid item 1
+        if progress > 0.20:
+            item_alpha = min(1.0, (progress - 0.20) / 0.04)
+
+            grid_box = FancyBboxPatch(
+                (-3.0, 61.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['primary'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(14.0, 70.5, '👨‍🏫',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(14.0, 67.0, 'Expert Leraar',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['primary'], alpha=item_alpha)
+            ax.text(14.0, 63.5, 'Leg uit alsof ik 10 jaar oud ben',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 2
+        if progress > 0.24:
+            item_alpha = min(1.0, (progress - 0.24) / 0.04)
+
+            grid_box = FancyBboxPatch(
+                (33.0, 61.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['secondary'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(50.0, 70.5, '[work]',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(50.0, 67.0, 'Business Consultant',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['secondary'], alpha=item_alpha)
+            ax.text(50.0, 63.5, 'Analyseer deze data strategisch',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 3
+        if progress > 0.28:
+            item_alpha = min(1.0, (progress - 0.28) / 0.04)
+
+            grid_box = FancyBboxPatch(
+                (69.0, 61.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['purple'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(86.0, 70.5, '👨‍[PC]',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(86.0, 67.0, 'Senior Developer',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['purple'], alpha=item_alpha)
+            ax.text(86.0, 63.5, 'Review deze code kritisch',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 4
+        if progress > 0.32:
+            item_alpha = min(1.0, (progress - 0.32) / 0.04)
+
+            grid_box = FancyBboxPatch(
+                (-3.0, 47.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['accent'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(14.0, 56.5, '[edit]',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(14.0, 53.0, 'Professioneel Schrijver',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['accent'], alpha=item_alpha)
+            ax.text(14.0, 49.5, 'Schrijf in journalistieke stijl',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 5
+        if progress > 0.36:
+            item_alpha = min(1.0, (progress - 0.36) / 0.04)
+
+            grid_box = FancyBboxPatch(
+                (33.0, 47.0), 34, 12,
                 boxstyle="round,pad=0.8",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['highlight'],
-                linewidth=3,
-                alpha=0.95 * magic_alpha
+                linewidth=2,
+                alpha=0.9 * item_alpha
             )
-            ax.add_patch(magic_box)
+            ax.add_patch(grid_box)
 
-            ax.text(50, 13, '* Magic phrase: "Let\'s think step by step"',
-                    fontsize=19, ha='center', va='center',
-                    color=self.colors['highlight'],
-                    fontweight='bold',
-                    alpha=magic_alpha)
+            ax.text(50.0, 56.5, '🤝',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(50.0, 53.0, 'Empathische Coach',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['highlight'], alpha=item_alpha)
+            ax.text(50.0, 49.5, 'Geef constructieve feedback',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
 
-        self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
+        if progress > 0.6:
+            box_alpha = min(1.0, (progress - 0.6) / 0.20000000000000007)
 
-    def draw_role_playing(self, progress: float):
-        """Step 7: Role Playing technique"""
-        self.fig.clear()
-        ax = self.fig.add_subplot(111)
-        ax.axis('off')
-        ax.set_xlim(0, 100)
-        ax.set_ylim(0, 100)
-
-        # Title
-        ax.text(50, 95, 'Techniek 4: Role Playing',
-                fontsize=42, fontweight='bold', ha='center', va='top',
-                color=self.colors['accent'])
-
-        ax.text(50, 89, 'Geef AI een specifieke rol of persona',
-                fontsize=21, ha='center', va='top',
-                color=self.colors['text'], alpha=0.7, style='italic')
-
-        # Role examples in grid
-        roles = [
-            ('👨‍🏫 Expert Leraar', 'Leg uit alsof ik 10 jaar oud ben', 20, 70, 0.2, self.colors['primary']),
-            ('[work] Business Consultant', 'Analyseer deze data strategisch', 50, 70, 0.3, self.colors['secondary']),
-            ('👨‍[PC] Senior Developer', 'Review deze code kritisch', 80, 70, 0.4, self.colors['purple']),
-            ('[edit] Professioneel Schrijver', 'Schrijf in journalistieke stijl', 35, 45, 0.5, self.colors['accent']),
-            ('🤝 Empathische Coach', 'Geef constructieve feedback', 65, 45, 0.6, self.colors['highlight'])
-        ]
-
-        for icon_title, desc, x, y, delay, color in roles:
-            if progress > delay:
-                alpha = min(1.0, (progress - delay) / 0.15)
-
-                box = FancyBboxPatch(
-                    (x - 13, y - 9), 26, 18,
-                    boxstyle="round,pad=0.8",
-                    facecolor=self.colors['bg_light'],
-                    edgecolor=color,
-                    linewidth=2,
-                    alpha=0.95 * alpha
-                )
-                ax.add_patch(box)
-
-                ax.text(x, y + 5, icon_title.split()[0],
-                        fontsize=33, ha='center', va='center',
-                        alpha=alpha)
-
-                ax.text(x, y, icon_title.split(' ', 1)[1] if ' ' in icon_title else '',
-                        fontsize=13, ha='center', va='center',
-                        color=color, fontweight='bold',
-                        alpha=alpha)
-
-                wrapped_desc = textwrap.fill(desc, width=18)
-                ax.text(x, y - 5, wrapped_desc,
-                        fontsize=10, ha='center', va='center',
-                        color=self.colors['text'],
-                        alpha=alpha * 0.8,
-                        linespacing=1.3)
-
-        # Example prompt
-        if progress > 0.75:
-            example_alpha = min(1.0, (progress - 0.75) / 0.25)
-
-            example_box = FancyBboxPatch(
-                (10, 18), 80, 18,
-                boxstyle="round,pad=1.2",
+            box = FancyBboxPatch(
+                (10.0, 18.0), 80, 18,
+                boxstyle="round,pad=1",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['accent'],
                 linewidth=3,
-                alpha=0.95 * example_alpha
+                alpha=0.95 * box_alpha
             )
-            ax.add_patch(example_box)
+            ax.add_patch(box)
 
-            ax.text(50, 31, '📝 Voorbeeld Template:', fontsize=18, ha='center',
-                    color=self.colors['accent'], fontweight='bold',
-                    alpha=example_alpha)
+            ax.text(50, 31.5, '📝 Voorbeeld Template:',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['accent'], alpha=box_alpha)
 
-            template = textwrap.fill('Je bent een [ROL] met [X] jaar ervaring. '
-                                    'Je specialiteit is [EXPERTISE]. '
-                                    'Help me met: [TAAK]', width=70)
-            ax.text(50, 24, template,
-                    fontsize=14, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=example_alpha,
-                    style='italic',
-                    linespacing=1.5)
+            ax.text(50, 22.5, 'Je bent een [ROL] met [X] jaar ervaring. Je specialiteit is [EXPERTISE]. Help me met: [TAAK]',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=box_alpha * 0.9)
 
-        # Bottom tip
-        if progress > 0.9:
-            tip_alpha = min(1.0, (progress - 0.9) / 0.1)
+        if progress > 0.8:
+            text_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
             ax.text(50, 8, '[[i]] Rollen activeren specifieke kennis en stijlen in het model',
-                    fontsize=16, ha='center', va='center',
-                    color=self.colors['highlight'],
-                    fontweight='bold',
-                    alpha=tip_alpha)
+                    fontsize=16, fontweight='bold',
+                    ha='center', va='center',
+                    color=self.colors['highlight'], alpha=text_alpha)
 
         self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
 
-    def draw_pitfalls(self, progress: float):
-        """Step 8: Common pitfalls"""
+    def draw_veelvoorkomende_valkuilen(self, progress: float):
+        """Step 8: Veelvoorkomende Valkuilen"""
         self.fig.clear()
         ax = self.fig.add_subplot(111)
         ax.axis('off')
@@ -868,124 +968,185 @@ Output: ?"""
         ax.set_ylim(0, 100)
 
         # Title
+        title_alpha = min(1.0, progress / 0.2)
         ax.text(50, 95, 'Veelvoorkomende Valkuilen',
-                fontsize=42, fontweight='bold', ha='center', va='top',
-                color=self.colors['warning'])
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
 
-        ax.text(50, 89, 'Wat je NIET moet doen',
-                fontsize=21, ha='center', va='top',
-                color=self.colors['text'], alpha=0.7, style='italic')
+        if progress > 0.1:
+            sub_alpha = min(1.0, (progress - 0.1) / 0.2)
+            ax.text(50, 88, 'Wat je NIET moet doen',
+                    fontsize=24, ha='center', va='top',
+                    color=self.colors['text'], alpha=sub_alpha * 0.8, style='italic')
 
-        # Pitfalls in grid
-        pitfalls = [
-            {
-                'icon': '[X]',
-                'title': 'Te Vaag',
-                'desc': 'Te algemene instructies zonder context',
-                'x': 25,
-                'y': 70,
-                'delay': 0.15
-            },
-            {
-                'icon': '[books]',
-                'title': 'Te Lang',
-                'desc': 'Oneindige paragrafen die niemand leest',
-                'x': 75,
-                'y': 70,
-                'delay': 0.25
-            },
-            {
-                'icon': '🤔',
-                'title': 'Aannames',
-                'desc': 'Veronderstellingen zonder uitleg',
-                'x': 25,
-                'y': 50,
-                'delay': 0.35
-            },
-            {
-                'icon': '🎭',
-                'title': 'Tegenstrijdig',
-                'desc': 'Conflicterende instructies in één prompt',
-                'x': 75,
-                'y': 50,
-                'delay': 0.45
-            },
-            {
-                'icon': '[#]',
-                'title': 'Geen Format',
-                'desc': 'Niet specificeren hoe output eruit moet zien',
-                'x': 25,
-                'y': 30,
-                'delay': 0.55
-            },
-            {
-                'icon': '🧪',
-                'title': 'Niet Testen',
-                'desc': 'Geen iteratie op basis van resultaten',
-                'x': 75,
-                'y': 30,
-                'delay': 0.65
-            }
-        ]
+        # Grid item 1
+        if progress > 0.20:
+            item_alpha = min(1.0, (progress - 0.20) / 0.03)
 
-        for pitfall in pitfalls:
-            if progress > pitfall['delay']:
-                alpha = min(1.0, (progress - pitfall['delay']) / 0.12)
+            grid_box = FancyBboxPatch(
+                (15.0, 60.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
 
-                box = FancyBboxPatch(
-                    (pitfall['x'] - 18, pitfall['y'] - 7), 36, 14,
-                    boxstyle="round,pad=0.8",
-                    facecolor=self.colors['bg_light'],
-                    edgecolor=self.colors['warning'],
-                    linewidth=2,
-                    alpha=0.9 * alpha
-                )
-                ax.add_patch(box)
+            ax.text(32.0, 69.5, '[X]',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(32.0, 66.0, 'Te Vaag',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=item_alpha)
+            ax.text(32.0, 62.5, 'Te algemene instructies zonder context',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
 
-                ax.text(pitfall['x'], pitfall['y'] + 4, pitfall['icon'],
-                        fontsize=30, ha='center', va='center',
-                        alpha=alpha)
+        # Grid item 2
+        if progress > 0.23:
+            item_alpha = min(1.0, (progress - 0.23) / 0.03)
 
-                ax.text(pitfall['x'], pitfall['y'], pitfall['title'],
-                        fontsize=15, ha='center', va='center',
-                        color=self.colors['warning'], fontweight='bold',
-                        alpha=alpha)
+            grid_box = FancyBboxPatch(
+                (51.0, 60.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
 
-                wrapped_desc = textwrap.fill(pitfall['desc'], width=24)
-                ax.text(pitfall['x'], pitfall['y'] - 4, wrapped_desc,
-                        fontsize=11, ha='center', va='center',
-                        color=self.colors['text'],
-                        alpha=alpha * 0.8,
-                        linespacing=1.3)
+            ax.text(68.0, 69.5, '[books]',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(68.0, 66.0, 'Te Lang',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=item_alpha)
+            ax.text(68.0, 62.5, 'Oneindige paragrafen die niemand leest',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
 
-        # Bottom advice
-        if progress > 0.85:
-            advice_alpha = min(1.0, (progress - 0.85) / 0.15)
+        # Grid item 3
+        if progress > 0.27:
+            item_alpha = min(1.0, (progress - 0.27) / 0.03)
 
-            advice_box = FancyBboxPatch(
-                (10, 8), 80, 12,
+            grid_box = FancyBboxPatch(
+                (15.0, 46.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(32.0, 55.5, '🤔',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(32.0, 52.0, 'Aannames',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=item_alpha)
+            ax.text(32.0, 48.5, 'Veronderstellingen zonder uitleg',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 4
+        if progress > 0.30:
+            item_alpha = min(1.0, (progress - 0.30) / 0.03)
+
+            grid_box = FancyBboxPatch(
+                (51.0, 46.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(68.0, 55.5, '🎭',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(68.0, 52.0, 'Tegenstrijdig',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=item_alpha)
+            ax.text(68.0, 48.5, 'Conflicterende instructies in één prompt',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 5
+        if progress > 0.33:
+            item_alpha = min(1.0, (progress - 0.33) / 0.03)
+
+            grid_box = FancyBboxPatch(
+                (15.0, 32.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(32.0, 41.5, '[#]',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(32.0, 38.0, 'Geen Format',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=item_alpha)
+            ax.text(32.0, 34.5, 'Niet specificeren hoe output eruit moet zien',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        # Grid item 6
+        if progress > 0.37:
+            item_alpha = min(1.0, (progress - 0.37) / 0.03)
+
+            grid_box = FancyBboxPatch(
+                (51.0, 32.0), 34, 12,
+                boxstyle="round,pad=0.8",
+                facecolor=self.colors['bg_light'],
+                edgecolor=self.colors['warning'],
+                linewidth=2,
+                alpha=0.9 * item_alpha
+            )
+            ax.add_patch(grid_box)
+
+            ax.text(68.0, 41.5, '🧪',
+                    fontsize=30, ha='center', va='center', alpha=item_alpha)
+            ax.text(68.0, 38.0, 'Niet Testen',
+                    fontsize=15, fontweight='bold', ha='center', va='center',
+                    color=self.colors['warning'], alpha=item_alpha)
+            ax.text(68.0, 34.5, 'Geen iteratie op basis van resultaten',
+                    fontsize=11, ha='center', va='center',
+                    color=self.colors['text'], alpha=item_alpha * 0.8,
+                    linespacing=1.3)
+
+        if progress > 0.8:
+            box_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+
+            box = FancyBboxPatch(
+                (10.0, 8.0), 80, 12,
                 boxstyle="round,pad=1",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['secondary'],
                 linewidth=3,
-                alpha=0.95 * advice_alpha
+                alpha=0.95 * box_alpha
             )
-            ax.add_patch(advice_box)
+            ax.add_patch(box)
 
-            ax.text(50, 16, '[OK] De Oplossing: Itereer!',
-                    fontsize=21, ha='center', va='center',
-                    color=self.colors['secondary'], fontweight='bold',
-                    alpha=advice_alpha)
+            ax.text(50, 17.0, '[OK] De Oplossing: Itereer!',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['secondary'], alpha=box_alpha)
 
-            ax.text(50, 11, 'Test je prompts, analyseer resultaten, en verfijn stap voor stap',
-                    fontsize=16, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=advice_alpha)
+            ax.text(50, 11.0, 'Test je prompts, analyseer resultaten, en verfijn stap voor stap',
+                    fontsize=18, ha='center', va='center',
+                    color=self.colors['text'], alpha=box_alpha * 0.9)
 
         self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
 
-    def draw_checklist(self, progress: float):
+    def draw_best_practices_checklist(self, progress: float):
         """Step 9: Best Practices Checklist"""
         self.fig.clear()
         ax = self.fig.add_subplot(111)
@@ -993,118 +1154,145 @@ Output: ?"""
         ax.set_xlim(0, 100)
         ax.set_ylim(0, 100)
 
-        # Title with animation
+        # Title
         title_alpha = min(1.0, progress / 0.2)
-
-        if progress > 0.5:
-            pulse = 1 + 0.03 * np.sin(progress * 20)
-            fontsize = 45 * pulse
-        else:
-            fontsize = 45
-
         ax.text(50, 95, 'Je Prompt Checklist ✓',
-                fontsize=fontsize, fontweight='bold', ha='center', va='top',
-                color=self.colors['secondary'], alpha=title_alpha)
+                fontsize=45, fontweight='bold', ha='center', va='top',
+                color=self.colors['primary'], alpha=title_alpha)
 
-        # Checklist items
-        checklist = [
-            ('☑ Duidelijke taak gedefinieerd?', 78, 0.2),
-            ('☑ Context en achtergrond gegeven?', 71, 0.3),
-            ('☑ Gewenst format gespecificeerd?', 64, 0.4),
-            ('☑ Toon en stijl aangegeven?', 57, 0.5),
-            ('☑ Voorbeelden toegevoegd (indien nodig)?', 50, 0.6),
-            ('☑ Beperkingen vermeld?', 43, 0.7),
-            ('☑ Rol/persona toegewezen (indien nuttig)?', 36, 0.75),
-            ('☑ Lengte/omvang aangegeven?', 29, 0.8)
-        ]
+        # Checklist item 1
+        if progress > 0.20:
+            check_alpha = min(1.0, (progress - 0.20) / 0.03)
 
-        for text, y, delay in checklist:
-            if progress > delay:
-                alpha = min(1.0, (progress - delay) / 0.1)
+            ax.text(20, 86.0, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
 
-                # Checkmark appears first
-                ax.text(20, y, '✓',
-                        fontsize=27, ha='center', va='center',
-                        color=self.colors['secondary'],
-                        fontweight='bold',
-                        alpha=alpha)
+            ax.text(25, 86.0, '\u2611 Duidelijke taak gedefinieerd?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
 
-                # Then text
-                ax.text(50, y, text,
-                        fontsize=18, ha='left', va='center',
-                        color=self.colors['text'],
-                        alpha=alpha)
+        # Checklist item 2
+        if progress > 0.23:
+            check_alpha = min(1.0, (progress - 0.23) / 0.03)
 
-        # Final message
-        if progress > 0.88:
-            final_alpha = min(1.0, (progress - 0.88) / 0.12)
+            ax.text(20, 79.5, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
 
-            final_box = FancyBboxPatch(
-                (10, 8), 80, 15,
-                boxstyle="round,pad=1.2",
+            ax.text(25, 79.5, '\u2611 Context en achtergrond gegeven?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        # Checklist item 3
+        if progress > 0.25:
+            check_alpha = min(1.0, (progress - 0.25) / 0.03)
+
+            ax.text(20, 73.0, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
+
+            ax.text(25, 73.0, '\u2611 Gewenst format gespecificeerd?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        # Checklist item 4
+        if progress > 0.28:
+            check_alpha = min(1.0, (progress - 0.28) / 0.03)
+
+            ax.text(20, 66.5, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
+
+            ax.text(25, 66.5, '\u2611 Toon en stijl aangegeven?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        # Checklist item 5
+        if progress > 0.30:
+            check_alpha = min(1.0, (progress - 0.30) / 0.03)
+
+            ax.text(20, 60.0, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
+
+            ax.text(25, 60.0, '\u2611 Voorbeelden toegevoegd (indien nodig)?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        # Checklist item 6
+        if progress > 0.33:
+            check_alpha = min(1.0, (progress - 0.33) / 0.03)
+
+            ax.text(20, 53.5, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
+
+            ax.text(25, 53.5, '\u2611 Beperkingen vermeld?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        # Checklist item 7
+        if progress > 0.35:
+            check_alpha = min(1.0, (progress - 0.35) / 0.03)
+
+            ax.text(20, 47.0, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
+
+            ax.text(25, 47.0, '\u2611 Rol/persona toegewezen (indien nuttig)?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        # Checklist item 8
+        if progress > 0.38:
+            check_alpha = min(1.0, (progress - 0.38) / 0.03)
+
+            ax.text(20, 40.5, '\u2713',
+                    fontsize=27, ha='center', va='center',
+                    color=self.colors['secondary'], fontweight='bold',
+                    alpha=check_alpha)
+
+            ax.text(25, 40.5, '\u2611 Lengte/omvang aangegeven?',
+                    fontsize=18, ha='left', va='center',
+                    color=self.colors['text'], alpha=check_alpha)
+
+        if progress > 0.8:
+            box_alpha = min(1.0, (progress - 0.8) / 0.19999999999999996)
+
+            box = FancyBboxPatch(
+                (10.0, 8.0), 80, 15,
+                boxstyle="round,pad=1",
                 facecolor=self.colors['bg_light'],
                 edgecolor=self.colors['highlight'],
-                linewidth=4,
-                alpha=0.95 * final_alpha
+                linewidth=3,
+                alpha=0.95 * box_alpha
             )
-            ax.add_patch(final_box)
+            ax.add_patch(box)
 
-            ax.text(50, 19, '>> Onthoud: Prompt Engineering is een Vaardigheid',
-                    fontsize=21, ha='center', va='center',
-                    color=self.colors['highlight'], fontweight='bold',
-                    alpha=final_alpha)
+            ax.text(50, 19.25, '>> Onthoud: Prompt Engineering is een Vaardigheid',
+                    fontsize=24, fontweight='bold', ha='center', va='center',
+                    color=self.colors['highlight'], alpha=box_alpha)
 
-            ax.text(50, 14, 'Hoe meer je oefent, hoe beter je wordt!',
+            ax.text(50, 11.75, 'Hoe meer je oefent, hoe beter je wordt!\nStart simpel → Test → Verfijn → Herhaal',
                     fontsize=18, ha='center', va='center',
-                    color=self.colors['text'],
-                    alpha=final_alpha)
-
-            ax.text(50, 10, 'Start simpel → Test → Verfijn → Herhaal',
-                    fontsize=16, ha='center', va='center',
-                    color=self.colors['secondary'],
-                    alpha=final_alpha,
-                    style='italic')
+                    color=self.colors['text'], alpha=box_alpha * 0.9)
 
         self.add_status_indicator(progress < 1.0)
-        plt.tight_layout()
-
-    def add_status_indicator(self, is_animating):
-        """Add animation indicator"""
-        if is_animating:
-            self.fig.text(0.95, 0.02, '...', fontsize=24, ha='right', va='bottom',
-                         color=self.colors['accent'], fontweight='bold')
 
 
-def main():
-    """Main entry point"""
-    print("="*80)
-    print("PROMPT ENGINEERING - DE KUNST VAN AI COMMUNICATIE")
-    print("="*80)
-    print("\n🎨 Deze presentatie leert je:")
-    print("  1. Wat is Prompt Engineering?")
-    print("  2. Waarom is het belangrijk?")
-    print("  3. Anatomie van een goede prompt")
-    print("  4. Clear Instructions techniek")
-    print("  5. Few-Shot Learning techniek")
-    print("  6. Chain-of-Thought techniek")
-    print("  7. Role Playing techniek")
-    print("  8. Veelvoorkomende valkuilen")
-    print("  9. Best Practices Checklist")
-    print("\n[Keys]  Controls:")
-    print("  SPACE : Volgende stap")
-    print("  B     : Vorige stap")
-    print("  R     : Reset")
-    print("  Q     : Quit")
-    print("  F     : Fullscreen")
-    print("\n[i] Doel:")
-    print("  Leer hoe je effectiever communiceert met AI")
-    print("  Van vage vragen naar concrete, bruikbare resultaten")
-    print("  Praktische technieken die je meteen kunt toepassen")
-    print("\n" + "="*80 + "\n")
-
-    presentation = PromptEngineeringPresentation()
-    presentation.show()
+def run():
+    """Run the presentation"""
+    pres = PromptEngineeringPresentation()
+    pres.show()
 
 
 if __name__ == "__main__":
-    main()
+    run()
