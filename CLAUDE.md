@@ -26,11 +26,11 @@ AI-Presentatie/
 │   ├── base.py                # BasePresentation class
 │   ├── styling.py             # PresentationStyle colors/fonts
 │   ├── animations.py          # AnimationHelper, easing functions
-│   ├── element_rendering.py   # Centralized matplotlib rendering (26 types)
+│   ├── element_rendering.py   # Centralized matplotlib rendering (28 types)
 │   └── visual_effects.py      # ParticleSystem, SimilarityMeter, etc.
 │
 ├── tools/                      # Design tools
-│   ├── schema.py              # JSON schema dataclasses (26 element types)
+│   ├── schema.py              # JSON schema dataclasses (28 element types)
 │   ├── generator_v2.py        # JSON → Python (uses centralized rendering)
 │   ├── generator.py           # Legacy generator (inline rendering)
 │   ├── designer.py            # CLI tool for schema operations
@@ -144,6 +144,10 @@ python -m tools.qt_designer schemas/existing.json        # Edit existing
 | **Ctrl+V** | Paste element |
 | **Delete** | Delete selected element |
 | **Ctrl+D** | Duplicate selected |
+| **Ctrl+Shift+]** | Bring to front |
+| **Ctrl+]** | Bring forward |
+| **Ctrl+[** | Send backward |
+| **Ctrl+Shift+[** | Send to back |
 | **Arrow keys** | Nudge element (1 unit) |
 | **Shift+Arrow** | Nudge element (5 units) |
 | **G** | Toggle snap-to-grid |
@@ -167,15 +171,17 @@ python -m tools.qt_designer schemas/existing.json        # Edit existing
 
 **Content Tab**
 - Position (x, y) in 0-100 coordinate space
-- Size (width, height)
+- Size (width, height) - available for ALL element types
 - Type-specific properties (content, items, tokens, etc.)
 - List editors for arrays (click "Edit (N items)")
+- **Color pickers** with named color dropdown (primary, secondary, accent, etc.)
+- **Dropdowns** for style options (arrow style, timeline orientation, arc direction, colormap)
 
 **Animation Tab**
 - Duration, Delay, Speed multipliers
 - Phase selector (immediate → early → middle → late → final)
 - Easing function dropdown (8 options)
-- Continuous effect (none, pulse, breathing)
+- Continuous effect (none, pulse, breathing) - **now fully functional**
 
 ### Animation Preview
 
@@ -204,8 +210,8 @@ Press **P** to open the preview window:
 | R | Reset to start |
 | Slider | Scrub through animation |
 | L | Toggle loop |
+| 0.5x / 1x / 2x | Playback speed |
 | Space | Play/Pause |
-| R | Reset |
 | Esc / Q | Close preview |
 
 ### Unsaved Changes
@@ -236,65 +242,71 @@ python -m tools.visual_designer --new my_presentation    # New with name
 
 ---
 
-## Element Types (26 total)
+## Element Types (28 total)
 
 ### Basic Text
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `text` | Aa | Simple text | content, style |
-| `typewriter_text` | Ty\| | Character reveal effect | content, show_cursor |
-| `code_block` | </> | Syntax-highlighted code | code, language, width |
+| `text` | Aa | Simple text | content, color, fontsize, highlight, underline |
+| `typewriter_text` | Ty\| | Character reveal effect | content, show_cursor, cursor_char, reveal (char/word) |
+| `counter` | 123 | Animated number counter | value, prefix, suffix, decimals, glow |
+| `code_block` | </> | Code display (multi-line) | code, language, width, height |
 | `code_execution` | >>> | Code with output below | code, output, stagger |
 
 ### Containers
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `box` | [ ] | Container with border | width, height, title, content |
-| `comparison` | <> | Side-by-side panels | left_title, right_title, width |
-| `conversation` | ... | Chat-style bubbles | messages[], user_color |
+| `box` | [ ] | Container with border | width, height, title, content, color, shadow, glow |
+| `comparison` | <> | Side-by-side panels | left_title, left_content, right_title, right_content, left_color, right_color |
+| `conversation` | ... | Chat-style bubbles | messages[], user_color, assistant_color, system_color, bubble_spacing |
+
+### Media
+| Type | Icon | Description | Key Properties |
+|------|------|-------------|----------------|
+| `image` | IMG | Display image file | src, width, height, border, shadow |
 
 ### Lists
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `bullet_list` | *** | Bulleted list | items[], stagger |
-| `checklist` | [x] | Checkmark list | items[], check_color |
-| `timeline` | o-o | Horizontal timeline | events[], orientation |
+| `bullet_list` | *** | Bulleted list | items[], bullet_char, text_color, spacing |
+| `checklist` | [x] | Checkmark list | items[], check_color, text_color |
+| `timeline` | o-o | Timeline (horizontal/vertical) | events[], orientation, line_color |
 
 ### Layout
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `flow` | >>> | Horizontal process | steps[], width |
-| `grid` | ## | 2D card grid | columns, rows, items[] |
-| `stacked_boxes` | === | Vertical stack | items[], base_width |
+| `flow` | >>> | Horizontal process | steps[], colors[], width |
+| `grid` | ## | 2D card grid | columns, rows, items[], cell_width, cell_height |
+| `stacked_boxes` | === | Vertical stack | items[], base_width, box_height, width_decrease |
 
 ### Connectors
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `arrow` | -> | Straight arrow | start, end |
-| `arc_arrow` | ~> | Curved arrow | start, end, arc_height |
-| `particle_flow` | *** | Animated particles | start, end, num_particles |
+| `arrow` | -> | Straight arrow | start, end, color, width, head_size, style, head_style, draw_animation, marching_ants |
+| `arc_arrow` | ~> | Curved arrow | start, end, arc_height, direction (up/down), color, width, glow, draw_animation |
+| `particle_flow` | *** | Animated particles | start, end, num_particles, color, particle_size, spread |
 
 ### AI Visualizations
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `neural_network` | ooo | Network diagram | layers[], width, height |
-| `attention_heatmap` | HM | Attention weights grid | tokens_x[], tokens_y[], weights |
-| `token_flow` | T>E | Tokenization pipeline | input_text, show_embeddings |
+| `neural_network` | ooo | Network diagram | layers[], layer_labels[], node_color, connection_color |
+| `attention_heatmap` | HM | Attention weights grid | tokens_x[], tokens_y[], weights[][], colormap, title |
+| `token_flow` | T>E | Tokenization pipeline | input_text, tokens[], show_embeddings |
 | `model_comparison` | A\|B | Side-by-side models | models[], comparison_rows[] |
 
 ### Metrics
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `similarity_meter` | % | Gauge 0-100% | score, radius, label |
-| `progress_bar` | [=] | Progress indicator | current, total, width |
-| `weight_comparison` | W | Before/after bars | before_weights[], after_weights[] |
-| `parameter_slider` | -o- | Slider visualization | label, min_value, max_value, current_value |
+| `similarity_meter` | % | Gauge 0-100% | score, radius, label, glow, show_needle, animate_needle |
+| `progress_bar` | [=] | Progress indicator | current, total, width, height, color, label, glow, animate_fill, show_percent |
+| `weight_comparison` | W | Before/after bars | before_weights[], after_weights[], labels[], animate_bars |
+| `parameter_slider` | -o- | Slider visualization | label, description, min_value, max_value, current_value, color |
 
 ### 3D Elements
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `scatter_3d` | 3D | 3D scatter plot | points[], rotate_camera |
-| `vector_3d` | v3 | 3D vectors | vectors[], camera_elev |
+| `scatter_3d` | 3D | 3D scatter plot with camera control | points[{x,y,z,color}], camera_elev, camera_azim, rotate_camera, camera_rotation_speed, show_vectors |
+| `vector_3d` | v3 | 3D vectors with labels | vectors[{x,y,z,color,label}], camera_elev, camera_azim, rotate_camera, camera_rotation_speed |
 
 ---
 
@@ -323,10 +335,12 @@ Available via `easing` property:
 - `bounce_out` - Bounce effect
 
 ### Continuous Effects
-Via `continuous_effect` property:
+Via `continuous_effect` property (activates when element is fully visible):
 - `none` - Static (default)
-- `pulse` - Scale oscillation (±10%)
-- `breathing` - Gentle oscillation (±5%)
+- `pulse` - Scale oscillation (±10%) - good for emphasis
+- `breathing` - Gentle oscillation (±5%) - subtle attention
+
+Control frequency with `effect_frequency` (default 1.0, higher = faster)
 
 ### Timing Properties
 
@@ -347,6 +361,163 @@ Via `continuous_effect` property:
 **Stagger** - For list/grid elements, controls sequential reveal:
 - `stagger: true` (default) - Items appear one by one
 - `stagger: false` - All items appear together
+
+### Entry Animations
+Elements can fly in from a direction using `entry_animation`:
+
+| Value | Effect |
+|-------|--------|
+| `none` | No entry animation (default) |
+| `left` | Fly in from left |
+| `right` | Fly in from right |
+| `top` | Fly in from top |
+| `bottom` | Fly in from bottom |
+| `zoom` | Scale up from small |
+
+Control the distance with `entry_distance` (default: 30 units).
+
+```json
+{
+  "type": "box",
+  "entry_animation": "left",
+  "entry_distance": 40
+}
+```
+
+### Step Transitions
+Apply transitions when changing steps using `render_step()`:
+
+| Transition | Effect |
+|------------|--------|
+| `none` | No transition (default) |
+| `fade` | Fade in |
+| `slide_left` | Slide in from left |
+| `slide_right` | Slide in from right |
+| `slide_up` | Slide in from bottom |
+| `slide_down` | Slide in from top |
+| `zoom` | Zoom in from center |
+
+```python
+render_step(ax, step_data, progress, step_transition='slide_right', transition_progress=0.5)
+```
+
+---
+
+## Visual Effects
+
+### Shadows
+Add depth with drop shadows:
+```json
+{
+  "type": "box",
+  "shadow": true,
+  "shadow_offset": [2, -2]
+}
+```
+
+### Glow
+Add emphasis with glow effects:
+```json
+{
+  "type": "box",
+  "glow": true,
+  "glow_color": "accent"
+}
+```
+Works on: `box`, `progress_bar`, `similarity_meter`, `counter`, `arc_arrow`
+
+### Text Highlight
+Animated highlight behind text:
+```json
+{
+  "type": "text",
+  "highlight": true,
+  "highlight_color": "accent"
+}
+```
+
+### Text Underline
+Animated underline that draws in:
+```json
+{
+  "type": "text",
+  "underline": true,
+  "underline_color": "primary"
+}
+```
+
+---
+
+## Advanced Element Features
+
+### 3D Elements (scatter_3d, vector_3d)
+True 3D rendering with isometric projection and animated camera:
+```json
+{
+  "type": "scatter_3d",
+  "position": {"x": 50, "y": 50},
+  "points": [
+    {"x": 2, "y": 3, "z": 1, "color": "accent"},
+    {"x": -1, "y": 2, "z": 4, "color": "primary"}
+  ],
+  "camera_elev": 20,
+  "camera_azim": 45,
+  "rotate_camera": true,
+  "camera_rotation_speed": 30,
+  "show_vectors": false
+}
+```
+- Camera rotates during animation when `rotate_camera: true`
+- Points/vectors support per-item colors and labels
+- `show_vectors` draws lines from origin to each point
+
+### Attention Heatmap
+Visualize attention weights with custom data:
+```json
+{
+  "type": "attention_heatmap",
+  "tokens_x": ["The", "cat", "sat"],
+  "tokens_y": ["The", "cat", "sat"],
+  "weights": [
+    [0.9, 0.2, 0.1],
+    [0.2, 0.8, 0.3],
+    [0.1, 0.3, 0.7]
+  ],
+  "colormap": "accent",
+  "show_values": true,
+  "title": "Self-Attention"
+}
+```
+- If `weights` not provided, generates realistic self-attention pattern
+- `colormap` uses named colors (accent, primary, warning, etc.)
+
+### Arrow Styling
+```json
+{
+  "type": "arrow",
+  "start": {"x": 20, "y": 50},
+  "end": {"x": 80, "y": 50},
+  "style": "fancy",
+  "width": 3,
+  "head_size": 20,
+  "color": "primary"
+}
+```
+Styles: `simple` (default), `fancy` (thick decorative), `curved` (slight curve)
+
+### Timeline Orientation
+```json
+{
+  "type": "timeline",
+  "orientation": "vertical",
+  "events": [
+    {"date": "2023", "title": "Start"},
+    {"date": "2024", "title": "Launch"}
+  ],
+  "line_color": "dim"
+}
+```
+Orientations: `horizontal` (default), `vertical`
 
 ---
 

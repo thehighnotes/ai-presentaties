@@ -127,6 +127,10 @@ class CanvasElement(QGraphicsRectItem):
             self._draw_text(painter, rect)
         elif elem_type == 'typewriter_text':
             self._draw_typewriter(painter, rect)
+        elif elem_type == 'counter':
+            self._draw_counter(painter, rect)
+        elif elem_type == 'image':
+            self._draw_image(painter, rect)
         elif elem_type == 'code_block':
             self._draw_code_block(painter, rect)
         elif elem_type == 'code_execution':
@@ -171,6 +175,19 @@ class CanvasElement(QGraphicsRectItem):
             self._draw_model_comparison(painter, rect)
         elif elem_type == 'weight_comparison':
             self._draw_weight_comparison(painter, rect)
+        # Training visualization elements
+        elif elem_type == 'loss_curve':
+            self._draw_loss_curve(painter, rect)
+        elif elem_type in ('decision_boundary_2d', 'xor_problem'):
+            self._draw_decision_boundary(painter, rect)
+        elif elem_type == 'gradient_flow':
+            self._draw_gradient_flow(painter, rect)
+        elif elem_type == 'dropout_layer':
+            self._draw_dropout_layer(painter, rect)
+        elif elem_type == 'optimizer_paths':
+            self._draw_optimizer_paths(painter, rect)
+        elif elem_type == 'confusion_matrix':
+            self._draw_confusion_matrix(painter, rect)
         else:
             self._draw_generic(painter, rect, elem_type)
 
@@ -191,6 +208,65 @@ class CanvasElement(QGraphicsRectItem):
         painter.setPen(self._colors['text'])
         painter.setFont(QFont('monospace', 10))
         painter.drawText(rect, Qt.AlignCenter, content[:25])
+
+    def _draw_counter(self, painter, rect):
+        """Draw counter element preview."""
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRoundedRect(rect, 4, 4)
+
+        value = self.elem_data.get('value', 1000)
+        prefix = self.elem_data.get('prefix', '')
+        suffix = self.elem_data.get('suffix', '')
+        decimals = self.elem_data.get('decimals', 0)
+        fontsize = self.elem_data.get('fontsize', 24)
+
+        if decimals > 0:
+            display_value = f"{value:.{decimals}f}"
+        else:
+            display_value = str(int(value))
+
+        text = f"{prefix}{display_value}{suffix}"
+
+        # Glow indicator
+        if self.elem_data.get('glow', False):
+            painter.setPen(QPen(self._colors['accent'], 3))
+            painter.drawRoundedRect(rect.adjusted(2, 2, -2, -2), 4, 4)
+
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', min(fontsize // 2, 16), QFont.Bold))
+        painter.drawText(rect, Qt.AlignCenter, text[:20])
+
+    def _draw_image(self, painter, rect):
+        """Draw image element preview."""
+        # Dashed border for image placeholder
+        painter.setPen(QPen(self._colors['dim'], 2, Qt.DashLine))
+        painter.setBrush(QBrush(self._colors['bg_light']))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        # Image icon
+        icon_rect = QRectF(rect.center().x() - 15, rect.center().y() - 20, 30, 25)
+        painter.setPen(QPen(self._colors['primary'], 2))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawRect(icon_rect)
+
+        # Mountain/sun icon inside
+        path = QPainterPath()
+        path.moveTo(icon_rect.left() + 5, icon_rect.bottom() - 5)
+        path.lineTo(icon_rect.center().x(), icon_rect.center().y())
+        path.lineTo(icon_rect.right() - 5, icon_rect.bottom() - 5)
+        painter.drawPath(path)
+        painter.drawEllipse(QPointF(icon_rect.right() - 10, icon_rect.top() + 8), 4, 4)
+
+        # Source label
+        src = self.elem_data.get('src', '')
+        if src:
+            import os
+            label = os.path.basename(src)[:15]
+        else:
+            label = "[No source]"
+        painter.setPen(self._colors['dim'])
+        painter.setFont(QFont('sans-serif', 8))
+        painter.drawText(rect.adjusted(0, rect.height() * 0.6, 0, 0), Qt.AlignHCenter, label)
 
     def _draw_code_block(self, painter, rect):
         painter.setBrush(QBrush(QColor('#0d1117')))
@@ -375,11 +451,29 @@ class CanvasElement(QGraphicsRectItem):
         painter.drawRoundedRect(rect, 8, 8)
         layers = self.elem_data.get('layers', [3, 4, 2])
         spacing_x = rect.width() / (len(layers) + 1)
+
+        # Store positions for connections
+        node_positions = []
         for li, n in enumerate(layers):
             lx = rect.x() + (li + 1) * spacing_x
             spacing_y = rect.height() / (n + 1)
+            layer_nodes = []
             for ni in range(n):
                 ny = rect.y() + (ni + 1) * spacing_y
+                layer_nodes.append((lx, ny))
+            node_positions.append(layer_nodes)
+
+        # Draw connections first (behind nodes)
+        if self.elem_data.get('show_connections', True):
+            painter.setPen(QPen(self._colors['dim'], 0.5))
+            for li in range(len(node_positions) - 1):
+                for n1 in node_positions[li]:
+                    for n2 in node_positions[li + 1]:
+                        painter.drawLine(QPointF(*n1), QPointF(*n2))
+
+        # Draw nodes on top
+        for layer_nodes in node_positions:
+            for (lx, ny) in layer_nodes:
                 painter.setPen(QPen(self._colors['text'], 1))
                 painter.setBrush(QBrush(self._colors['primary']))
                 painter.drawEllipse(QPointF(lx, ny), 6, 6)
@@ -454,35 +548,93 @@ class CanvasElement(QGraphicsRectItem):
     def _draw_3d_placeholder(self, painter, rect, elem_type):
         painter.setBrush(QBrush(QColor('#0d0d14')))
         painter.drawRoundedRect(rect, 8, 8)
-        # Axes
-        cx, cy = rect.x() + rect.width() / 2, rect.y() + rect.height() / 2
-        painter.setPen(QPen(self._colors['dim'], 1))
-        painter.drawLine(QPointF(cx - 30, cy + 20), QPointF(cx + 30, cy + 20))  # X
-        painter.drawLine(QPointF(cx, cy + 20), QPointF(cx, cy - 25))  # Z
-        painter.drawLine(QPointF(cx, cy + 20), QPointF(cx - 20, cy + 5))  # Y
-        # Label
-        painter.setPen(self._colors['primary'])
-        painter.setFont(QFont('sans-serif', 12, QFont.Bold))
-        label = '3D' if elem_type == 'scatter_3d' else 'Vec3D'
-        painter.drawText(rect, Qt.AlignCenter, label)
+        # Axes with perspective effect
+        cx, cy = rect.x() + rect.width() / 2, rect.y() + rect.height() / 2 + 5
+        axis_len = min(rect.width(), rect.height()) * 0.35
+
+        # X axis (red/warning)
+        painter.setPen(QPen(self._colors['warning'], 2))
+        painter.drawLine(QPointF(cx, cy), QPointF(cx + axis_len * 0.8, cy))
+        painter.drawText(QPointF(cx + axis_len * 0.85, cy + 4), 'X')
+
+        # Y axis (green/success) - going into the screen
+        painter.setPen(QPen(self._colors['success'], 2))
+        painter.drawLine(QPointF(cx, cy), QPointF(cx - axis_len * 0.5, cy - axis_len * 0.3))
+        painter.drawText(QPointF(cx - axis_len * 0.6, cy - axis_len * 0.35), 'Y')
+
+        # Z axis (blue/primary) - going up
+        painter.setPen(QPen(self._colors['primary'], 2))
+        painter.drawLine(QPointF(cx, cy), QPointF(cx, cy - axis_len * 0.8))
+        painter.drawText(QPointF(cx + 3, cy - axis_len * 0.85), 'Z')
+
+        # Sample points/vectors
+        if elem_type == 'scatter_3d':
+            points = self.elem_data.get('points', [])[:6]
+            if not points:
+                points = [{'x': 2, 'y': 3, 'z': 1}, {'x': -2, 'y': 1, 'z': 2}, {'x': 1, 'y': -2, 'z': -1}]
+            for pt in points:
+                px = pt.get('x', 0) if isinstance(pt, dict) else 0
+                py = pt.get('y', 0) if isinstance(pt, dict) else 0
+                pz = pt.get('z', 0) if isinstance(pt, dict) else 0
+                # Simple isometric projection
+                draw_x = cx + px * 4 - py * 2.5
+                draw_y = cy - pz * 4 - py * 1.5
+                painter.setPen(Qt.NoPen)
+                painter.setBrush(QBrush(self._colors['accent']))
+                painter.drawEllipse(QPointF(draw_x, draw_y), 4, 4)
+        else:
+            vectors = self.elem_data.get('vectors', [])[:4]
+            if not vectors:
+                vectors = [{'x': 3, 'y': 1, 'z': 2, 'color': 'warning'}, {'x': -2, 'y': 2, 'z': 3, 'color': 'success'}]
+            for vec in vectors:
+                vx = vec.get('x', 0) if isinstance(vec, dict) else 0
+                vy = vec.get('y', 0) if isinstance(vec, dict) else 0
+                vz = vec.get('z', 0) if isinstance(vec, dict) else 0
+                color_name = vec.get('color', 'accent') if isinstance(vec, dict) else 'accent'
+                color = self._colors.get(color_name, self._colors['accent'])
+                # Simple isometric projection
+                end_x = cx + vx * 4 - vy * 2.5
+                end_y = cy - vz * 4 - vy * 1.5
+                painter.setPen(QPen(color, 2))
+                painter.drawLine(QPointF(cx, cy), QPointF(end_x, end_y))
+                # Arrowhead
+                painter.setBrush(QBrush(color))
+                painter.drawEllipse(QPointF(end_x, end_y), 3, 3)
 
     def _draw_attention_heatmap(self, painter, rect):
         painter.setBrush(QBrush(self._colors['bg_light']))
         painter.drawRoundedRect(rect, 6, 6)
-        tokens = self.elem_data.get('tokens_x', ['A', 'B', 'C'])[:4]
-        n = len(tokens)
-        cell_size = min(rect.width(), rect.height()) / (n + 1.5)
-        # Grid
-        for i in range(n):
-            for j in range(n):
-                cx = rect.x() + (j + 1.2) * cell_size
-                cy = rect.y() + (i + 1.2) * cell_size
-                weight = 0.3 + 0.7 * ((i + j) % 3) / 2
+        tokens_x = self.elem_data.get('tokens_x', ['A', 'B', 'C'])[:5]
+        tokens_y = self.elem_data.get('tokens_y', tokens_x)[:5]
+        n_x, n_y = len(tokens_x), len(tokens_y)
+        cell_size = min(rect.width() * 0.7, rect.height() * 0.7) / max(n_x, n_y, 1)
+        grid_offset_x = rect.x() + rect.width() * 0.25
+        grid_offset_y = rect.y() + rect.height() * 0.15
+
+        # Grid cells
+        for i in range(n_y):
+            for j in range(n_x):
+                cx = grid_offset_x + j * cell_size
+                cy = grid_offset_y + i * cell_size
+                # Diagonal pattern for self-attention
+                weight = 0.8 if i == j else (0.5 if abs(i-j) == 1 else 0.2)
                 color = QColor(self._colors['accent'])
                 color.setAlphaF(weight)
                 painter.setPen(Qt.NoPen)
                 painter.setBrush(QBrush(color))
-                painter.drawRect(QRectF(cx, cy, cell_size * 0.8, cell_size * 0.8))
+                painter.drawRect(QRectF(cx + 1, cy + 1, cell_size - 2, cell_size - 2))
+
+        # X-axis labels (top)
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 6))
+        for j, tok in enumerate(tokens_x):
+            tx = grid_offset_x + j * cell_size + cell_size / 2
+            painter.drawText(QRectF(tx - 15, grid_offset_y - 12, 30, 12), Qt.AlignCenter, tok[:4])
+
+        # Y-axis labels (left)
+        for i, tok in enumerate(tokens_y):
+            ty = grid_offset_y + i * cell_size + cell_size / 2
+            painter.drawText(QRectF(rect.x() + 2, ty - 6, grid_offset_x - rect.x() - 4, 12), Qt.AlignRight | Qt.AlignVCenter, tok[:4])
 
     def _draw_token_flow(self, painter, rect):
         painter.setBrush(QBrush(self._colors['bg_light']))
@@ -539,22 +691,39 @@ class CanvasElement(QGraphicsRectItem):
     def _draw_timeline(self, painter, rect):
         painter.setBrush(Qt.NoBrush)
         painter.drawRoundedRect(rect, 4, 4)
-        events = self.elem_data.get('events', [])[:4]
-        # Line
+        events = self.elem_data.get('events', [])[:5]
+        orientation = self.elem_data.get('orientation', 'horizontal')
+
         painter.setPen(QPen(self._colors['dim'], 2))
-        y = rect.y() + rect.height() / 2
-        painter.drawLine(QPointF(rect.x() + 10, y), QPointF(rect.x() + rect.width() - 10, y))
-        # Events
-        spacing = (rect.width() - 20) / max(len(events), 1)
-        for i, ev in enumerate(events):
-            ex = rect.x() + 10 + i * spacing + spacing / 2
-            painter.setPen(Qt.NoPen)
-            painter.setBrush(QBrush(self._colors['primary']))
-            painter.drawEllipse(QPointF(ex, y), 5, 5)
-            painter.setPen(self._colors['text'])
-            painter.setFont(QFont('sans-serif', 7))
-            title = ev.get('title', '')[:8] if isinstance(ev, dict) else str(ev)[:8]
-            painter.drawText(QRectF(ex - 20, y - 18, 40, 15), Qt.AlignCenter, title)
+
+        if orientation == 'vertical':
+            # Vertical timeline
+            x = rect.x() + rect.width() / 2
+            painter.drawLine(QPointF(x, rect.y() + 10), QPointF(x, rect.y() + rect.height() - 10))
+            spacing = (rect.height() - 20) / max(len(events), 1)
+            for i, ev in enumerate(events):
+                ey = rect.y() + 10 + i * spacing + spacing / 2
+                painter.setPen(Qt.NoPen)
+                painter.setBrush(QBrush(self._colors['primary']))
+                painter.drawEllipse(QPointF(x, ey), 5, 5)
+                painter.setPen(self._colors['text'])
+                painter.setFont(QFont('sans-serif', 7))
+                title = ev.get('title', '')[:10] if isinstance(ev, dict) else str(ev)[:10]
+                painter.drawText(QRectF(x + 8, ey - 6, rect.width()/2 - 10, 12), Qt.AlignLeft | Qt.AlignVCenter, title)
+        else:
+            # Horizontal timeline (default)
+            y = rect.y() + rect.height() / 2
+            painter.drawLine(QPointF(rect.x() + 10, y), QPointF(rect.x() + rect.width() - 10, y))
+            spacing = (rect.width() - 20) / max(len(events), 1)
+            for i, ev in enumerate(events):
+                ex = rect.x() + 10 + i * spacing + spacing / 2
+                painter.setPen(Qt.NoPen)
+                painter.setBrush(QBrush(self._colors['primary']))
+                painter.drawEllipse(QPointF(ex, y), 5, 5)
+                painter.setPen(self._colors['text'])
+                painter.setFont(QFont('sans-serif', 7))
+                title = ev.get('title', '')[:8] if isinstance(ev, dict) else str(ev)[:8]
+                painter.drawText(QRectF(ex - 20, y - 18, 40, 15), Qt.AlignCenter, title)
 
     def _draw_stacked_boxes(self, painter, rect):
         items = self.elem_data.get('items', [])[:4]
@@ -577,27 +746,69 @@ class CanvasElement(QGraphicsRectItem):
     def _draw_model_comparison(self, painter, rect):
         painter.setBrush(QBrush(self._colors['bg_light']))
         painter.drawRoundedRect(rect, 6, 6)
-        models = self.elem_data.get('models', [])[:3]
+        models = self.elem_data.get('models', [])[:4]
+        comparison_rows = self.elem_data.get('comparison_rows', [])[:4]
         if not models:
             models = [{'name': 'Model A'}, {'name': 'Model B'}]
-        col_w = rect.width() / len(models)
+
+        n_models = len(models)
+        n_rows = len(comparison_rows)
+        col_w = rect.width() / (n_models + 1)
+        row_h = rect.height() / (n_rows + 1.5) if n_rows > 0 else rect.height() * 0.5
+
+        # Model headers
         for i, model in enumerate(models):
-            mx = rect.x() + i * col_w + col_w / 2
+            mx = rect.x() + (i + 1.5) * col_w
             color = self._colors.get(model.get('color', 'primary'), self._colors['primary'])
             painter.setPen(color)
-            painter.setFont(QFont('sans-serif', 9, QFont.Bold))
-            name = model.get('name', f'Model {i+1}')[:10]
-            painter.drawText(QRectF(mx - col_w/2, rect.y() + 4, col_w, 20), Qt.AlignCenter, name)
+            painter.setFont(QFont('sans-serif', 8, QFont.Bold))
+            name = model.get('name', f'Model {i+1}')[:8]
+            painter.drawText(QRectF(mx - col_w/2, rect.y() + 4, col_w, 16), Qt.AlignCenter, name)
+
+        # Comparison rows
+        for row_idx, row_label in enumerate(comparison_rows):
+            ry = rect.y() + (row_idx + 1.5) * row_h
+            # Row label
+            painter.setPen(self._colors['dim'])
+            painter.setFont(QFont('sans-serif', 7))
+            painter.drawText(QRectF(rect.x() + 2, ry - row_h/2, col_w - 4, row_h), Qt.AlignCenter, row_label[:8])
+            # Values
+            for i, model in enumerate(models):
+                mx = rect.x() + (i + 1.5) * col_w
+                value = model.get(row_label.lower(), model.get(row_label, '-'))
+                painter.setPen(self._colors['text'])
+                painter.drawText(QRectF(mx - col_w/2, ry - row_h/2, col_w, row_h), Qt.AlignCenter, str(value)[:8])
+
+        # Divider lines
+        if n_rows > 0:
+            painter.setPen(QPen(self._colors['dim'], 0.5))
+            for row_idx in range(n_rows + 1):
+                ly = rect.y() + (row_idx + 1) * row_h
+                painter.drawLine(QPointF(rect.x() + col_w * 0.3, ly), QPointF(rect.x() + rect.width() - col_w * 0.3, ly))
 
     def _draw_weight_comparison(self, painter, rect):
         painter.setBrush(QBrush(self._colors['bg_light']))
         painter.drawRoundedRect(rect, 6, 6)
-        before = self.elem_data.get('before_weights', [0.3, 0.5])[:4]
-        after = self.elem_data.get('after_weights', [0.7, 0.8])[:4]
+        before = self.elem_data.get('before_weights', [0.3, 0.5])[:5]
+        after = self.elem_data.get('after_weights', [0.7, 0.8])[:5]
+        labels = self.elem_data.get('labels', [])
         bar_h = (rect.height() - 10) / max(len(before), 1) - 2
-        max_w = rect.width() / 2 - 10
+        max_w = rect.width() / 2 - 15
+
+        # Headers
+        painter.setPen(self._colors['warning'])
+        painter.setFont(QFont('sans-serif', 7, QFont.Bold))
+        painter.drawText(QRectF(rect.x() + 5, rect.y() + 2, max_w, 10), Qt.AlignCenter, "Before")
+        painter.setPen(self._colors['success'])
+        painter.drawText(QRectF(rect.x() + rect.width()/2 + 5, rect.y() + 2, max_w, 10), Qt.AlignCenter, "After")
+
         for i in range(len(before)):
-            by = rect.y() + 5 + i * (bar_h + 2)
+            by = rect.y() + 14 + i * (bar_h + 2)
+            # Label
+            if i < len(labels):
+                painter.setPen(self._colors['text'])
+                painter.setFont(QFont('sans-serif', 6))
+                painter.drawText(QRectF(rect.x() + rect.width()/2 - 15, by, 30, bar_h), Qt.AlignCenter, labels[i][:6])
             # Before bar
             bw = max_w * before[i]
             painter.setPen(Qt.NoPen)
@@ -615,6 +826,252 @@ class CanvasElement(QGraphicsRectItem):
         painter.setPen(self._colors['dim'])
         painter.setFont(QFont('sans-serif', 9))
         painter.drawText(rect, Qt.AlignCenter, elem_type[:12])
+
+    # Training Visualization Previews
+
+    def _draw_loss_curve(self, painter, rect):
+        """Draw loss curve preview."""
+        painter.setBrush(QBrush(self._colors['bg_light']))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        # Draw simple curve representation
+        values = self.elem_data.get('values', [1.0, 0.7, 0.5, 0.3, 0.2, 0.15, 0.1])
+        if len(values) < 2:
+            values = [1.0, 0.5, 0.2, 0.1]
+
+        # Normalize values
+        max_v = max(values)
+        min_v = min(values)
+        range_v = max_v - min_v or 1
+
+        # Draw curve
+        path = QPainterPath()
+        for i, v in enumerate(values):
+            x = rect.x() + 10 + (i / (len(values) - 1)) * (rect.width() - 20)
+            y = rect.y() + rect.height() - 10 - ((v - min_v) / range_v) * (rect.height() - 25)
+            if i == 0:
+                path.moveTo(x, y)
+            else:
+                path.lineTo(x, y)
+
+        painter.setPen(QPen(self._colors['primary'], 2))
+        painter.setBrush(Qt.NoBrush)
+        painter.drawPath(path)
+
+        # Title
+        title = self.elem_data.get('title', 'Loss')
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 9, QFont.Bold))
+        painter.drawText(QRectF(rect.x(), rect.y() + 2, rect.width(), 15), Qt.AlignHCenter, title[:15])
+
+    def _draw_decision_boundary(self, painter, rect):
+        """Draw decision boundary / XOR problem preview."""
+        painter.setBrush(QBrush(QColor('#0a0a12')))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        # Draw quadrants for XOR visualization
+        cx, cy = rect.center().x(), rect.center().y()
+        quad_w, quad_h = rect.width() / 2 - 8, rect.height() / 2 - 12
+
+        # Color quadrants (XOR pattern)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(self._colors['warning'].lighter(50)))
+        painter.setOpacity(0.2)
+        painter.drawRect(QRectF(cx - quad_w, cy - quad_h, quad_w, quad_h))  # Top-left
+        painter.drawRect(QRectF(cx, cy, quad_w, quad_h))  # Bottom-right
+        painter.setBrush(QBrush(self._colors['primary'].lighter(50)))
+        painter.drawRect(QRectF(cx, cy - quad_h, quad_w, quad_h))  # Top-right
+        painter.drawRect(QRectF(cx - quad_w, cy, quad_w, quad_h))  # Bottom-left
+        painter.setOpacity(1.0)
+
+        # Draw XOR points
+        points = [
+            (cx - quad_w/2, cy + quad_h/2, 0),   # (0,0) = 0
+            (cx - quad_w/2, cy - quad_h/2, 1),   # (0,1) = 1
+            (cx + quad_w/2, cy + quad_h/2, 1),   # (1,0) = 1
+            (cx + quad_w/2, cy - quad_h/2, 0),   # (1,1) = 0
+        ]
+        for px, py, label in points:
+            color = self._colors['primary'] if label == 1 else self._colors['warning']
+            painter.setPen(QPen(Qt.white, 1.5))
+            painter.setBrush(QBrush(color))
+            painter.drawEllipse(QPointF(px, py), 6, 6)
+
+        # Title
+        elem_type = self.elem_data.get('type', 'decision_boundary_2d')
+        title = self.elem_data.get('title', 'XOR' if elem_type == 'xor_problem' else 'Decision')
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 9, QFont.Bold))
+        painter.drawText(QRectF(rect.x(), rect.y() + 2, rect.width(), 15), Qt.AlignHCenter, title[:15])
+
+    def _draw_gradient_flow(self, painter, rect):
+        """Draw gradient flow preview."""
+        painter.setBrush(QBrush(self._colors['bg_light']))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        layers = self.elem_data.get('layers', [3, 5, 5, 2])
+        n_layers = len(layers)
+
+        # Draw layer columns with arrows
+        layer_spacing = (rect.width() - 30) / max(n_layers - 1, 1)
+        for i in range(n_layers):
+            lx = rect.x() + 15 + i * layer_spacing
+
+            # Draw nodes (simplified)
+            n_nodes = min(layers[i], 4)
+            for j in range(n_nodes):
+                ny = rect.y() + rect.height()/2 + (j - n_nodes/2 + 0.5) * 10
+                # Gradient fades - smaller/dimmer further back
+                alpha = 1.0 - (i / n_layers) * 0.6
+                color = QColor(self._colors['primary'])
+                color.setAlphaF(alpha)
+                painter.setBrush(QBrush(color))
+                painter.setPen(Qt.NoPen)
+                painter.drawEllipse(QPointF(lx, ny), 4, 4)
+
+            # Draw arrow to next layer
+            if i < n_layers - 1:
+                painter.setPen(QPen(self._colors['accent'], 1.5))
+                arrow_y = rect.y() + rect.height()/2
+                painter.drawLine(QPointF(lx + 8, arrow_y), QPointF(lx + layer_spacing - 8, arrow_y))
+
+        # Title
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 8, QFont.Bold))
+        painter.drawText(QRectF(rect.x(), rect.y() + 2, rect.width(), 12), Qt.AlignHCenter, "Gradients ←")
+
+    def _draw_dropout_layer(self, painter, rect):
+        """Draw dropout layer preview."""
+        painter.setBrush(QBrush(self._colors['bg_light']))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        num_nodes = min(self.elem_data.get('num_nodes', 8), 12)
+        dropout_rate = self.elem_data.get('dropout_rate', 0.3)
+
+        # Draw nodes in a grid
+        cols = min(num_nodes, 6)
+        rows = (num_nodes + cols - 1) // cols
+        node_spacing_x = (rect.width() - 20) / max(cols - 1, 1) if cols > 1 else 0
+        node_spacing_y = (rect.height() - 25) / max(rows - 1, 1) if rows > 1 else 0
+
+        for i in range(num_nodes):
+            col = i % cols
+            row = i // cols
+            nx = rect.x() + 10 + col * node_spacing_x
+            ny = rect.y() + 18 + row * node_spacing_y
+
+            # Deterministic "random" based on position
+            is_dropped = (i * 7 + 3) % 10 < dropout_rate * 10
+
+            if is_dropped:
+                # X mark for dropped
+                painter.setPen(QPen(self._colors['warning'], 2))
+                painter.drawLine(QPointF(nx - 4, ny - 4), QPointF(nx + 4, ny + 4))
+                painter.drawLine(QPointF(nx + 4, ny - 4), QPointF(nx - 4, ny + 4))
+            else:
+                # Circle for active
+                painter.setPen(QPen(Qt.white, 1))
+                painter.setBrush(QBrush(self._colors['primary']))
+                painter.drawEllipse(QPointF(nx, ny), 5, 5)
+
+        # Title
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 8, QFont.Bold))
+        painter.drawText(QRectF(rect.x(), rect.y() + 2, rect.width(), 12),
+                        Qt.AlignHCenter, f"Dropout {dropout_rate:.0%}")
+
+    def _draw_optimizer_paths(self, painter, rect):
+        """Draw optimizer paths preview."""
+        painter.setBrush(QBrush(QColor('#0a0a12')))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        cx, cy = rect.center().x(), rect.center().y()
+
+        # Draw contour circles
+        painter.setPen(QPen(self._colors['dim'], 0.5))
+        painter.setBrush(Qt.NoBrush)
+        for r in [10, 20, 30]:
+            if r < min(rect.width(), rect.height()) / 2 - 5:
+                painter.drawEllipse(QPointF(cx, cy), r, r * 0.7)
+
+        # Draw simplified optimizer paths
+        paths = [
+            (self._colors['warning'], [(cx - 35, cy - 15), (cx - 20, cy - 10), (cx - 5, cy - 3), (cx, cy)]),
+            (self._colors['success'], [(cx + 30, cy + 20), (cx + 15, cy + 10), (cx + 3, cy + 2), (cx, cy)]),
+            (self._colors['primary'], [(cx - 20, cy + 25), (cx - 10, cy + 12), (cx - 2, cy + 3), (cx, cy)]),
+        ]
+
+        for color, path in paths:
+            if len(path) >= 2:
+                painter.setPen(QPen(color, 1.5))
+                qpath = QPainterPath()
+                qpath.moveTo(path[0][0], path[0][1])
+                for pt in path[1:]:
+                    qpath.lineTo(pt[0], pt[1])
+                painter.drawPath(qpath)
+
+        # Center point (minimum)
+        painter.setPen(Qt.NoPen)
+        painter.setBrush(QBrush(self._colors['accent']))
+        painter.drawEllipse(QPointF(cx, cy), 4, 4)
+
+        # Title
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 8, QFont.Bold))
+        painter.drawText(QRectF(rect.x(), rect.y() + 2, rect.width(), 12), Qt.AlignHCenter, "Optimizers")
+
+    def _draw_confusion_matrix(self, painter, rect):
+        """Draw confusion matrix preview."""
+        painter.setBrush(QBrush(self._colors['bg_light']))
+        painter.drawRoundedRect(rect, 6, 6)
+
+        matrix = self.elem_data.get('matrix', [[45, 5], [8, 42]])
+        n = len(matrix)
+        labels = self.elem_data.get('labels', ['N', 'P'])[:n]
+
+        cell_w = (rect.width() - 25) / n
+        cell_h = (rect.height() - 25) / n
+        start_x = rect.x() + 20
+        start_y = rect.y() + 18
+
+        max_val = max(max(row) for row in matrix) or 1
+
+        for i in range(n):
+            for j in range(n):
+                cx = start_x + j * cell_w
+                cy = start_y + i * cell_h
+                val = matrix[i][j]
+                intensity = val / max_val
+
+                # Color: green for diagonal, red for off-diagonal
+                if i == j:
+                    color = QColor(self._colors['success'])
+                else:
+                    color = QColor(self._colors['warning'])
+                color.setAlphaF(intensity * 0.7)
+
+                painter.setPen(QPen(self._colors['dim'], 0.5))
+                painter.setBrush(QBrush(color))
+                painter.drawRect(QRectF(cx, cy, cell_w - 1, cell_h - 1))
+
+                # Value
+                painter.setPen(self._colors['text'] if intensity < 0.5 else Qt.white)
+                painter.setFont(QFont('sans-serif', 7))
+                painter.drawText(QRectF(cx, cy, cell_w - 1, cell_h - 1), Qt.AlignCenter, str(val))
+
+        # Labels
+        painter.setPen(self._colors['dim'])
+        painter.setFont(QFont('sans-serif', 7))
+        for i, label in enumerate(labels):
+            # Row labels
+            painter.drawText(QRectF(rect.x() + 2, start_y + i * cell_h, 15, cell_h), Qt.AlignVCenter, label[:2])
+            # Column labels
+            painter.drawText(QRectF(start_x + i * cell_w, rect.y() + 5, cell_w, 12), Qt.AlignHCenter, label[:2])
+
+        # Title
+        painter.setPen(self._colors['text'])
+        painter.setFont(QFont('sans-serif', 7, QFont.Bold))
+        painter.drawText(QRectF(rect.x(), rect.y() + rect.height() - 12, rect.width(), 10), Qt.AlignHCenter, "Confusion")
 
 
 class CanvasView(QGraphicsView):
@@ -749,6 +1206,13 @@ class CanvasView(QGraphicsView):
         item.set_snap_enabled(self._snap_enabled)
         self.scene_obj.addItem(item)
         return item
+
+    def update_z_order(self):
+        """Update z-order of all elements based on their order in the scene."""
+        elements_on_canvas = [item for item in self.scene_obj.items()
+                              if isinstance(item, CanvasElement)]
+        for i, item in enumerate(elements_on_canvas):
+            item.setZValue(i)
 
     def clear_elements(self):
         """Remove all elements (but keep grid)."""

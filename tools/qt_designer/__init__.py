@@ -27,6 +27,7 @@ from .palette import ElementPalette
 from .properties import PropertiesPanel
 from .navigator import StepNavigator
 from .preview import PreviewWindow
+from .training_controller import TrainingControllerWidget
 from .constants import COLORS, ELEMENTS, ELEMENT_DEFAULTS
 
 __all__ = [
@@ -38,6 +39,7 @@ __all__ = [
     'PropertiesPanel',
     'StepNavigator',
     'PreviewWindow',
+    'TrainingControllerWidget',
     'COLORS',
     'ELEMENTS',
     'ELEMENT_DEFAULTS',

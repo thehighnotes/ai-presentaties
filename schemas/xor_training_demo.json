@@ -1,0 +1,225 @@
+{
+  "name": "xor_training_demo",
+  "title": "XOR Neural Network Training",
+  "landing": {
+    "title": "Live Neural Network Training",
+    "subtitle": "XOR Problem Demo",
+    "tagline": "Watch a neural network learn in real-time"
+  },
+  "steps": [
+    {
+      "name": "xor_training",
+      "title": "XOR Training - Interactive Demo",
+      "elements": [
+        {
+          "type": "text",
+          "content": "XOR Problem: Neural Network Training",
+          "position": {"x": 50, "y": 92},
+          "fontsize": 18,
+          "color": "accent",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "xor_problem",
+          "position": {"x": 28, "y": 55},
+          "width": 38,
+          "height": 38,
+          "title": "Decision Boundary",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "loss_curve",
+          "position": {"x": 72, "y": 62},
+          "width": 38,
+          "height": 28,
+          "title": "Training Loss",
+          "animate_draw": true,
+          "show_grid": true,
+          "show_min": true,
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "gradient_flow",
+          "position": {"x": 50, "y": 18},
+          "width": 70,
+          "height": 18,
+          "layers": [2, 4, 1],
+          "title": "Gradient Flow (Backpropagation)",
+          "animate_flow": true,
+          "show_vanishing": true,
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "text",
+          "content": "Adjust learning rate, momentum, and dropout in the control panel →",
+          "position": {"x": 50, "y": 5},
+          "fontsize": 10,
+          "color": "dim",
+          "animation_phase": "immediate"
+        }
+      ],
+      "animation_frames": 60
+    },
+    {
+      "name": "understanding_xor",
+      "title": "Understanding XOR",
+      "elements": [
+        {
+          "type": "text",
+          "content": "The XOR Problem",
+          "position": {"x": 50, "y": 90},
+          "fontsize": 20,
+          "color": "primary",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 55},
+          "width": 70,
+          "height": 35,
+          "left_title": "Inputs",
+          "left_content": "(0,0) → 0\n(0,1) → 1\n(1,0) → 1\n(1,1) → 0",
+          "right_title": "Why it's hard",
+          "right_content": "XOR is not linearly\nseparable!\n\nRequires hidden layers\nto learn the pattern.",
+          "left_color": "primary",
+          "right_color": "warning",
+          "animation_phase": "early"
+        },
+        {
+          "type": "decision_boundary_2d",
+          "position": {"x": 50, "y": 20},
+          "width": 35,
+          "height": 25,
+          "title": "XOR Pattern",
+          "animation_phase": "middle"
+        }
+      ],
+      "animation_frames": 60
+    },
+    {
+      "name": "optimizer_comparison",
+      "title": "Optimizer Comparison",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Optimizer Comparison",
+          "position": {"x": 50, "y": 92},
+          "fontsize": 18,
+          "color": "accent",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "optimizer_paths",
+          "position": {"x": 50, "y": 50},
+          "width": 60,
+          "height": 50,
+          "title": "Loss Landscape Navigation",
+          "surface_type": "convex",
+          "animate_paths": true,
+          "show_contours": true,
+          "show_labels": true,
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 12},
+          "width": 60,
+          "items": [
+            "SGD: Simple but can be slow",
+            "Adam: Adaptive learning rate",
+            "RMSprop: Good for non-stationary"
+          ],
+          "animation_phase": "late",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 60
+    },
+    {
+      "name": "regularization",
+      "title": "Regularization Techniques",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Regularization",
+          "position": {"x": 50, "y": 92},
+          "fontsize": 18,
+          "color": "accent",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "dropout_layer",
+          "position": {"x": 30, "y": 55},
+          "width": 35,
+          "height": 30,
+          "num_nodes": 12,
+          "dropout_rate": 0.3,
+          "title": "Dropout (p=0.3)",
+          "animate_drops": true,
+          "show_scaling": true,
+          "animation_phase": "early"
+        },
+        {
+          "type": "dropout_layer",
+          "position": {"x": 70, "y": 55},
+          "width": 35,
+          "height": 30,
+          "num_nodes": 12,
+          "dropout_rate": 0.5,
+          "title": "Dropout (p=0.5)",
+          "animate_drops": true,
+          "show_scaling": true,
+          "animation_phase": "middle"
+        },
+        {
+          "type": "text",
+          "content": "Dropout prevents overfitting by randomly disabling neurons during training",
+          "position": {"x": 50, "y": 20},
+          "fontsize": 11,
+          "color": "text",
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 60
+    },
+    {
+      "name": "evaluation",
+      "title": "Model Evaluation",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Confusion Matrix",
+          "position": {"x": 50, "y": 92},
+          "fontsize": 18,
+          "color": "accent",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "confusion_matrix",
+          "position": {"x": 50, "y": 55},
+          "width": 40,
+          "height": 40,
+          "matrix": [[45, 5], [3, 47]],
+          "labels": ["Class 0", "Class 1"],
+          "title": "Binary Classification Results",
+          "animate_fill": true,
+          "show_percentages": false,
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 15},
+          "width": 50,
+          "items": [
+            "Accuracy: 92%",
+            "Precision: 90%",
+            "Recall: 94%"
+          ],
+          "animation_phase": "late",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 60
+    }
+  ]
+}

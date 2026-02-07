@@ -68,7 +68,7 @@ from matplotlib.patches import FancyBboxPatch
 import matplotlib.pyplot as plt
 
 from core import BasePresentation, PresentationStyle
-from core.element_rendering import ElementRenderer, render_step
+from core.element_rendering import ElementRenderer, render_step, step_needs_3d_axes
 '''
 
     def generate_class_header(self) -> str:
@@ -232,10 +232,15 @@ class {self.class_name}(BasePresentation):
         step_data = self._step_data.get(step_idx, {})
 
         self.fig.clear()
-        ax = self.fig.add_subplot(111)
-        ax.axis('off')
-        ax.set_xlim(0, 100)
-        ax.set_ylim(0, 100)
+
+        # Check if step needs 3D axes
+        if step_needs_3d_axes(step_data):
+            ax = self.fig.add_subplot(111, projection='3d')
+        else:
+            ax = self.fig.add_subplot(111)
+            ax.axis('off')
+            ax.set_xlim(0, 100)
+            ax.set_ylim(0, 100)
 
         # Use centralized renderer
         render_step(ax, step_data, progress, colors=self.colors, show_title=True)

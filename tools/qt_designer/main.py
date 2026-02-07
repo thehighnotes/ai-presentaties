@@ -11,7 +11,7 @@ from typing import Optional, Dict
 
 from PySide6.QtWidgets import (
     QApplication, QMainWindow, QWidget, QVBoxLayout, QHBoxLayout,
-    QFileDialog, QMessageBox, QStatusBar
+    QFileDialog, QMessageBox, QStatusBar, QSplitter
 )
 from PySide6.QtCore import Qt
 from PySide6.QtGui import QFont, QAction, QKeySequence, QUndoStack
@@ -139,23 +139,37 @@ class PresentationDesigner(QMainWindow):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.setSpacing(0)
 
-        # Content area
-        content_layout = QHBoxLayout()
-        content_layout.setSpacing(0)
+        # Content area with resizable splitter
+        splitter = QSplitter(Qt.Horizontal)
+        splitter.setHandleWidth(4)
+        splitter.setStyleSheet(f"""
+            QSplitter::handle {{
+                background-color: {COLORS['dim']};
+            }}
+            QSplitter::handle:hover {{
+                background-color: {COLORS['primary']};
+            }}
+        """)
 
         # Left: Element palette
         self.palette = ElementPalette()
-        content_layout.addWidget(self.palette)
+        splitter.addWidget(self.palette)
 
         # Center: Canvas
         self.canvas = CanvasView(self.undo_stack)
-        content_layout.addWidget(self.canvas, stretch=1)
+        splitter.addWidget(self.canvas)
 
         # Right: Properties
         self.properties = PropertiesPanel()
-        content_layout.addWidget(self.properties)
+        splitter.addWidget(self.properties)
 
-        main_layout.addLayout(content_layout, stretch=1)
+        # Set initial sizes (palette: 120, canvas: stretch, properties: 300)
+        splitter.setSizes([120, 800, 300])
+        splitter.setStretchFactor(0, 0)  # Palette doesn't stretch
+        splitter.setStretchFactor(1, 1)  # Canvas stretches
+        splitter.setStretchFactor(2, 0)  # Properties doesn't stretch
+
+        main_layout.addWidget(splitter, stretch=1)
 
         # Bottom: Step navigator
         self.navigator = StepNavigator()
@@ -274,6 +288,29 @@ class PresentationDesigner(QMainWindow):
         duplicate_action.setShortcut("Ctrl+D")
         duplicate_action.triggered.connect(self._duplicate_selected)
         edit_menu.addAction(duplicate_action)
+
+        edit_menu.addSeparator()
+
+        # Z-order controls
+        bring_front = QAction("Bring to &Front", self)
+        bring_front.setShortcut("Ctrl+Shift+]")
+        bring_front.triggered.connect(lambda: self._change_z_order('front'))
+        edit_menu.addAction(bring_front)
+
+        bring_forward = QAction("Bring For&ward", self)
+        bring_forward.setShortcut("Ctrl+]")
+        bring_forward.triggered.connect(lambda: self._change_z_order('forward'))
+        edit_menu.addAction(bring_forward)
+
+        send_backward = QAction("Send Back&ward", self)
+        send_backward.setShortcut("Ctrl+[")
+        send_backward.triggered.connect(lambda: self._change_z_order('backward'))
+        edit_menu.addAction(send_backward)
+
+        send_back = QAction("Send to &Back", self)
+        send_back.setShortcut("Ctrl+Shift+[")
+        send_back.triggered.connect(lambda: self._change_z_order('back'))
+        edit_menu.addAction(send_back)
 
         # View menu
         view_menu = menubar.addMenu("&View")
@@ -437,6 +474,40 @@ class PresentationDesigner(QMainWindow):
 
             item.setSelected(False)
             new_item.setSelected(True)
+
+    def _change_z_order(self, direction: str):
+        """Change z-order of selected element."""
+        item = self.canvas.get_selected_item()
+        if not item:
+            return
+
+        step_elements = self.schema['steps'][self.current_step]['elements']
+        elem_data = item.elem_data
+
+        try:
+            idx = step_elements.index(elem_data)
+        except ValueError:
+            return
+
+        new_idx = idx
+        if direction == 'front':
+            new_idx = len(step_elements) - 1
+        elif direction == 'back':
+            new_idx = 0
+        elif direction == 'forward' and idx < len(step_elements) - 1:
+            new_idx = idx + 1
+        elif direction == 'backward' and idx > 0:
+            new_idx = idx - 1
+
+        if new_idx != idx:
+            # Move element in list
+            step_elements.pop(idx)
+            step_elements.insert(new_idx, elem_data)
+
+            # Update canvas z-order
+            self.canvas.update_z_order()
+            self._mark_dirty()
+            self.statusBar().showMessage(f"Moved element {direction}")
 
     def _toggle_snap(self, enabled: bool):
         """Toggle snap-to-grid."""
