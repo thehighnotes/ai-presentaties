@@ -11,8 +11,8 @@ python -m tools.qt_designer schemas/my_presentation.json
 # Or legacy matplotlib designer
 python -m tools.visual_designer schemas/my_presentation.json
 
-# Generate Python from JSON
-python -m tools.designer generate schemas/my_presentation.json
+# Generate Python from JSON (uses centralized rendering)
+python -m tools.generator_v2 schemas/my_presentation.json
 
 # Run a presentation
 python presentations/my_presentation_presentation.py
@@ -22,24 +22,53 @@ python presentations/my_presentation_presentation.py
 
 ```
 AI-Presentatie/
-├── core/                    # Core framework
-│   ├── base.py             # BasePresentation class
-│   ├── styling.py          # PresentationStyle colors/fonts
-│   ├── animations.py       # AnimationHelper, easing functions
-│   └── visual_effects.py   # ParticleSystem, SimilarityMeter, etc.
+├── core/                       # Core framework
+│   ├── base.py                # BasePresentation class
+│   ├── styling.py             # PresentationStyle colors/fonts
+│   ├── animations.py          # AnimationHelper, easing functions
+│   ├── element_rendering.py   # Centralized matplotlib rendering (26 types)
+│   └── visual_effects.py      # ParticleSystem, SimilarityMeter, etc.
 │
-├── tools/                   # Design tools
-│   ├── schema.py           # JSON schema dataclasses (26 element types)
-│   ├── generator.py        # JSON → Python code generator
-│   ├── designer.py         # CLI tool for schema operations
-│   ├── qt_designer.py      # Qt/PySide6 GUI designer (recommended)
-│   └── visual_designer.py  # Matplotlib GUI designer (legacy)
+├── tools/                      # Design tools
+│   ├── schema.py              # JSON schema dataclasses (26 element types)
+│   ├── generator_v2.py        # JSON → Python (uses centralized rendering)
+│   ├── generator.py           # Legacy generator (inline rendering)
+│   ├── designer.py            # CLI tool for schema operations
+│   ├── qt_designer/           # Qt/PySide6 GUI designer package
+│   │   ├── __init__.py        # Package exports
+│   │   ├── __main__.py        # Entry point for python -m
+│   │   ├── constants.py       # Colors, elements, defaults
+│   │   ├── commands.py        # Undo/redo commands
+│   │   ├── canvas.py          # CanvasElement, CanvasView
+│   │   ├── palette.py         # Element palette (left sidebar)
+│   │   ├── properties.py      # Properties panel (right sidebar)
+│   │   ├── navigator.py       # Step navigator (bottom bar)
+│   │   ├── preview.py         # Animation preview window
+│   │   └── main.py            # PresentationDesigner main window
+│   └── visual_designer.py     # Matplotlib GUI designer (legacy)
 │
-├── schemas/                 # JSON presentation definitions
+├── schemas/                    # JSON presentation definitions
 │   └── *.json
 │
-└── presentations/           # Generated Python presentations
+└── presentations/              # Generated Python presentations
     └── *_presentation.py
+```
+
+---
+
+## Centralized Rendering
+
+The `core/element_rendering.py` module provides a single source of truth for all matplotlib element rendering. Both the Qt designer preview and generated presentations use this module, ensuring **identical visual output**.
+
+```python
+from core.element_rendering import ElementRenderer, render_step
+
+# Render a step at 50% progress
+render_step(ax, step_data, progress=0.5)
+
+# Or use the renderer directly
+renderer = ElementRenderer(ax)
+renderer.render(element_data, progress=0.5)
 ```
 
 ---
@@ -83,20 +112,20 @@ python -m tools.qt_designer schemas/existing.json        # Edit existing
 │ [ ] Box  │                                           │ [Content][Anim]  │
 │ <> Comp  │                                           │                  │
 │ ... Chat │                                           │ x: [50]  y: [50] │
-│ ••• List │                                           │ width:  [30]     │
+│ *** List │                                           │ width:  [30]     │
 │ [x] Check│                                           │ tokens_x: [Edit] │
 │ o-o Time │                                           │                  │
 │ >>> Flow │                                           │ Duration: [1.0]  │
 │ ## Grid  │                                           │ Phase: [early ▼] │
-│ ≡ Stack  │                                           │ Easing: [ease ▼] │
-│ → Arrow  │                                           │                  │
-│ ↷ Arc    │                                           │                  │
+│ === Stack│                                           │ Easing: [ease ▼] │
+│ -> Arrow │                                           │                  │
+│ ~> Arc   │                                           │                  │
 │ *** Part │                                           │                  │
 │ ooo NN   │                                           │                  │
 │ HM Attn  │                                           │                  │
 │ ...      │                                           │                  │
 ├──────────┴───────────────────────────────────────────┴──────────────────┤
-│   ◀  [+] [−]              Step 2/8: Attention in Action              ▶  │
+│   <  [+] [-]              Step 2/8: Attention in Action              >  │
 └─────────────────────────────────────────────────────────────────────────┘
 ```
 
@@ -111,8 +140,13 @@ python -m tools.qt_designer schemas/existing.json        # Edit existing
 | **P** | Preview animation |
 | **Ctrl+Z** | Undo |
 | **Ctrl+Shift+Z** | Redo |
+| **Ctrl+C** | Copy selected element |
+| **Ctrl+V** | Paste element |
 | **Delete** | Delete selected element |
 | **Ctrl+D** | Duplicate selected |
+| **Arrow keys** | Nudge element (1 unit) |
+| **Shift+Arrow** | Nudge element (5 units) |
+| **G** | Toggle snap-to-grid |
 | **Ctrl+=** | Zoom in |
 | **Ctrl+-** | Zoom out |
 | **Ctrl+0** | Reset zoom |
@@ -158,7 +192,7 @@ Press **P** to open the preview window:
 │         with proper easing and timing                       │
 │                                                             │
 ├─────────────────────────────────────────────────────────────┤
-│  [▶] [⟲]  ═══════════●═══════════════════  75%   [🔁]      │
+│  [>] [R]  ════════════●═══════════════════  75%   [L]      │
 │           imm  early  mid  late  final                      │
 └─────────────────────────────────────────────────────────────┘
 ```
@@ -166,44 +200,26 @@ Press **P** to open the preview window:
 **Preview Controls:**
 | Control | Action |
 |---------|--------|
-| ▶ / ⏸ | Play / Pause |
-| ⟲ | Reset to start |
+| > / \|\| | Play / Pause |
+| R | Reset to start |
 | Slider | Scrub through animation |
-| 🔁 | Toggle loop |
+| L | Toggle loop |
 | Space | Play/Pause |
 | R | Reset |
 | Esc / Q | Close preview |
 
-**Rendered Elements (all 26 types):**
-- Text elements with typewriter animation
-- Attention heatmaps with animated cell reveal and self-attention patterns
-- Flow diagrams with staggered step appearance
-- Neural networks with layer-by-layer reveal
-- Model comparisons with data tables
-- Stacked boxes with progressive sizing
-- Particle flows with animated particles
-- Progress bars and similarity meters with fill animation
-- Conversations with message bubbles
-- And more...
+### Unsaved Changes
+
+- Window title shows `*` when there are unsaved changes
+- Prompts to save when closing with unsaved changes
 
 ### Undo/Redo System
 
 All actions are undoable (50 levels):
 - Element moves
+- Element nudges (arrow keys)
 - Add element
 - Delete element
-
-### Why Qt Designer?
-
-| Feature | Matplotlib (old) | Qt/PySide6 (new) |
-|---------|------------------|------------------|
-| Drag elements | Manual implementation | Built-in flags |
-| Selection | Manual hit testing | Native support |
-| Zoom/Pan | Complex, buggy | Scroll + middle-drag |
-| Form inputs | Tkinter popups | Native widgets |
-| Undo/Redo | Not implemented | QUndoStack |
-| Performance | Redraw lag | Hardware accelerated |
-| Code size | 2500+ lines | ~2200 lines |
 
 ---
 
@@ -217,78 +233,6 @@ python -m tools.visual_designer                          # New presentation
 python -m tools.visual_designer schemas/existing.json    # Edit existing
 python -m tools.visual_designer --new my_presentation    # New with name
 ```
-
-### Interface Layout
-
-```
-┌─────────────────────────────────────────────────────────────────────┐
-│  PRESENTATION DESIGNER    [N]ew [O]pen [S]ave [G]enerate [P]review  │
-├──────────┬─────────────────────────────────────────┬────────────────┤
-│ ELEMENTS │                                         │   PROPERTIES   │
-│          │              CANVAS                     │                │
-│  [Text]  │                                         │  Element Type  │
-│  [Box]   │         (drag & drop area)              │  x: 50  y: 50  │
-│  [...]   │                                         │  width: 25     │
-│          │                                         │                │
-│          │                                         │  Animation:    │
-│          │                                         │  [early] [mid] │
-│          ├─────────────────────────────────────────┤                │
-│          │   < Step 1/5: Introduction >            │  Current Step  │
-└──────────┴─────────────────────────────────────────┴────────────────┘
-```
-
-### Keyboard Shortcuts
-
-| Key | Action |
-|-----|--------|
-| **N** | New presentation |
-| **O** | Open file |
-| **S** | Save |
-| **G** | Generate Python code |
-| **P** | Preview presentation |
-| **E** | Edit selected element |
-| **D** | Duplicate selected |
-| **Del** | Delete selected |
-| **←/→** | Navigate steps |
-| **Esc** | Cancel action / Deselect |
-| **Q** | Quit (warns if unsaved) |
-| **Scroll** | Scroll element list |
-
-### Mouse Controls
-
-| Action | Result |
-|--------|--------|
-| Click element button | Select element type to place |
-| Click canvas | Place element / Select existing |
-| Drag on canvas | Move selected element |
-| Click property value | Edit property via dialog |
-| Click phase button | Set animation phase |
-| Click nav buttons | Navigate steps |
-
-### Panel Details
-
-**Elements Panel (Left)**
-- 26 element types available (sorted by category)
-- Scroll with mouse wheel
-- Click to select, click canvas to place
-- Active selection highlighted in orange
-
-**Canvas (Center)**
-- 100x100 coordinate system
-- Subtle grid for alignment
-- Blue border indicates canvas bounds
-- Elements rendered with selection highlight
-
-**Properties Panel (Right)**
-- Shows selected element properties
-- Click values to edit via popup dialog
-- Animation phase selector buttons
-- Current step info at bottom
-
-**Navigation Bar (Bottom)**
-- `<` `>` - Previous/Next step
-- `+` `-` - Add/Delete step
-- Step indicator shows current position
 
 ---
 
@@ -312,7 +256,7 @@ python -m tools.visual_designer --new my_presentation    # New with name
 ### Lists
 | Type | Icon | Description | Key Properties |
 |------|------|-------------|----------------|
-| `bullet_list` | * * | Bulleted list | items[], stagger |
+| `bullet_list` | *** | Bulleted list | items[], stagger |
 | `checklist` | [x] | Checkmark list | items[], check_color |
 | `timeline` | o-o | Horizontal timeline | events[], orientation |
 
@@ -321,7 +265,7 @@ python -m tools.visual_designer --new my_presentation    # New with name
 |------|------|-------------|----------------|
 | `flow` | >>> | Horizontal process | steps[], width |
 | `grid` | ## | 2D card grid | columns, rows, items[] |
-| `stacked_boxes` | = | Vertical stack | items[], base_width |
+| `stacked_boxes` | === | Vertical stack | items[], base_width |
 
 ### Connectors
 | Type | Icon | Description | Key Properties |
@@ -404,8 +348,6 @@ Via `continuous_effect` property:
 - `stagger: true` (default) - Items appear one by one
 - `stagger: false` - All items appear together
 
-When `stagger: true`, duration affects the entire sequence - longer duration means more time between each item appearing.
-
 ---
 
 ## JSON Schema Example
@@ -456,7 +398,10 @@ When `stagger: true`, duration affects the entire sequence - longer duration mea
 # Create new schema template
 python -m tools.designer new my_presentation --title "My Title"
 
-# Generate Python from JSON
+# Generate Python from JSON (V2 - centralized rendering)
+python -m tools.generator_v2 schemas/my_presentation.json
+
+# Generate Python from JSON (legacy - inline rendering)
 python -m tools.designer generate schemas/my_presentation.json
 
 # Validate schema
@@ -464,9 +409,6 @@ python -m tools.designer validate schemas/my_presentation.json
 
 # List all presentations
 python -m tools.designer list
-
-# Show example schema
-python -m tools.designer example
 ```
 
 ---
@@ -524,16 +466,16 @@ Available color names for styling:
 
 2. **schema.py**: Add to `ElementType` enum and `Element` union
 
-3. **generator.py**: Add `_generate_my_new()` method
+3. **core/element_rendering.py**: Add `_render_my_new()` method to `ElementRenderer`
 
-4. **generator.py**: Add case in `_generate_element_code()`
+4. **tools/qt_designer/constants.py**: Add to `ELEMENTS` and `ELEMENT_DEFAULTS`
 
-5. **visual_designer.py**: Add to `_draw_element()` and `_draw_element_thumbnail()`
+5. **tools/qt_designer/canvas.py**: Add `_draw_my_new()` method to `CanvasElement`
 
 ### Architecture Notes
 
-- **Generator**: Converts schema to Python code with dynamic imports
-- **Visual Designer**: Uses matplotlib with optimized panel rendering
-- **Presentations**: Extend `BasePresentation` from core module
-- **Blitting**: Canvas uses fast redraw during drag operations
+- **Centralized Rendering**: `core/element_rendering.py` is the single source of truth for matplotlib rendering
+- **Qt Designer**: Modular package in `tools/qt_designer/` with separate concerns
+- **Generator V2**: Produces compact presentations that import centralized rendering
+- **Preview = Final**: Preview window and generated presentations render identically
 - **SORTED_ELEMENTS**: Single source of truth for element order and icons
