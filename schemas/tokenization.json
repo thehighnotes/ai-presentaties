@@ -1,0 +1,301 @@
+{
+  "name": "tokenization",
+  "title": "Tokenization: Text to Numbers",
+  "description": "How LLMs convert text into something they can process",
+  "author": "AI Training",
+  "language": "en",
+  "version": "1.0",
+  "landing": {
+    "title": "Tokenization",
+    "subtitle": "From Text to Numbers",
+    "tagline": "The first step in language understanding",
+    "welcome_message": "Let's explore how AI reads text!",
+    "footer": "Press SPACE to begin",
+    "primary_color": "secondary"
+  },
+  "steps": [
+    {
+      "name": "why_tokenize",
+      "title": "Why Tokenization?",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Computers don't understand words - only numbers",
+          "position": {"x": 50, "y": 85},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 55},
+          "left_title": "What We See",
+          "left_content": "Hello, how are you today?",
+          "left_color": "primary",
+          "right_title": "What AI Sees",
+          "right_content": "[15496, 11, 703, 527, 499, 3432, 30]",
+          "right_color": "secondary",
+          "width": 85,
+          "height": 25,
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 22},
+          "items": [
+            "Text -> Tokens -> Token IDs -> Embeddings",
+            "Each token = a piece of text with a unique ID",
+            "Vocabulary: all tokens the model knows"
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "token_flow_demo",
+      "title": "The Tokenization Pipeline",
+      "elements": [
+        {
+          "type": "text",
+          "content": "From Text to Embeddings",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "token_flow",
+          "position": {"x": 50, "y": 55},
+          "input_text": "Hello world",
+          "width": 80,
+          "height": 45,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Embeddings capture meaning: similar words have similar vectors",
+          "position": {"x": 50, "y": 12},
+          "style": {"fontsize": 14, "color": "dim"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "tokenization_types",
+      "title": "Types of Tokenization",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Different Approaches to Splitting Text",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 55},
+          "columns": 3,
+          "rows": 1,
+          "cell_width": 26,
+          "cell_height": 35,
+          "items": [
+            {"title": "Word-level", "description": "hello, world, today", "color": "warning"},
+            {"title": "Character", "description": "h,e,l,l,o", "color": "dim"},
+            {"title": "Subword (BPE)", "description": "hel, lo, wor, ld", "color": "success"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "BPE: Best of both worlds - handles rare words AND is efficient",
+          "position": {"x": 50, "y": 18},
+          "style": {"fontsize": 16, "color": "secondary"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "bpe_explained",
+      "title": "Byte Pair Encoding (BPE)",
+      "elements": [
+        {
+          "type": "text",
+          "content": "How BPE Learns Its Vocabulary",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "flow",
+          "position": {"x": 50, "y": 65},
+          "steps": [
+            {"title": "1. Start", "subtitle": "All characters"},
+            {"title": "2. Count", "subtitle": "Find common pairs"},
+            {"title": "3. Merge", "subtitle": "Create new token"},
+            {"title": "4. Repeat", "subtitle": "Until vocab full"}
+          ],
+          "width": 90,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "code_execution",
+          "position": {"x": 50, "y": 32},
+          "code": "l o w -> (lo) w -> low\nl o w e r -> (lo) w e r -> low e r",
+          "output": "Vocabulary: [l, o, w, e, r, lo, low, ...]",
+          "width": 70,
+          "code_height": 14,
+          "output_height": 8,
+          "animation_phase": "middle"
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "token_counts",
+      "title": "Token Counts Matter",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Why Token Count Affects Cost & Speed",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 58},
+          "left_title": "Efficient",
+          "left_content": "'Hello' = 1 token",
+          "left_color": "success",
+          "right_title": "Expensive",
+          "right_content": "'Cryptocurrency' = 3 tokens",
+          "right_color": "warning",
+          "width": 75,
+          "height": 22,
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 28},
+          "items": [
+            "Common words = fewer tokens = cheaper",
+            "Rare/technical words = more tokens = more expensive",
+            "Different languages tokenize differently",
+            "Code often uses more tokens than natural language"
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "special_tokens",
+      "title": "Special Tokens",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Tokens With Special Meaning",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 50},
+          "columns": 2,
+          "rows": 3,
+          "cell_width": 35,
+          "cell_height": 15,
+          "items": [
+            {"title": "<|endoftext|>", "description": "End of document", "color": "warning"},
+            {"title": "<|im_start|>", "description": "Message start", "color": "primary"},
+            {"title": "<|im_end|>", "description": "Message end", "color": "primary"},
+            {"title": "[PAD]", "description": "Padding for batches", "color": "dim"},
+            {"title": "[UNK]", "description": "Unknown token", "color": "warning"},
+            {"title": "[MASK]", "description": "For training (BERT)", "color": "secondary"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "tokenizer_differences",
+      "title": "Different Models, Different Tokenizers",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Each Model Family Has Its Own Tokenizer",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "model_comparison",
+          "position": {"x": 50, "y": 50},
+          "models": [
+            {"name": "GPT-4", "vocabulary": "100K", "algorithm": "BPE", "color": "primary"},
+            {"name": "Claude", "vocabulary": "100K", "algorithm": "BPE", "color": "secondary"},
+            {"name": "Llama", "vocabulary": "32K", "algorithm": "SentencePiece", "color": "accent"}
+          ],
+          "comparison_rows": ["Vocabulary", "Algorithm"],
+          "width": 85,
+          "height": 40,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Same text = different token counts on different models!",
+          "position": {"x": 50, "y": 12},
+          "style": {"fontsize": 14, "color": "warning"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "practical_tips",
+      "title": "Practical Tips",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Working With Tokens",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "checklist",
+          "position": {"x": 50, "y": 55},
+          "items": [
+            "Use tiktoken to count tokens before API calls",
+            "Watch for context window limits",
+            "Minimize tokens for cost efficiency",
+            "Be aware: special chars often = extra tokens",
+            "Test tokenization of domain-specific terms"
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "code_block",
+          "position": {"x": 50, "y": 18},
+          "code": "import tiktoken\nenc = tiktoken.encoding_for_model('gpt-4')\nlen(enc.encode('Hello world'))  # -> 2",
+          "language": "python",
+          "width": 65,
+          "height": 12,
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    }
+  ]
+}

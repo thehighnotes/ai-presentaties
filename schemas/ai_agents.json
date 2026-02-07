@@ -1,0 +1,339 @@
+{
+  "name": "ai_agents",
+  "title": "AI Agents & Tool Use",
+  "description": "How LLMs interact with the real world through tools and planning",
+  "author": "AI Training",
+  "language": "en",
+  "version": "1.0",
+  "landing": {
+    "title": "AI Agents",
+    "subtitle": "From Chat to Action",
+    "tagline": "When AI does more than just talk",
+    "welcome_message": "Learn how AI agents take action in the world",
+    "footer": "Press SPACE to begin",
+    "primary_color": "accent"
+  },
+  "steps": [
+    {
+      "name": "what_is_agent",
+      "title": "What is an AI Agent?",
+      "elements": [
+        {
+          "type": "text",
+          "content": "More Than Just Conversation",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 60},
+          "left_title": "Chatbot",
+          "left_content": "Answers questions, generates text, stays within the conversation",
+          "left_color": "dim",
+          "right_title": "Agent",
+          "right_content": "Plans, uses tools, takes actions, accomplishes goals",
+          "right_color": "success",
+          "width": 85,
+          "height": 28,
+          "animation_phase": "early"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 25},
+          "items": [
+            "Agents can: search the web, run code, manage files",
+            "Agents decide which tools to use and when",
+            "Agents iterate until the task is complete"
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "agent_loop",
+      "title": "The Agent Loop",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Think -> Act -> Observe -> Repeat",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "flow",
+          "position": {"x": 50, "y": 60},
+          "steps": [
+            {"title": "Think", "subtitle": "Reason about goal"},
+            {"title": "Decide", "subtitle": "Choose action"},
+            {"title": "Act", "subtitle": "Execute tool"},
+            {"title": "Observe", "subtitle": "See result"}
+          ],
+          "width": 90,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "arc_arrow",
+          "start": {"x": 85, "y": 60},
+          "end": {"x": 15, "y": 60},
+          "arc_height": 20,
+          "direction": "down",
+          "color": "accent",
+          "animation_phase": "middle"
+        },
+        {
+          "type": "text",
+          "content": "Loop until goal achieved or max iterations reached",
+          "position": {"x": 50, "y": 25},
+          "style": {"fontsize": 14, "color": "dim"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "tools",
+      "title": "Tool Use",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Extending LLM Capabilities",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 55},
+          "columns": 3,
+          "rows": 2,
+          "cell_width": 26,
+          "cell_height": 18,
+          "items": [
+            {"title": "Web Search", "description": "Find information", "color": "primary"},
+            {"title": "Calculator", "description": "Math operations", "color": "secondary"},
+            {"title": "Code Exec", "description": "Run Python/JS", "color": "accent"},
+            {"title": "File I/O", "description": "Read/write files", "color": "warning"},
+            {"title": "API Calls", "description": "External services", "color": "highlight"},
+            {"title": "Browser", "description": "Navigate web", "color": "success"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Tools turn language into action",
+          "position": {"x": 50, "y": 15},
+          "style": {"fontsize": 16, "color": "text"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "function_calling",
+      "title": "Function Calling",
+      "elements": [
+        {
+          "type": "text",
+          "content": "How the LLM Chooses Tools",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "code_execution",
+          "position": {"x": 50, "y": 55},
+          "code": "User: What's the weather in Amsterdam?\n\nLLM chooses: get_weather(city='Amsterdam')",
+          "output": "{\n  \"temp\": 15,\n  \"condition\": \"cloudy\"\n}",
+          "width": 75,
+          "code_height": 18,
+          "output_height": 12,
+          "animation_phase": "early"
+        },
+        {
+          "type": "text",
+          "content": "The model outputs structured JSON that maps to function calls",
+          "position": {"x": 50, "y": 15},
+          "style": {"fontsize": 14, "color": "dim"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "react",
+      "title": "ReAct Pattern",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Reasoning + Acting",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "conversation",
+          "position": {"x": 50, "y": 55},
+          "messages": [
+            {"role": "user", "name": "Task", "content": "Book a flight to Paris for next Tuesday"},
+            {"role": "assistant", "name": "Thought", "content": "I need to search for flights first"},
+            {"role": "system", "name": "Action", "content": "search_flights(dest='Paris', date='Tuesday')"},
+            {"role": "assistant", "name": "Observation", "content": "Found 3 options: AF123, KL456, BA789"}
+          ],
+          "width": 80,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Explicit reasoning traces improve accuracy and debuggability",
+          "position": {"x": 50, "y": 12},
+          "style": {"fontsize": 14, "color": "secondary"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "planning",
+      "title": "Planning & Decomposition",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Breaking Complex Tasks Into Steps",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "stacked_boxes",
+          "position": {"x": 50, "y": 50},
+          "items": [
+            {"title": "Goal", "description": "Create a market analysis report", "color": "primary"},
+            {"title": "Step 1", "description": "Research competitor data", "color": "secondary"},
+            {"title": "Step 2", "description": "Analyze market trends", "color": "secondary"},
+            {"title": "Step 3", "description": "Generate visualizations", "color": "secondary"},
+            {"title": "Step 4", "description": "Write executive summary", "color": "accent"}
+          ],
+          "base_width": 70,
+          "animation_phase": "early",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "memory",
+      "title": "Agent Memory",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Remembering Across Interactions",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 55},
+          "columns": 3,
+          "rows": 1,
+          "cell_width": 26,
+          "cell_height": 30,
+          "items": [
+            {"title": "Short-term", "description": "Current context window", "color": "warning"},
+            {"title": "Working", "description": "Scratchpad for task", "color": "accent"},
+            {"title": "Long-term", "description": "Vector DB / external storage", "color": "success"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 18},
+          "items": [
+            "Persist important information across sessions",
+            "Retrieve relevant memories when needed",
+            "Learn from past successes and failures"
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "safety",
+      "title": "Safety & Control",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Keeping Agents Safe",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "warning"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "checklist",
+          "position": {"x": 50, "y": 55},
+          "items": [
+            "Sandbox execution environments",
+            "Require human approval for high-risk actions",
+            "Set clear boundaries on what agent can access",
+            "Log all actions for audit trails",
+            "Implement rate limits and cost controls"
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Agents are powerful - use appropriate guardrails!",
+          "position": {"x": 50, "y": 15},
+          "style": {"fontsize": 16, "color": "warning"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "examples",
+      "title": "Real-World Agents",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Agents in Production",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "timeline",
+          "position": {"x": 50, "y": 55},
+          "events": [
+            {"date": "2023", "title": "Auto-GPT", "description": "First viral agent", "color": "dim"},
+            {"date": "2024", "title": "Devin", "description": "AI software engineer", "color": "primary"},
+            {"date": "2024", "title": "Claude Code", "description": "Coding assistant", "color": "secondary"},
+            {"date": "2025", "title": "Operator", "description": "Computer use", "color": "accent"}
+          ],
+          "width": 85,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "The agentic era is just beginning!",
+          "position": {"x": 50, "y": 18},
+          "style": {"fontsize": 18, "color": "success"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 90
+    }
+  ]
+}

@@ -1,0 +1,371 @@
+{
+  "name": "test_advanced",
+  "title": "Advanced Features Test",
+  "description": "Test presentation for all new element types",
+  "author": "Designer",
+  "language": "nl",
+  "version": "1.0",
+  "landing": {
+    "title": "Advanced Features",
+    "subtitle": "Testing New Capabilities",
+    "tagline": "All element types in action",
+    "welcome_message": null,
+    "footer": "Press SPACE to start",
+    "primary_color": "primary",
+    "icon_left": null,
+    "icon_right": null
+  },
+  "steps": [
+    {
+      "name": "Typewriter Demo",
+      "title": "Typewriter Effect",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "typewriter_text",
+          "content": "This text appears character by character...",
+          "position": {
+            "x": 50,
+            "y": 50
+          },
+          "show_cursor": true,
+          "cursor_char": "▌",
+          "animation_phase": "early",
+          "style": {
+            "fontsize": 28,
+            "color": "text"
+          }
+        },
+        {
+          "type": "text",
+          "content": "With pulse effect",
+          "position": {
+            "x": 50,
+            "y": 30
+          },
+          "continuous_effect": "pulse",
+          "effect_frequency": 2.0,
+          "animation_phase": "late",
+          "style": {
+            "fontsize": 24,
+            "color": "accent"
+          }
+        },
+        {
+          "type": "text",
+          "position": {
+            "x": 16.170987702729516,
+            "y": 73.05610281886553
+          },
+          "animation_phase": "early",
+          "content": "New Text",
+          "style": {
+            "fontsize": 24,
+            "color": "text"
+          }
+        },
+        {
+          "type": "text",
+          "position": {
+            "x": 24.762407602956703,
+            "y": 25.831314688394627
+          },
+          "animation_phase": "early",
+          "content": "test"
+        },
+        {
+          "type": "vector_3d",
+          "position": {
+            "x": 45.79554869628785,
+            "y": 13.403820788835464
+          },
+          "animation_phase": "early"
+        }
+      ],
+      "animation_frames": 90,
+      "notes": null
+    },
+    {
+      "name": "Visual Widgets",
+      "title": "Visual Effect Widgets",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "similarity_meter",
+          "position": {
+            "x": 25,
+            "y": 60
+          },
+          "score": 85,
+          "radius": 10,
+          "label": "Accuracy",
+          "animation_phase": "early",
+          "duration": 2.5
+        },
+        {
+          "type": "progress_bar",
+          "position": {
+            "x": 75,
+            "y": 60
+          },
+          "current": 7,
+          "total": 10,
+          "width": 25,
+          "height": 4,
+          "label": "Training Epochs",
+          "color": "success",
+          "animation_phase": "early"
+        },
+        {
+          "type": "particle_flow",
+          "start": {
+            "x": 10,
+            "y": 35
+          },
+          "end": {
+            "x": 90,
+            "y": 35
+          },
+          "num_particles": 25,
+          "color": "accent",
+          "animation_phase": "immediate",
+          "duration": 2.2,
+          "speed": 0.6
+        },
+        {
+          "type": "code_execution",
+          "position": {
+            "x": 54.84932174478109,
+            "y": 19.099689401353025
+          },
+          "animation_phase": "early"
+        }
+      ],
+      "animation_frames": 90,
+      "notes": null
+    },
+    {
+      "name": "Weight Comparison",
+      "title": "Weight Delta Visualization",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "weight_comparison",
+          "position": {
+            "x": 50,
+            "y": 55
+          },
+          "before_weights": [
+            0.5,
+            0.3,
+            0.8,
+            0.2
+          ],
+          "after_weights": [
+            0.7,
+            0.5,
+            0.6,
+            0.4
+          ],
+          "labels": [
+            "W1",
+            "W2",
+            "W3",
+            "W4"
+          ],
+          "bar_height": 25,
+          "animation_phase": "early"
+        },
+        {
+          "type": "text",
+          "content": "Before → After",
+          "position": {
+            "x": 50,
+            "y": 80
+          },
+          "animation_phase": "immediate",
+          "style": {
+            "fontsize": 20,
+            "color": "dim"
+          }
+        }
+      ],
+      "animation_frames": 120,
+      "notes": null
+    },
+    {
+      "name": "Neural Network",
+      "title": "Neural Network Diagram",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "neural_network",
+          "position": {
+            "x": 50,
+            "y": 50
+          },
+          "layers": [
+            3,
+            5,
+            5,
+            2
+          ],
+          "layer_labels": [
+            "Input",
+            "Hidden 1",
+            "Hidden 2",
+            "Output"
+          ],
+          "width": 60,
+          "height": 40,
+          "node_color": "primary",
+          "connection_color": "dim",
+          "stagger": true,
+          "show_connections": true,
+          "animation_phase": "early"
+        }
+      ],
+      "animation_frames": 120,
+      "notes": null
+    },
+    {
+      "name": "Arc Arrow",
+      "title": "Arc Arrow Animation",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "box",
+          "position": {
+            "x": 25,
+            "y": 50
+          },
+          "width": 20,
+          "height": 15,
+          "title": "Source",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "box",
+          "position": {
+            "x": 75,
+            "y": 50
+          },
+          "width": 20,
+          "height": 15,
+          "title": "Target",
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "arc_arrow",
+          "start": {
+            "x": 35,
+            "y": 50
+          },
+          "end": {
+            "x": 65,
+            "y": 50
+          },
+          "arc_height": 20,
+          "direction": "up",
+          "color": "accent",
+          "width": 3,
+          "animation_phase": "middle"
+        }
+      ],
+      "animation_frames": 90,
+      "notes": null
+    },
+    {
+      "name": "3D Scatter",
+      "title": "3D Vector Space",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "scatter_3d",
+          "points": [
+            {
+              "x": 2,
+              "y": 3,
+              "z": 1.5,
+              "label": "Dog",
+              "color": "secondary"
+            },
+            {
+              "x": 2.5,
+              "y": 2.8,
+              "z": 1.8,
+              "label": "Cat",
+              "color": "secondary"
+            },
+            {
+              "x": -2,
+              "y": 1,
+              "z": 3,
+              "label": "Car",
+              "color": "accent"
+            },
+            {
+              "x": -1.5,
+              "y": 0.5,
+              "z": 2.5,
+              "label": "Bike",
+              "color": "accent"
+            }
+          ],
+          "xlim": [
+            -5,
+            5
+          ],
+          "ylim": [
+            -5,
+            5
+          ],
+          "zlim": [
+            -5,
+            5
+          ],
+          "camera_elev": 20,
+          "camera_azim": 45,
+          "rotate_camera": true,
+          "camera_rotation_speed": 90,
+          "stagger_points": true,
+          "show_vectors": true,
+          "animation_phase": "early"
+        }
+      ],
+      "animation_frames": 120,
+      "notes": null
+    },
+    {
+      "name": "Step 7",
+      "title": "New Step 7",
+      "subtitle": null,
+      "elements": [],
+      "animation_frames": 60,
+      "notes": null
+    },
+    {
+      "name": "Step 8",
+      "title": "New Step 8",
+      "subtitle": null,
+      "elements": [
+        {
+          "type": "text",
+          "position": {
+            "x": 31.315526102192596,
+            "y": 43.18032331015792
+          },
+          "animation_phase": "early",
+          "content": "New Text",
+          "style": {
+            "fontsize": 24,
+            "color": "text"
+          }
+        }
+      ],
+      "animation_frames": 60,
+      "notes": null
+    }
+  ],
+  "color_overrides": {}
+}

@@ -1,0 +1,325 @@
+{
+  "name": "transformers_attention",
+  "title": "Transformers & Attention",
+  "description": "Understanding the attention mechanism that powers modern LLMs",
+  "author": "AI Training",
+  "language": "en",
+  "version": "1.0",
+  "landing": {
+    "title": "Transformers & Attention",
+    "subtitle": "The Architecture Behind Modern AI",
+    "tagline": "How language models understand context",
+    "welcome_message": "Welcome to this deep dive into attention mechanisms",
+    "footer": "Press SPACE to begin",
+    "primary_color": "primary"
+  },
+  "steps": [
+    {
+      "name": "what_is_attention",
+      "title": "What is Attention?",
+      "elements": [
+        {
+          "type": "text",
+          "content": "The Key Insight: Not all words are equally important",
+          "position": {"x": 50, "y": 82},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "conversation",
+          "position": {"x": 50, "y": 55},
+          "messages": [
+            {"role": "user", "name": "Input", "content": "The cat sat on the mat because it was tired"},
+            {"role": "assistant", "name": "Model", "content": "What does 'it' refer to? The cat!"}
+          ],
+          "width": 75,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 25},
+          "items": [
+            "Traditional models: process words one by one",
+            "Attention: each word 'looks at' all other words",
+            "Learns which relationships matter most"
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "attention_visualization",
+      "title": "Attention in Action",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Self-Attention: Every token attends to every other token",
+          "position": {"x": 50, "y": 85},
+          "style": {"fontsize": 18, "fontweight": "bold"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "attention_heatmap",
+          "position": {"x": 50, "y": 50},
+          "tokens_x": ["The", "cat", "sat", "on", "it"],
+          "tokens_y": ["The", "cat", "sat", "on", "it"],
+          "width": 50,
+          "height": 50,
+          "title": "Attention Weights",
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Brighter = stronger attention. Notice 'it' attending to 'cat'!",
+          "position": {"x": 50, "y": 12},
+          "style": {"fontsize": 14, "color": "dim"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "qkv",
+      "title": "Query, Key, Value",
+      "elements": [
+        {
+          "type": "text",
+          "content": "The Three Projections",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "flow",
+          "position": {"x": 50, "y": 65},
+          "steps": [
+            {"title": "Query (Q)", "subtitle": "What am I looking for?"},
+            {"title": "Key (K)", "subtitle": "What do I contain?"},
+            {"title": "Value (V)", "subtitle": "What info do I give?"}
+          ],
+          "width": 85,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "code_block",
+          "position": {"x": 50, "y": 38},
+          "code": "Attention(Q, K, V) = softmax(Q * K^T / sqrt(d)) * V",
+          "language": "math",
+          "width": 70,
+          "height": 10,
+          "animation_phase": "middle"
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 50, "y": 18},
+          "items": [
+            "Q*K = how relevant is each key to my query?",
+            "softmax = normalize to probabilities",
+            "Multiply by V = weighted sum of values"
+          ],
+          "animation_phase": "late",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "multi_head",
+      "title": "Multi-Head Attention",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Multiple Attention Heads = Multiple Perspectives",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "grid",
+          "position": {"x": 50, "y": 55},
+          "columns": 4,
+          "rows": 2,
+          "cell_width": 18,
+          "cell_height": 15,
+          "items": [
+            {"title": "Head 1", "description": "Syntax"},
+            {"title": "Head 2", "description": "Semantics"},
+            {"title": "Head 3", "description": "Position"},
+            {"title": "Head 4", "description": "Coreference"},
+            {"title": "Head 5", "description": "Entities"},
+            {"title": "Head 6", "description": "Relations"},
+            {"title": "Head 7", "description": "Negation"},
+            {"title": "Head 8", "description": "Numbers"}
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Each head learns to focus on different linguistic features",
+          "position": {"x": 50, "y": 20},
+          "style": {"fontsize": 16, "color": "text"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "transformer_architecture",
+      "title": "The Transformer Block",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Stacking Transformer Layers",
+          "position": {"x": 50, "y": 90},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "stacked_boxes",
+          "position": {"x": 30, "y": 50},
+          "items": [
+            {"title": "Output", "description": "Final representation", "color": "success"},
+            {"title": "Feed Forward", "description": "Process each position", "color": "accent"},
+            {"title": "Add & Norm", "description": "Residual connection", "color": "dim"},
+            {"title": "Multi-Head Attention", "description": "Attend to context", "color": "primary"},
+            {"title": "Input Embeddings", "description": "Token + Position", "color": "secondary"}
+          ],
+          "base_width": 45,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "bullet_list",
+          "position": {"x": 72, "y": 50},
+          "items": [
+            "GPT-3: 96 layers",
+            "GPT-4: ~120 layers",
+            "Each layer refines",
+            "understanding"
+          ],
+          "animation_phase": "middle",
+          "stagger": true
+        }
+      ],
+      "animation_frames": 120
+    },
+    {
+      "name": "positional_encoding",
+      "title": "Positional Encoding",
+      "elements": [
+        {
+          "type": "text",
+          "content": "How does attention know word order?",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "comparison",
+          "position": {"x": 50, "y": 60},
+          "left_title": "Problem",
+          "left_content": "Attention is permutation invariant - word order is lost!",
+          "left_color": "warning",
+          "right_title": "Solution",
+          "right_content": "Add position info to each embedding",
+          "right_color": "success",
+          "width": 85,
+          "height": 25,
+          "animation_phase": "early"
+        },
+        {
+          "type": "code_block",
+          "position": {"x": 50, "y": 30},
+          "code": "PE(pos, 2i) = sin(pos / 10000^(2i/d))\nPE(pos, 2i+1) = cos(pos / 10000^(2i/d))",
+          "language": "math",
+          "width": 65,
+          "height": 12,
+          "animation_phase": "middle"
+        },
+        {
+          "type": "text",
+          "content": "Unique pattern for each position, learnable relative distances",
+          "position": {"x": 50, "y": 12},
+          "style": {"fontsize": 14, "color": "dim"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "context_window",
+      "title": "Context Windows",
+      "elements": [
+        {
+          "type": "text",
+          "content": "How Much Can a Model Remember?",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 20, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "model_comparison",
+          "position": {"x": 50, "y": 50},
+          "models": [
+            {"name": "GPT-3.5", "context": "4K", "pages": "~6", "color": "dim"},
+            {"name": "GPT-4", "context": "128K", "pages": "~200", "color": "primary"},
+            {"name": "Claude 3", "context": "200K", "pages": "~300", "color": "secondary"}
+          ],
+          "comparison_rows": ["Context", "Pages"],
+          "width": 80,
+          "height": 35,
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "Attention is O(n^2) - longer context = more compute",
+          "position": {"x": 50, "y": 15},
+          "style": {"fontsize": 14, "color": "warning"},
+          "animation_phase": "late"
+        }
+      ],
+      "animation_frames": 90
+    },
+    {
+      "name": "summary",
+      "title": "Key Takeaways",
+      "elements": [
+        {
+          "type": "text",
+          "content": "Transformers: The Building Block of Modern AI",
+          "position": {"x": 50, "y": 88},
+          "style": {"fontsize": 22, "fontweight": "bold", "color": "primary"},
+          "animation_phase": "immediate"
+        },
+        {
+          "type": "checklist",
+          "position": {"x": 50, "y": 55},
+          "items": [
+            "Attention lets every token see every other token",
+            "Query-Key-Value: the fundamental operation",
+            "Multi-head attention: multiple perspectives",
+            "Positional encoding: preserves word order",
+            "Context window: memory limit of the model"
+          ],
+          "animation_phase": "early",
+          "stagger": true
+        },
+        {
+          "type": "text",
+          "content": "This architecture powers GPT, Claude, Llama, and all modern LLMs!",
+          "position": {"x": 50, "y": 15},
+          "style": {"fontsize": 16, "color": "success"},
+          "animation_phase": "final"
+        }
+      ],
+      "animation_frames": 90
+    }
+  ]
+}
